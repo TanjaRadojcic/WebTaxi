@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using TaxiT.Models;
 
 namespace TaxiT
 {
@@ -18,6 +19,12 @@ namespace TaxiT
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            Dispeceri dispeceri = new Dispeceri("~/App_Data/dispeceri.txt");
+            HttpContext.Current.Application["Dispeceri"] = dispeceri;
+            Korisnici korisnici = new Korisnici("~/App_Data/korisnici.txt");
+            HttpContext.Current.Application["korisnici"] = korisnici;
+
         }
     }
 }

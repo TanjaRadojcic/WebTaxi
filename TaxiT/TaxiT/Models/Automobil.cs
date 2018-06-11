@@ -8,7 +8,7 @@ namespace TaxiT.Models
 {
     public class Automobil
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public Vozac Vozac { get; set; }
         public int Godiste { get; set; }
         public string Registracija { get; set; }

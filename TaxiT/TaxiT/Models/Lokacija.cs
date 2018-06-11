@@ -7,9 +7,9 @@ namespace TaxiT.Models
 {
     public class Lokacija
     {
-        public int Id { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public string Id { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public Adresa Adresa { get; set; }
     }
 }

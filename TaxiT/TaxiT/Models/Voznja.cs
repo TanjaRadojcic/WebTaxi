@@ -8,11 +8,11 @@ namespace TaxiT.Models
 {
     public class Voznja
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public DateTime Datum { get; set; }
         public Lokacija PocetnaLokacija { get; set; }
         public Auto TipAutomobila { get; set; }
-        public Musterija Musterija { get; set; }
+        public Korisnik Musterija { get; set; }
         public Lokacija Oderdiste { get; set; }
         public Dispecer Dispecer { get; set; }
         public Vozac Vozac { get; set; }

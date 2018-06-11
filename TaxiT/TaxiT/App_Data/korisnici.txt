@@ -1,0 +1,2 @@
+7;neko;2678;tanja;rad;Muški;2904996805003;2134567;rad@gmail.com;Mušterija
+1;niko;131313;tanja;rad;Muški;2904996805003;2345678;rad@gmail.com;Mušterija

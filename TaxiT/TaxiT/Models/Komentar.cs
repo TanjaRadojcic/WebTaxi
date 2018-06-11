@@ -8,12 +8,12 @@ namespace TaxiT.Models
 {
     public class Komentar
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Opis { get; set; }
         public DateTime DatumObjave { get; set; }
         public Korisnik Korisnik { get; set; }
         public Voznja Voznja { get; set; }
-        public Ocena Ocena { get; set; }//?? 1-5 a 0 ako nema ocene
+        public int Ocena { get; set; }//?? 1-5 a 0 ako nema ocene
 
     }
 }

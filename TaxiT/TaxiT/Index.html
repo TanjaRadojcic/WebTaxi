@@ -17,15 +17,74 @@
             background-repeat: no-repeat;
             background-position: left top;
         }
-        
     </style>
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            $("#load-products").click(function () {
+                $.get("/api/Registration", function (data, status) {
+                    let tableOfProducts = "<table border='1'>";
+                    for (product in data) {
+                        tableOfProducts += `<tr><td>${data[product].Id}</td><td>${data[product].Ime}</td></tr>`;
+                    }
+                    tableOfProducts += "</table>";
+                    $("#registrovan").html(tableOfProducts);
+                });
+            });
+
+            $("#registracija").click(function () {
+
+                let korisnik = {
+                    KorisnickoIme: `${$('#usernameLI').val()}`,
+                    Lozinka: `${$('#passLI').val()}`
+
+                };
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Registration',
+                    data: JSON.stringify(korisnik),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                })
+            });
+
+            $("#LogIn").click(function () {
+
+                let korisnik = {
+                    KorisnickoIme: `${$('#korisnickoime').val()}`,
+                    Lozinka: `${$('#lozinka').val()}`,
+                    Ime: `${$('#ime').val()}`,
+                    Prezime: `${$('#prezime').val()}`,
+                    Pol: `${$('#pol').val()}`,
+                    JMBG: `${$('#jmbg').val()}`,
+                    Kontakt: `${$('#kontakt').val()}`,
+                    Email: `${$('#email').val()}`
+
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Registration',
+                    data: JSON.stringify(korisnik),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                })
+
+            });
+            
+        
+        });
+    </script>
 </head>
 <body>
     <div class="w3-top">
         <div class="w3-bar " style=" background-color:#f176ad">
             <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="75" width="75"/>
             <div class="w3-bar-item w3-right w3-small " >
-                <form accept-charset="UTF-8">
+                
                     <table align="right">
                         <tr>
                             <td>
@@ -37,19 +96,20 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="usernameLI" id="usernameLI" tabindex="1" required />
+                                <input type="text" name="KorisnickoIme" id="usernameLI" tabindex="1" required />
                             </td>
                             <td>
-                                <input type="password" name="passLI" id="passLI" tabindex="2" required />
+                                <input type="password" name="Lozinka" id="passLI" tabindex="2" required />
                             </td>
                             <td>
                                 <label id="loginbutton" for="logIn">
-                                    <input value="Log In" aria-label="Log In" tabindex="4" type="submit" id="logIn" />
+                                    <button value="Log In" type="button" id="LogIn">Log In</button>
+                                    
                                 </label>
                             </td>
                         </tr>
                     </table>
-                </form>
+                
             </div>
 
 
@@ -58,114 +118,105 @@
 
     <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
         <div class="w3-row">
-            
+            <button id="load-products">Load products</button>
+            <div id="registrovan"></div>
             <!-- Right Column -->
             <div class="w3-col m2 w3-right ">
-                <form accept-charset="UTF-8">
-                    <table align="right">
-                        <tr>
-                            <td colspan="2" align="center">
-                                Registracija
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="korisnickoime">Korisničko ime</label>
-                            </td>
-                            <td>
-                                <input type="text" name="korisnickoime" id="korisnickoime" required/>
-                            </td>
+               
+                <table align="right">
+                    <tr>
+                        <td colspan="2" align="center">
+                            Registracija
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="korisnickoime">Korisničko ime</label>
+                        </td>
+                        <td>
+                            <input type="text" name="KorisnickoIme" id="korisnickoime" required/>
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="lozinka">Lozinka</label>
-                            </td>
-                            <td>
-                                <input type="password" name="lozinka" id="lozinka" required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="lozinka">Lozinka</label>
+                        </td>
+                        <td>
+                            <input type="password" name="Lozinka" id="lozinka" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="ime">Ime</label>
-                            </td>
-                            <td>
-                                <input type="text" name="ime" id="ime" required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="ime">Ime</label>
+                        </td>
+                        <td>
+                            <input type="text" name="Ime" id="ime" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="prezime">Prezime</label>
-                            </td>
-                            <td>
-                                <input type="text" name="prezime" id="prezime" required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="prezime">Prezime</label>
+                        </td>
+                        <td>
+                            <input type="text" name="Prezime" id="prezime" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="pol">Pol</label>
-                            </td>
-                            <td>
-                                <input type="radio" name="pol" value="Muško" checked> Muško  <input type="radio" name="pol" value="Žensko"> Žensko<br>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="pol">Pol</label>
+                        </td>
+                        <td>
+                            <input type="radio" name="Pol" id="pol" value="Muško" checked> Muško  <input type="radio" name="Pol" id="pol" value="Žensko"> Žensko<br>
 
-                            </td>
+                        </td>
 
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="jmbg">JMBG</label>
-                            </td>
-                            <td>
-                                <input type="number" name="jmbg" id="jmbg" pattern="[0-9]{13}" minlength="13" maxlength="13" required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="jmbg">JMBG</label>
+                        </td>
+                        <td>
+                            <input type="text" name="JMBG" id="jmbg" pattern="[0-9]{13}" minlength="13" maxlength="13" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="phone">Phone</label>
-                            </td>
-                            <td>
-                                <input type="number" name="phone" id="phone" minlength="6" required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="kontakt">Kontakt</label>
+                        </td>
+                        <td>
+                            <input type="text" name="Kontakt" id="kontakt" minlength="6" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="email">Email</label>
-                            </td>
-                            <td>
-                                <input type="email" name="email" id="email"  required/>
-                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="email">Email</label>
+                        </td>
+                        <td>
+                            <input type="email" name="Email" id="email" required />
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="uloga">Uloga</label>
-                            </td>
-                            <td>
-                                <select name="uloga">
-                                    <option selected value="Mušterija">Mušterija</option>
-                                    <option value="Vozač">Vozač</option>
-                                </select>
-                            </td>
+                    </tr>
 
-                        </tr>
 
-                        <tr>
-                            <td colspan="2">
-                                <label id="registrationbutton" for="registration">
-                                    <input value="Registracija" tabindex="4" type="submit" id="registration" />
-                                </label>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
+                    <tr>
+                        <td colspan="2">
+                            <label id="registrationbutton" for="registration">
+                                <!-- <input value="Registracija" tabindex="4" type="submit" id="registration" />-->
+                                <button id="registracija" type="button">Registruj se</button>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
 
-                <!-- End Right Column -->
+
+                <!--</form> End Right Column -->
             </div>
 
             <!-- End Grid -->
