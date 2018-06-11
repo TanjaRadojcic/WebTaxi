@@ -33,7 +33,7 @@
                 });
             });
 
-            $("#registracija").click(function () {
+            $("#LogIn").click(function () {
 
                 let korisnik = {
                     KorisnickoIme: `${$('#usernameLI').val()}`,
@@ -44,26 +44,44 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/api/Registration',
+                    url: '/api/LogIn',
                     data: JSON.stringify(korisnik),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                           // alert("Registrovani ste");
+                            $(location).attr('href', 'User.html');
+                        }
+                        else {
+                            alert("Korisnicko ime ili lozinka je pogresna!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                    
+
                 })
             });
 
-            $("#LogIn").click(function () {
-
+            $("#registracija").click(function () {
                 let korisnik = {
                     KorisnickoIme: `${$('#korisnickoime').val()}`,
                     Lozinka: `${$('#lozinka').val()}`,
-                    Ime: `${$('#ime').val()}`,
-                    Prezime: `${$('#prezime').val()}`,
+                    Ime: `${$('#ime1').val()}`,
+                    Prezime: `${$('#prezime1').val()}`,
                     Pol: `${$('#pol').val()}`,
-                    JMBG: `${$('#jmbg').val()}`,
-                    Kontakt: `${$('#kontakt').val()}`,
-                    Email: `${$('#email').val()}`
+                    JMBG: `${$('#jmbg1').val()}`,
+                    Kontakt: `${$('#kontakt1').val()}`,
+                    Email: `${$('#email1').val()}`,
+                    
+                    
+                    
+
 
                 };
+
 
                 $.ajax({
                     type: 'POST',
@@ -71,7 +89,21 @@
                     data: JSON.stringify(korisnik),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Registrovani ste");
+                            $(location).attr('href', 'Index.html');
+                        }
+                        else {
+                            alert("Korisnicko ime je zauzeto!");
+                        }
+                    },
+                    error: function (errorData) {
+                            
+                    }
                 })
+
+
 
             });
             
@@ -149,19 +181,19 @@
                     </tr>
                     <tr>
                         <td>
-                            <label for="ime">Ime</label>
+                            <label>Ime</label>
                         </td>
                         <td>
-                            <input type="text" name="Ime" id="ime" required />
+                            <input type="text" name="Ime" id="ime1" required />
                         </td>
 
                     </tr>
                     <tr>
                         <td>
-                            <label for="prezime">Prezime</label>
+                            <label >Prezime</label>
                         </td>
                         <td>
-                            <input type="text" name="Prezime" id="prezime" required />
+                            <input type="text" name="Prezime" id="prezime1" required />
                         </td>
 
                     </tr>
@@ -170,36 +202,40 @@
                             <label for="pol">Pol</label>
                         </td>
                         <td>
-                            <input type="radio" name="Pol" id="pol" value="Muško" checked> Muško  <input type="radio" name="Pol" id="pol" value="Žensko"> Žensko<br>
-
+                            <!--<input type="radio" name="Pol" id="pol" value="Muško" checked> Muško  <input type="radio" name="Pol" id="pol" value="Žensko"> Žensko<br>
+    -->
+                            <select name="Pol" id="pol">
+                                <option>Muški</option>
+                                <option>Ženski</option>
+                            </select>
                         </td>
 
 
                     </tr>
                     <tr>
                         <td>
-                            <label for="jmbg">JMBG</label>
+                            <label >JMBG</label>
                         </td>
                         <td>
-                            <input type="text" name="JMBG" id="jmbg" pattern="[0-9]{13}" minlength="13" maxlength="13" required />
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="kontakt">Kontakt</label>
-                        </td>
-                        <td>
-                            <input type="text" name="Kontakt" id="kontakt" minlength="6" required />
+                            <input type="text" name="JMBG" id="jmbg1" pattern="[0-9]{13}" minlength="13" maxlength="13" required />
                         </td>
 
                     </tr>
                     <tr>
                         <td>
-                            <label for="email">Email</label>
+                            <label >Kontakt</label>
                         </td>
                         <td>
-                            <input type="email" name="Email" id="email" required />
+                            <input type="text" name="Kontakt" id="kontakt1" minlength="6" required />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <label >Email</label>
+                        </td>
+                        <td>
+                            <input type="email" name="Email" id="email1" required />
                         </td>
 
                     </tr>

@@ -17,15 +17,44 @@ namespace TaxiT.Controllers
       
         public Dictionary<string,Korisnik> Get()
         {
-            return Korisnici.korisnici;
+            var korisnici = HttpContext.Current.Application["korisnici"] as Dictionary<string, Korisnik>;
+            if (korisnici == null)
+            {
+                korisnici = new Dictionary<string, Korisnik>();
+            }
+            return korisnici;
         }
         // POST: api/Registration
-        public void Post([FromBody]Korisnik k)
+        public bool Post([FromBody]Korisnik k)
         {
-            k.Id = (Korisnici.korisnici.Count + 1).ToString();
-            k.Uloga = Enums.Uloga.Mušterija;
-            Korisnici.korisnici.Add(k.Id, k);
-            AddToFile(k);
+            var korisnici = HttpContext.Current.Application["korisnici"] as Dictionary<string, Korisnik>;
+            bool postoji = false;
+            if(korisnici== null)
+            {
+                korisnici = new Dictionary<string, Korisnik>();
+            }
+            foreach (Korisnik korisnik in korisnici.Values)
+            {
+                if (k.KorisnickoIme == korisnik.KorisnickoIme)
+                {
+                    postoji = true;
+                    break;
+                }
+            }
+            if (!postoji)
+            {
+                k.Id = (korisnici.Count + 1).ToString();
+                k.Uloga = Enums.Uloga.Mušterija;
+                korisnici.Add(k.Id, k);
+                HttpContext.Current.Application["korisnici"] = korisnici;
+                AddToFile(k);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
             
         }
 
