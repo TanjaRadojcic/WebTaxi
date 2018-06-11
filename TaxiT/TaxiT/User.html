@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pink Taxi</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-pink.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html, body, h1, h2, h3, h4, h5 {
+            font-family: "Open Sans", sans-serif
+        }
+
+        body {
+            background-image: url("pozadinaUser2.jpg");
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #ee1790;
+            width:auto
+        }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+                /* Change background color of buttons on hover */
+                .tab button:hover {
+                    background-color: #ddd;
+                }
+
+                /* Create an active/current tablink class */
+                .tab button.active {
+                    background-color: #ccc;
+                }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="w3-top">
+        <div class="w3-bar " style=" background-color:#f176ad">
+            <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="60" width="60" />
+            <a href="#" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " style=" background-color:#ee1790"><i class="fa fa-home"></i></a>
+            <div class="w3-dropdown-hover w3-hide-small w3-large w3-left">
+                <button class="w3-button w3-padding-large" title="Account"><i class="fa fa-user"></i></button>
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+                    <a href="#" class="w3-bar-item w3-button">Pregled profila</a>
+                    <a href="#" class="w3-bar-item w3-button">Izmeni profil</a>
+                    <a href="#" class="w3-bar-item w3-button">Odjavi se</a>
+
+                </div>
+            </div>
+            <!-- ako je Musterija -->
+            <a href="#" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " title="Nova vožnja"><i class="fa fa-plus"></i></a>
+            <!-- ako je Musterija -->
+        </div>
+    </div>
+
+
+    <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
+        <div class="w3-row">
+
+            <!-- Right Column -->
+            <div class=" w3-left ">
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'London')">Moje vožnje</button>
+                    <button class="tablinks" onclick="openCity(event, 'Paris')">Čekaju obradu</button>
+                    <button class="tablinks" onclick="openCity(event, 'Tokyo')">Sve vožnje</button>
+                </div>
+
+                <div>
+                    <form accept-charset="UTF-8">
+                        <table>
+                           
+                            <tr>
+                                <td>Filtriraj</td>
+                                <td>
+                                    <label for="status">Status</label>
+                                </td>
+                               
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" name="usernameLI" id="usernameLI" tabindex="1" />
+                                </td>
+                                <td>
+                                    <input type="password" name="passLI" id="passLI" tabindex="2" />
+                                </td>
+                                <td>
+                                    <label id="loginbutton" for="logIn">
+                                        <input value="Log In" aria-label="Log In" tabindex="4" type="submit" id="logIn" />
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+
+
+                <div id="London" class="tabcontent">
+                    <table>
+                        <tr>
+                            <td>
+                                Datum i vreme
+                            </td>
+                            <td>
+                                Početna lokacija
+                            </td>
+                            <td>
+                                Tip automobila
+                            </td>
+                            <td>
+                                Mušterija
+                            </td>
+                            <td>
+                                Odredište
+                            </td>
+                            <td>
+                                Dispečer
+                            </td>
+                            <td>
+                                Vozač
+                            </td>
+                            <td>
+                                Iznos
+                            </td>
+                            <td>
+                                Komentar
+                            </td>
+                            <td>
+                                Status
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="Paris" class="tabcontent">
+                    <table>
+                        <tr>
+                            <td>
+                                Datum i vreme
+                            </td>
+                            <td>
+                                Početna lokacija
+                            </td>
+                            <td>
+                                Tip automobila
+                            </td>
+                            <td>
+                                Mušterija
+                            </td>
+                            <td>
+                                Odredište
+                            </td>
+                            <td>
+                                Dispečer
+                            </td>
+                            <td>
+                                Vozač
+                            </td>
+                            <td>
+                                Iznos
+                            </td>
+                            <td>
+                                Komentar
+                            </td>
+                            <td>
+                                Status
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="Tokyo" class="tabcontent">
+                    <table>
+                        <tr>
+                            <td>
+                                Datum i vreme
+                            </td>
+                            <td>
+                                Početna lokacija
+                            </td>
+                            <td>
+                                Tip automobila
+                            </td>
+                            <td>
+                                Mušterija
+                            </td>
+                            <td>
+                                Odredište
+                            </td>
+                            <td>
+                                Dispečer
+                            </td>
+                            <td>
+                                Vozač
+                            </td>
+                            <td>
+                                Iznos
+                            </td>
+                            <td>
+                                Komentar
+                            </td>
+                            <td>
+                                Status
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+                
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        function openCity(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+
+</body>
+</html>
