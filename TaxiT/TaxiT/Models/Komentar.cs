@@ -8,7 +8,7 @@ namespace TaxiT.Models
 {
     public class Komentar
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Opis { get; set; }
         public DateTime DatumObjave { get; set; }
         public Korisnik Korisnik { get; set; }

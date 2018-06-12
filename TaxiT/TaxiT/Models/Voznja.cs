@@ -8,7 +8,7 @@ namespace TaxiT.Models
 {
     public class Voznja
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public DateTime Datum { get; set; }
         public Lokacija PocetnaLokacija { get; set; }
         public Auto TipAutomobila { get; set; }

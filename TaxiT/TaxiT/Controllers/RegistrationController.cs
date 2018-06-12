@@ -15,25 +15,25 @@ namespace TaxiT.Controllers
     {
         
       
-        public Dictionary<string,Korisnik> Get()
+        public Dictionary<int,Korisnik> Get()
         {
-            var korisnici = HttpContext.Current.Application["korisnici"] as Dictionary<string, Korisnik>;
-            if (korisnici == null)
+            
+            if (Korisnici.korisnici == null)
             {
-                korisnici = new Dictionary<string, Korisnik>();
+                Korisnici.korisnici = new Dictionary<int, Korisnik>();
             }
-            return korisnici;
+            return Korisnici.korisnici;
         }
         // POST: api/Registration
         public bool Post([FromBody]Korisnik k)
         {
-            var korisnici = HttpContext.Current.Application["korisnici"] as Dictionary<string, Korisnik>;
+            
             bool postoji = false;
-            if(korisnici== null)
+            if(Korisnici.korisnici == null)
             {
-                korisnici = new Dictionary<string, Korisnik>();
+                Korisnici.korisnici = new Dictionary<int, Korisnik>();
             }
-            foreach (Korisnik korisnik in korisnici.Values)
+            foreach (Korisnik korisnik in Korisnici.korisnici.Values)
             {
                 if (k.KorisnickoIme == korisnik.KorisnickoIme)
                 {
@@ -43,10 +43,10 @@ namespace TaxiT.Controllers
             }
             if (!postoji)
             {
-                k.Id = (korisnici.Count + 1).ToString();
+                k.Id = Korisnici.korisnici.Count + 1;
                 k.Uloga = Enums.Uloga.Mušterija;
-                korisnici.Add(k.Id, k);
-                HttpContext.Current.Application["korisnici"] = korisnici;
+                Korisnici.korisnici.Add(k.Id, k);
+                
                 AddToFile(k);
                 return true;
             }

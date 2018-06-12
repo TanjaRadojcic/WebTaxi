@@ -8,7 +8,7 @@ namespace TaxiT.Models
 {
     public class Korisnik
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string KorisnickoIme { get; set; }
         public string Lozinka { get; set; }
         public string Ime { get; set; }
@@ -18,9 +18,11 @@ namespace TaxiT.Models
         public string Kontakt { get; set; }
         public string Email { get; set; }
         public Uloga Uloga { get; set; }
-       // public List<Voznja> Voznje { get; set; }//??? 
+        public List<Voznja> Voznje { get; set; } 
 
-        public Korisnik(string id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u)
+        public Korisnik() { }
+
+        public Korisnik(int id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u)
         {
             Id = id;
             KorisnickoIme = k;
@@ -32,6 +34,7 @@ namespace TaxiT.Models
             Kontakt = kontakt;
             Email = e;
             Uloga = u;
+            Voznje = new List<Voznja>();
         }
     }
 }

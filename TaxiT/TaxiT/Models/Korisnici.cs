@@ -10,12 +10,12 @@ namespace TaxiT.Models
 {
     public class Korisnici
     {
-        public static Dictionary<string, Korisnik> korisnici { get; set; } = new Dictionary<string, Korisnik>();
+        public static Dictionary<int, Korisnik> korisnici { get; set; } = new Dictionary<int, Korisnik>();
         
         public Korisnici(string path)
         {
             path = HostingEnvironment.MapPath(path);
-            korisnici = new Dictionary<string, Korisnik>();
+            korisnici = new Dictionary<int, Korisnik>();
             FileStream stream = new FileStream(path, FileMode.Open);
             StreamReader sr = new StreamReader(stream);
             string line = "";
@@ -25,7 +25,7 @@ namespace TaxiT.Models
                 Enum.TryParse(tokens[5], out Pol pol);
                 Enum.TryParse(tokens[9], out Uloga uloga);
 
-                Korisnik p = new Korisnik(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga);
+                Korisnik p = new Korisnik(Int32.Parse(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga);
 
                 korisnici.Add(p.Id, p);
             }

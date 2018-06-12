@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pink Taxi</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-pink.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html, body, h1, h2, h3, h4, h5 {
+            font-family: "Open Sans", sans-serif
+        }
+
+        body {
+            background-image: url("pozadinaUser2.jpg");
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #ee1790;
+            width: auto
+        }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+                /* Change background color of buttons on hover */
+                .tab button:hover {
+                    background-color: #ddd;
+                }
+
+                /* Create an active/current tablink class */
+                .tab button.active {
+                    background-color: #ccc;
+                }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .musterija .vozac .dispecer #musterijaPlus #pregledProfilaDiv #izmenaProfilaDiv {
+            display: none;
+        }
+       
+        
+    </style>
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let ulogovani = localStorage.getItem("ulogovani");
+            let text = "Dobrodošli " + ulogovani + "!";
+            let koje = "";
+            let trenutniKorisnik = "";
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/Find',
+                data: JSON.stringify(ulogovani),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        trenutniKorisnik = data;
+                        switch (data.Uloga) {
+                            case 0:
+                                koje = "musterija";
+                                $(".musterija").css("display", "inline");
+                                $("#musterijaPlus").css("display", "inline");
+                                $(".dispecer").css("display", "none");
+                                $(".vozac").css("display", "none");
+                                break;
+                            case 1:
+                                koje = "dispecer";
+                                $(".musterija").css("display", "none");
+                                $("#musterijaPlus").css("display", "none");
+                                $(".dispecer").css("display", "inline");
+                                $(".vozac").css("display", "none");
+                                break;
+                            case 2:
+                                koje = "vozac";
+                                $(".dispecer").css("display", "none");
+                                $("#musterijaPlus").css("display", "none");
+                                $(".musterija").css("display", "none");
+                                $(".vozac").css("display", "inline");
+                                break;
+
+                        }
+                        $("#pregledProfilaDiv").css("display", "none");
+                        $("#izmenaProfilaDiv").css("display", "none");
+                    }
+                    
+                },
+                error: function (errorData) {
+
+                }
+
+
+            })
+
+            $("#pregledProfila").click(function () {
+                $(".musterija").css("display", "none");
+                $(".dispecer").css("display", "none");
+                $(".vozac").css("display", "none");
+                
+                $("#pregledProfilaDiv").css("display", "inline");
+                $("#izmenaProfilaDiv").css("display", "none");
+
+                $("#korisnickoIme").text(trenutniKorisnik.KorisnickoIme);
+                $("#lozinka").text(trenutniKorisnik.Lozinka);
+                $("#ime").text(trenutniKorisnik.Ime);
+                $("#prezime").text(trenutniKorisnik.Prezime);
+                if (trenutniKorisnik.Pol == 0) {
+                    let musko = "<i class=\"fa fa-mars w3-xlarge\"></i>";
+                    $("#pol").html(musko);
+                } else {
+                    let zensko = "<i class=\"fa fa-venus w3-xlarge\"></i>";
+                    $("#pol").html(zensko);
+                }
+                $("#jmbg").html(trenutniKorisnik.JMBG);
+                $("#kontakt").html(trenutniKorisnik.Kontakt);
+                $("#email").html(trenutniKorisnik.Email);
+
+            });
+
+            $("#izmenaProfila").click(function () {
+                 $(".musterija").css("display", "none");
+                 $(".dispecer").css("display", "none");
+                 $(".vozac").css("display", "none");
+                  
+                $("#izmenaProfilaDiv").css("display", "inline");
+                $("#pregledProfilaDiv").css("display", "none");
+
+
+                let izmena = "<table border=1><tr><td><label for=\"korisnickoime\">Korisničko ime</label></td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" ";
+                izmena += "value=\"" + trenutniKorisnik.KorisnickoIme + "\" required/></td></tr><tr><td><label for=\"lozinka\">Lozinka</label></td><td><input type=\"password\" name=\"Lozinka\" id=\"lozinka\"";
+                izmena += "value=\"" + trenutniKorisnik.Lozinka + "\"required /></td ></tr > <tr><td><label>Ime</label></td><td><input type=\"text\" name=\"Ime\" id=\"ime1\"";
+                izmena += "value=\"" + trenutniKorisnik.Ime + "\"required /></td></tr><tr><td><label >Prezime</label></td><td><input type=\"text\" name=\"Prezime\" id=\"prezime1\" ";
+                izmena += "value=\"" + trenutniKorisnik.Prezime + "\"required /></td></tr><tr><td><label for=\"pol\">Pol</label></td><td><select name=\"Pol\" id=\"pol\"><option>Muški</option><option>Ženski</option></select></td></tr><tr><td><label >JMBG</label></td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" ";
+                izmena += "value=\"" + trenutniKorisnik.JMBG + "\"required /></td></tr><tr><td><label >Kontakt</label></td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" minlength=\"6\"";
+                izmena += "value=\"" + trenutniKorisnik.Kontakt + "\"required /></td></tr><tr><td><label >Email</label></td><td><input type=\"email\" name=\"Email\" id=\"email1\" ";
+                izmena += "value=\"" + trenutniKorisnik.Email + "\"required /></td></tr><tr><td colspan=\"2\"><label id=\"izmenibutton\" for=\"izmeni\"><button id=\"izmeni\" type=\"button\">Izmeni</button></label></td></tr></table>";
+                
+                $("#izmenaProfilaDiv").html(izmena);
+
+            });
+
+            $("#izmeni").click(function () {
+                let korisnik = {
+                    KorisnickoIme: `${$('#korisnickoime').val()}`,
+                    Lozinka: `${$('#lozinka').val()}`,
+                    Ime: `${$('#ime1').val()}`,
+                    Prezime: `${$('#prezime1').val()}`,
+                    Pol: `${$('#pol').val()}`,
+                    JMBG: `${$('#jmbg1').val()}`,
+                    Kontakt: `${$('#kontakt1').val()}`,
+                    Email: `${$('#email1').val()}`,
+
+
+
+
+
+                };
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Izmeni',
+                    data: JSON.stringify(korisnik),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesna izmena");
+                            $(location).attr('href', 'Korisnik.html');
+                        }
+                        else {
+                            alert("Korisnicko ime je zauzeto!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+
+
+
+            });
+
+            $("#odjava").click(function () {
+                localStorage.removeItem("ulogovani");
+                let koje = "";
+                let trenutniKorisnik = "";
+                $(location).attr('href', 'Index.html');
+            });
+
+            $("#home").click(function () {
+                switch (koje) {
+                    case "musterija":
+                        
+                        $(".musterija").css("display", "inline");
+                        $(".dispecer").css("display", "none");
+                        $(".vozac").css("display", "none");
+                        break;
+                    case "dispecer":
+                        
+                        $(".musterija").css("display", "none");
+                        $(".dispecer").css("display", "none");
+                        $(".vozac").css("display", "inline");
+                        break;
+                    case "vozac":
+                        
+                        $(".dispecer").css("display", "none");
+                        $(".musterija").css("display", "none");
+                        $(".vozac").css("display", "inline");
+                        break;
+
+                }
+                $("#pregledProfilaDiv").css("display", "none");
+                $("#izmenaProfilaDiv").css("display", "none");
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="w3-top">
+        <div class="w3-bar " style=" background-color:#f176ad">
+            <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="60" width="60" />
+            <a href="#" id="home" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " style=" background-color:#ee1790"><i class="fa fa-home"></i></a>
+            <div class="w3-dropdown-hover w3-hide-small w3-large w3-left">
+                <button class="w3-button w3-padding-large" title="Account"><i class="fa fa-user"></i></button>
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+                    <a href="#" id="pregledProfila" class="w3-bar-item w3-button">Pregled profila</a>
+                    <a href="#" id="izmenaProfila" class="w3-bar-item w3-button">Izmeni profil</a>
+                    <a href="#" id="odjava" class="w3-bar-item w3-button">Odjavi se</a>
+
+                </div>
+            </div>
+            <a href="#" id="musterijaPlus" class="w3-bar-item w3-button w3-padding-large w3-large w3-left" title="Nova vožnja"><i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+
+    <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
+
+        <div id="pregledProfilaDiv">
+
+            <h5 id="korisnickoIme" class="fa fa-user-circle w3-xxlarge"></h5>
+            <br />
+            <p id="lozinka" class="fa fa-user-lock w3-xlarge"></p><br />
+            <p id="ime" class="fa fa-genderless w3-xlarge"></p><br />
+            <p id="prezime" class="fa fa-genderless w3-xlarge"></p><br />
+            <p id="pol"></p>
+            <p id="jmbg" class="fa fa-birthday-cake w3-xlarge"></p><br />
+            <p id="kontakt" class="fa fa-phone w3-xlarge"></p><br />
+            <p id="email" class="fa fa-at w3-xlarge"></p><br />
+            
+
+
+        </div>
+
+        <div id="izmenaProfilaDiv">
+            
+        </div>
+
+        <div class="musterija">
+            <table id="musterijaVoznje">
+                <tr>
+                    <td colspan="10">
+                        Moje voznje
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Datum i vreme
+                    </td>
+                    <td>
+                        Početna lokacija
+                    </td>
+                    <td>
+                        Tip automobila
+                    </td>
+                    <td>
+                        Mušterija
+                    </td>
+                    <td>
+                        Odredište
+                    </td>
+                    <td>
+                        Dispečer
+                    </td>
+                    <td>
+                        Vozač
+                    </td>
+                    <td>
+                        Iznos
+                    </td>
+                    <td>
+                        Komentar
+                    </td>
+                    <td>
+                        Status
+                    </td>
+                </tr>
+                <tr></tr>
+            </table>
+        </div>
+        <div class="dispecer">
+            <p>tu je dispecer</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -23,7 +23,7 @@
             overflow: hidden;
             border: 1px solid #ccc;
             background-color: #ee1790;
-            width:auto
+            width: auto
         }
 
             /* Style the buttons inside the tab */
@@ -55,8 +55,17 @@
             border: 1px solid #ccc;
             border-top: none;
         }
-    
     </style>
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let ulogovani = localStorage.getItem("ulogovani");
+            let text = "Dobrodošli " + ulogovani + "!";
+
+            alert(text);
+
+        });
+    </script>
 </head>
 <body>
     <div class="w3-top">
@@ -78,10 +87,11 @@
         </div>
     </div>
 
+    
 
     <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
         <div class="w3-row">
-
+            
             <!-- Right Column -->
             <div class=" w3-left ">
                 <div class="tab">
@@ -93,13 +103,13 @@
                 <div>
                     <form accept-charset="UTF-8">
                         <table>
-                           
+
                             <tr>
                                 <td>Filtriraj</td>
                                 <td>
                                     <label for="status">Status</label>
                                 </td>
-                               
+
                             </tr>
                             <tr>
                                 <td>
@@ -232,7 +242,7 @@
 
 
 
-                
+
             </div>
         </div>
     </div>

@@ -22,17 +22,6 @@
     <script type="text/javascript">
         $(document).ready(function() {
             
-            $("#load-products").click(function () {
-                $.get("/api/Registration", function (data, status) {
-                    let tableOfProducts = "<table border='1'>";
-                    for (product in data) {
-                        tableOfProducts += `<tr><td>${data[product].Id}</td><td>${data[product].Ime}</td></tr>`;
-                    }
-                    tableOfProducts += "</table>";
-                    $("#registrovan").html(tableOfProducts);
-                });
-            });
-
             $("#LogIn").click(function () {
 
                 let korisnik = {
@@ -50,8 +39,8 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                           // alert("Registrovani ste");
-                            $(location).attr('href', 'User.html');
+                            localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                            $(location).attr('href', 'Korisnik.html');
                         }
                         else {
                             alert("Korisnicko ime ili lozinka je pogresna!");
@@ -150,8 +139,7 @@
 
     <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
         <div class="w3-row">
-            <button id="load-products">Load products</button>
-            <div id="registrovan"></div>
+            
             <!-- Right Column -->
             <div class="w3-col m2 w3-right ">
                
