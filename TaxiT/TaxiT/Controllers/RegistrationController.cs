@@ -43,7 +43,7 @@ namespace TaxiT.Controllers
             }
             if (!postoji)
             {
-                k.Id = Korisnici.korisnici.Count + 1;
+                k.Id = Korisnici.korisnici.Count;
                 k.Uloga = Enums.Uloga.Mušterija;
                 Korisnici.korisnici.Add(k.Id, k);
                 

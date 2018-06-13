@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -25,36 +26,85 @@ namespace TaxiT.Controllers
         // POST: api/Izmeni
         public bool Post([FromBody]Korisnik k)
         {
-
-            bool postoji = false;
-            if (Korisnici.korisnici == null)
+            if (k.Uloga == Enums.Uloga.Mušterija)
             {
-                Korisnici.korisnici = new Dictionary<int, Korisnik>();
-            }
-            foreach (Korisnik korisnik in Korisnici.korisnici.Values)
-            {
-                if (k.KorisnickoIme == korisnik.KorisnickoIme)
+                bool postoji = false;
+                if (Korisnici.korisnici == null)
                 {
-                    postoji = true;
-                    break;
+                    Korisnici.korisnici = new Dictionary<int, Korisnik>();
+                }
+                foreach (Korisnik korisnik in Korisnici.korisnici.Values)
+                {
+                    if (k.KorisnickoIme == korisnik.KorisnickoIme && k.Id != korisnik.Id)
+                    {
+                        postoji = true;
+                        break;
+                    }
+                }
+                if (!postoji)
+                {
+                    Korisnici.korisnici[k.Id] = k;
+                    AddToFile(k);
+
+
+                    // AddToFile(k);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }else if(k.Uloga == Enums.Uloga.Dispečer)
+            {
+                bool postoji = false;
+                if (Dispeceri.dispeceri == null)
+                {
+                    Dispeceri.dispeceri = new Dictionary<int, Dispecer>();
+                }
+                foreach (Dispecer dispecer in Dispeceri.dispeceri.Values)
+                {
+                    if (k.KorisnickoIme == dispecer.KorisnickoIme && k.Id != dispecer.Id)
+                    {
+                        postoji = true;
+                        break;
+                    }
+                }
+                if (!postoji)
+                {
+                    Dispecer d = new Dispecer(k.Id,k.KorisnickoIme,k.Lozinka,k.Ime,k.Prezime,k.Pol,k.JMBG,k.Kontakt,k.Email,k.Uloga);
+                    
+                    Dispeceri.dispeceri[k.Id] = d;
+                    AddToFile(k);
+                    
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
-            if (!postoji)
-            {
-                k.Id = Korisnici.korisnici.Count + 1;
-                k.Uloga = Enums.Uloga.Mušterija;
-                Korisnici.korisnici.Add(k.Id, k);
-
-               // AddToFile(k);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
 
 
         }
+
+        [NonAction]
+        public void AddToFile(Korisnik k)
+        {
+            if (k.Uloga == Enums.Uloga.Mušterija)
+            {
+                var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/korisnici.txt");
+                file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
+                File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/korisnici.txt", file);
+            }
+            else if (k.Uloga == Enums.Uloga.Dispečer)
+            {
+                var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/dispeceri.txt");
+                file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
+                File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/dispeceri.txt", file);
+            }
+        }
+
 
         // PUT: api/Izmeni/5
         public void Put(int id, [FromBody]string value)

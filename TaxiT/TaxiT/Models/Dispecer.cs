@@ -22,6 +22,8 @@ namespace TaxiT.Models
             Kontakt = kontakt;
             Email = e;
             Uloga = u;
+            Voznje = new List<Voznja>();
         }
+        
     }
 }

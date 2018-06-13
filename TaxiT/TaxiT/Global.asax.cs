@@ -21,10 +21,10 @@ namespace TaxiT
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             Dispeceri dispeceri = new Dispeceri("~/App_Data/dispeceri.txt");
-            
             Korisnici korisnici = new Korisnici("~/App_Data/korisnici.txt");
-
             Vozaci vozaci = new Vozaci("~/App_Data/vozaci.txt");
+            Voznje voznje = new Voznje("~/App_Data/voznje.txt");
+            Adrese adrese = new Adrese("~/App_Data/adrese.txt");
 
         }
     }

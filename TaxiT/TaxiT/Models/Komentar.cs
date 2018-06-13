@@ -11,9 +11,19 @@ namespace TaxiT.Models
         public int Id { get; set; }
         public string Opis { get; set; }
         public DateTime DatumObjave { get; set; }
-        public Korisnik Korisnik { get; set; }
-        public Voznja Voznja { get; set; }
-        public int Ocena { get; set; }//?? 1-5 a 0 ako nema ocene
+        public string Korisnik { get; set; }
+        public string Voznja { get; set; }
+        public int Ocena { get; set; }
 
+        public Komentar() { }
+        public Komentar(int id, string o, DateTime d, string k, string v, int oc)
+        {
+            Id = id;
+            Opis = o;
+            DatumObjave = d;
+            Korisnik = k;
+            Voznja = v;
+            Ocena = oc;
+        }
     }
 }

@@ -183,7 +183,9 @@
     <Compile Include="Controllers\IzmeniController.cs" />
     <Compile Include="Controllers\LogInController.cs" />
     <Compile Include="Controllers\RegistrationController.cs" />
+    <Compile Include="Controllers\RegistrationVozacController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\VoznjaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -199,12 +201,14 @@
     <Compile Include="Models\Vozac.cs" />
     <Compile Include="Models\Vozaci.cs" />
     <Compile Include="Models\Voznja.cs" />
+    <Compile Include="Models\Voznje.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\dispeceri.txt" />
     <Content Include="App_Data\korisnici.txt" />
     <Content Include="App_Data\vozaci.txt" />
+    <Content Include="App_Data\voznje.txt" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -214,6 +218,7 @@
     <Content Include="Index.html" />
     <Content Include="Korisnik.html" />
     <Content Include="logo.jpg" />
+    <Content Include="Page.html" />
     <Content Include="pozadina3.jpg" />
     <Content Include="pozadinaUser2.jpg" />
     <Content Include="Scripts\bootstrap.js" />
@@ -246,7 +251,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="User.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

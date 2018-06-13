@@ -25,10 +25,9 @@ namespace TaxiT.Controllers
                 {
                     if (k.KorisnickoIme == korisnik.KorisnickoIme && k.Lozinka == korisnik.Lozinka)
                     {
-                        // HttpContext.Current.Application["ulogovan"] = korisnik;
-                       
+                        
                         return true;
-                        break;
+                        
                     }
                 }
             }
@@ -40,9 +39,9 @@ namespace TaxiT.Controllers
                 {
                     if (k.KorisnickoIme == dispecer.KorisnickoIme && k.Lozinka == dispecer.Lozinka)
                     {
-                        // HttpContext.Current.Application["ulogovan"] = dispecer;
+                       
                         return true;
-                        break;
+                        
                     }
                 }
             }

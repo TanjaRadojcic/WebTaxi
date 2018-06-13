@@ -1,2 +1,2 @@
-﻿1;eli;1994;Elena;Kevac;Ženski;1005994805002;065123456789;elenakevac@gmail.com;Mušterija
-2;loknicaa;1996;Tanja;Radojcic;Ženski;2904996805003;0628880004;tanjara96@gmail.com;Mušterija
+﻿0;mile;maza; maza; keric;Ženski;1111111111111; 11111111;maza@gmail.com;Mušterija
+1;adminko;adminko;aaaa;aaaaa;Muški;1111111111111;11111111;tanja@gmail.com;Mušterija

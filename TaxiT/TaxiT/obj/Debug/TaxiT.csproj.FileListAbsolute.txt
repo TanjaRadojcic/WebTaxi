@@ -90,7 +90,7 @@ D:\VebProjekat\WebTaxi\TaxiT\TaxiT\bin\Microsoft.AI.DependencyCollector.xml
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\bin\Microsoft.AI.ServerTelemetryChannel.xml
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\bin\Microsoft.AI.WindowsServer.xml
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\bin\Microsoft.AI.Web.xml
-D:\VebProjekat\WebTaxi\TaxiT\TaxiT\obj\Debug\TaxiT.csprojResolveAssemblyReference.cache
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\obj\Debug\TaxiT.csproj.CoreCompileInputs.cache
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\obj\Debug\TaxiT.dll
 D:\VebProjekat\WebTaxi\TaxiT\TaxiT\obj\Debug\TaxiT.pdb
+D:\VebProjekat\WebTaxi\TaxiT\TaxiT\obj\Debug\TaxiT.csprojResolveAssemblyReference.cache
