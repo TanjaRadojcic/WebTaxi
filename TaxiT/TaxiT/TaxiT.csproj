@@ -178,26 +178,28 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\DispecerController.cs" />
     <Compile Include="Controllers\FindController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\IzmeniController.cs" />
+    <Compile Include="Controllers\KorisnikController.cs" />
     <Compile Include="Controllers\LogInController.cs" />
-    <Compile Include="Controllers\RegistrationController.cs" />
-    <Compile Include="Controllers\RegistrationVozacController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\VozacController.cs" />
     <Compile Include="Controllers\VoznjaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Adresa.cs" />
+    <Compile Include="Models\Adrese.cs" />
     <Compile Include="Models\Automobil.cs" />
+    <Compile Include="Models\Automobili.cs" />
     <Compile Include="Models\Dispecer.cs" />
     <Compile Include="Models\Dispeceri.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Komentar.cs" />
+    <Compile Include="Models\Komentari.cs" />
     <Compile Include="Models\Korisnici.cs" />
     <Compile Include="Models\Korisnik.cs" />
     <Compile Include="Models\Lokacija.cs" />
+    <Compile Include="Models\Lokacije.cs" />
     <Compile Include="Models\Vozac.cs" />
     <Compile Include="Models\Vozaci.cs" />
     <Compile Include="Models\Voznja.cs" />
@@ -205,8 +207,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\adrese.txt" />
+    <Content Include="App_Data\automobili.txt" />
     <Content Include="App_Data\dispeceri.txt" />
+    <Content Include="App_Data\komentari.txt" />
     <Content Include="App_Data\korisnici.txt" />
+    <Content Include="App_Data\lokacije.txt" />
     <Content Include="App_Data\vozaci.txt" />
     <Content Include="App_Data\voznje.txt" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -216,6 +222,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
+    <Content Include="Korisnik.css" />
     <Content Include="Korisnik.html" />
     <Content Include="logo.jpg" />
     <Content Include="Page.html" />

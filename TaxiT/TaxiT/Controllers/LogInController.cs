@@ -14,7 +14,7 @@ namespace TaxiT.Controllers
         public bool Post([FromBody]Korisnik k)
         {
             
-            if(Korisnici.korisnici == null && Dispeceri.dispeceri == null )
+            if(Korisnici.korisnici == null && Dispeceri.dispeceri == null && Vozaci.vozaci == null )
             {
                 return false;
             }
@@ -45,10 +45,23 @@ namespace TaxiT.Controllers
                     }
                 }
             }
+            if (Vozaci.vozaci != null)
+            {
 
-            
-            
-                return false;
+                foreach (Vozac vozac in Vozaci.vozaci.Values)
+                {
+                    if (k.KorisnickoIme == vozac.KorisnickoIme && k.Lozinka == vozac.Lozinka)
+                    {
+
+                        return true;
+
+                    }
+                }
+            }
+
+
+
+            return false;
             
 
         }

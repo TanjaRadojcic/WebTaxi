@@ -1,2 +1,2 @@
-﻿0;mile;maza; maza; keric;Ženski;1111111111111; 11111111;maza@gmail.com;Mušterija
-1;adminko;adminko;aaaa;aaaaa;Muški;1111111111111;11111111;tanja@gmail.com;Mušterija
+0;adminko;adminko; aaaa; aaaaa;Muški;2222222222222; 11111111;tanja@gmail.com;Mušterija
+1;mali;0211;Jovica;Cubric;Muški;0211995800123;0631231212;jc@gmail.com;Mušterija

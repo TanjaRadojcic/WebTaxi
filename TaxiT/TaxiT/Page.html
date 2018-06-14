@@ -1,7 +1,522 @@
-﻿<tr><td>Godište</td><td><input type="number" name="Godiste" id="godisteV" required /></td></tr>
-<tr><td>Registracija</td><td><input type="text" name="Registracija" id="regV" required /></td></tr>
-<tr><td>Broj Vozila</td><td><input type="number" name="BrojVozila" id="brV" required /></td></tr>
-<tr><td>Tip</td><td><select name="TipAutomobila" id="tipAutoV"><option selected>Putnički</option><option>Kombi</option></select></td></tr>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pink Taxi</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-pink.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html, body, h1, h2, h3, h4, h5 {
+            font-family: "Open Sans", sans-serif
+        }
+
+        body {
+            background-image: url("pozadinaUser2.jpg");
+            background-repeat: no-repeat;
+            background-position: right top;
+        }
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #ee1790;
+            width: auto
+        }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+                /* Change background color of buttons on hover */
+                .tab button:hover {
+                    background-color: #ddd;
+                }
+
+                /* Create an active/current tablink class */
+                .tab button.active {
+                    background-color: #ccc;
+                }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .musterija .vozac .dispecer #musterijaPlus #pregledProfilaDiv #izmenaProfilaDiv #dodajVoznjuDiv #dispecerPlus {
+            display: none;
+        }
+    </style>
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let ulogovani = localStorage.getItem("ulogovani");
+            let text = "Dobrodošli " + ulogovani + "!";
+            let koje = "";
+            let trenutniKorisnik = "";
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/Find',
+                data: JSON.stringify(ulogovani),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        trenutniKorisnik = data;
+                        switch (data.Uloga) {
+                            case 0:
+                                koje = "musterija";
+                                $(".musterija").css("display", "inline");
+                                $("#musterijaPlus").css("display", "inline");
+                                $(".dispecer").css("display", "none");
+                                $("#dispecerPlus").css("display", "none");
+                                $(".vozac").css("display", "none");
+                                break;
+                            case 1:
+                                koje = "dispecer";
+                                $(".musterija").css("display", "none");
+                                $("#musterijaPlus").css("display", "none");
+                                $(".dispecer").css("display", "inline");
+                                $("#dispecerPlus").css("display", "inline");
+                                $(".vozac").css("display", "none");
+                                break;
+                            case 2:
+                                koje = "vozac";
+                                $(".dispecer").css("display", "none");
+                                $("#dispecerPlus").css("display", "none");
+                                $("#musterijaPlus").css("display", "none");
+                                $(".musterija").css("display", "none");
+                                $(".vozac").css("display", "inline");
+                                break;
+
+                        }
+                        $("#pregledProfilaDiv").css("display", "none");
+                        $("#izmenaProfilaDiv").css("display", "none");
+                        $("#dodajVoznjuDiv").css("display", "none");
+                        $("#dodajVozacaDiv").css("display", "none");
+                    }
+
+                },
+                error: function (errorData) {
+
+                }
+
+
+            })
+
+            $("#pregledProfila").click(function () {
+                $(".musterija").css("display", "none");
+                $(".dispecer").css("display", "none");
+                $(".vozac").css("display", "none");
+
+                $("#pregledProfilaDiv").css("display", "inline");
+                $("#izmenaProfilaDiv").css("display", "none");
+                $("#dodajVoznjuDiv").css("display", "none");
+                $("#dodajVozacaDiv").css("display", "none");
+
+                $("#korisnickoIme").text(trenutniKorisnik.KorisnickoIme);
+                $("#lozinka").text(trenutniKorisnik.Lozinka);
+                $("#ime").text(trenutniKorisnik.Ime);
+                $("#prezime").text(trenutniKorisnik.Prezime);
+                if (trenutniKorisnik.Pol == 0) {
+                    let musko = "<i class=\"fa fa-mars w3-xlarge\"></i>";
+                    $("#pol").html(musko);
+                } else {
+                    let zensko = "<i class=\"fa fa-venus w3-xlarge\"></i>";
+                    $("#pol").html(zensko);
+                }
+                $("#jmbg").html(trenutniKorisnik.JMBG);
+                $("#kontakt").html(trenutniKorisnik.Kontakt);
+                $("#email").html(trenutniKorisnik.Email);
+                if (trenutniKorisnik.Uloga == 2) {
+
+                }
+
+            });
+
+            $("#izmenaProfila").click(function () {
+                $(".musterija").css("display", "none");
+                $(".dispecer").css("display", "none");
+                $(".vozac").css("display", "none");
+
+                $("#izmenaProfilaDiv").css("display", "inline");
+                $("#pregledProfilaDiv").css("display", "none");
+                $("#dodajVoznjuDiv").css("display", "none");
+                $("#dodajVozacaDiv").css("display", "none");
 
 
 
+                let izmena = "<table border=1>";
+                izmena += " <tr><td>Korisničko ime</td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" value=\"" + trenutniKorisnik.KorisnickoIme + "\" required /></td></tr>";
+                izmena += " <tr><td>Lozinka</td><td><input type=\"text\" name=\"Lozinka\" id=\"lozinka1\" value=\"" + trenutniKorisnik.Lozinka + "\" required /></td></tr>";
+                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\" " + trenutniKorisnik.Ime + "\" required /></td></tr>";
+                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\" " + trenutniKorisnik.Prezime + "\" id=\"prezime1\" required /></td></tr>";
+
+                izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
+                izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" minlength=\"6\" value=\" " + trenutniKorisnik.Kontakt + "\" required /></td></tr>";
+                izmena += " <tr><td>Email</td><td><input type=\"email\" name=\"Email\" id=\"email1\" value=\" " + trenutniKorisnik.Email + "\" required /></td></tr></table>";
+
+                $("#tabelaIzmena").html(izmena);
+
+            });
+
+            $("#izmeniK").click(function () {
+                let korisnik = {
+                    Id: trenutniKorisnik.Id,
+                    KorisnickoIme: `${$('#korisnickoime').val()}`,
+                    Lozinka: `${$('#lozinka1').val()}`,
+                    Ime: `${$('#ime1').val()}`,
+                    Prezime: `${$('#prezime1').val()}`,
+                    Pol: trenutniKorisnik.Pol,
+                    JMBG: `${$('#jmbg1').val()}`,
+                    Kontakt: `${$('#kontakt1').val()}`,
+                    Email: `${$('#email1').val()}`,
+                    Voznje: trenutniKorisnik.Voznje,
+                    Uloga: trenutniKorisnik.Uloga,
+
+
+
+
+
+                };
+
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Korisnik/' + trenutniKorisnik.Id,
+                    data: JSON.stringify(korisnik),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesna izmena");
+                            localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                            $(location).attr('href', 'Korisnik.html');
+                        }
+                        else {
+                            alert("Korisnicko ime je zauzeto!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+
+
+
+            });
+
+            $("#musterijaPlus").click(function () {
+                $(".musterija").css("display", "none");
+                $(".dispecer").css("display", "none");
+                $(".vozac").css("display", "none");
+
+                $("#izmenaProfilaDiv").css("display", "none");
+                $("#pregledProfilaDiv").css("display", "none");
+                $("#dodajVoznjuDiv").css("display", "inline");
+                $("#dodajVozacaDiv").css("display", "none");
+
+            });
+
+            $("#dispecerPlus").click(function () {
+                $(".musterija").css("display", "none");
+                $(".dispecer").css("display", "none");
+                $(".vozac").css("display", "none");
+
+                $("#izmenaProfilaDiv").css("display", "none");
+                $("#pregledProfilaDiv").css("display", "none");
+                $("#dodajVoznjuDiv").css("display", "none");
+                $("#dodajVozacaDiv").css("display", "inline");
+
+            });
+
+            $("#dodaj").click(function () {
+                let Voznja = {
+                    X: `${$('#x').val()}`,
+                    Y: `${$('#y').val()}`,
+                    Ulica: `${$('#ulica').val()}`,
+                    Broj: `${$('#broj').val()}`,
+                    Mesto: `${$('#mesto').val()}`,
+                    Zip: `${$('#zip').val()}`,
+                    Auto: `${$('#auto').val()}`,
+
+
+                };
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Voznja',
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Dodata voznja");
+                            localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                            $(location).attr('href', 'Korisnik.html');
+                        }
+                        else {
+                            alert("Korisnicko ime je zauzeto!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+
+
+
+            });
+
+            $("#registracijaV").click(function () {
+                let adresa = {
+                    Ulica: `${$('#ulicaV').val()}`,
+                    Broj: `${$('#brojV').val()}`,
+                    Mesto: `${$('#mestoV').val()}`,
+                    Zip: `${$('#zipV').val()}`,
+                };
+                let lokacija = {
+                    X: `${$('#xV').val()}`,
+                    Y: `${$('#yV').val()}`,
+                    Adresa: adresa,
+                };
+                let automobil = {
+                    Godiste: `${$('#godisteV').val()}`,
+                    Registracija: `${$('#regV').val()}`,
+                    BrojVozila: `${$('#brV').val()}`,
+                    TipAutomobila: `${$('#tipAutoV').val()}`,
+                };
+                let vozac = {
+                    KorisnickoIme: `${$('#korisnickoimeV').val()}`,
+                    Lozinka: `${$('#lozinkaV').val()}`,
+                    Ime: `${$('#imeV').val()}`,
+                    Prezime: `${$('#prezimeV').val()}`,
+                    Pol: `${$('#polV').val()}`,
+                    JMBG: `${$('#jmbgV').val()}`,
+                    Kontakt: `${$('#kontaktV').val()}`,
+                    Email: `${$('#emailV').val()}`,
+                    Lokacija: lokacija,
+                    Automobil: automobil,
+
+                };
+
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Vozac',
+                    data: JSON.stringify(vozac),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Registrovali ste vozaca");
+                            $(location).attr('href', 'Korisnik.html');
+                        }
+                        else {
+                            alert("Korisnicko ime je zauzeto!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+            });
+
+            $("#odjava").click(function () {
+                localStorage.removeItem("ulogovani");
+                let koje = "";
+                let trenutniKorisnik = "";
+                $(location).attr('href', 'Index.html');
+            });
+
+            $("#home").click(function () {
+                switch (koje) {
+                    case "musterija":
+
+                        $(".musterija").css("display", "inline");
+                        $(".dispecer").css("display", "none");
+                        $(".vozac").css("display", "none");
+                        break;
+                    case "dispecer":
+
+                        $(".musterija").css("display", "none");
+                        $(".dispecer").css("display", "inline");
+                        $(".vozac").css("display", "none");
+                        break;
+                    case "vozac":
+
+                        $(".dispecer").css("display", "none");
+                        $(".musterija").css("display", "none");
+                        $(".vozac").css("display", "inline");
+                        break;
+
+                }
+                $("#pregledProfilaDiv").css("display", "none");
+                $("#izmenaProfilaDiv").css("display", "none");
+                $("#dodajVoznjuDiv").css("display", "none");
+                $("#dodajVozacaDiv").css("display", "none");
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="w3-top">
+        <div class="w3-bar " style=" background-color:#f176ad">
+            <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="60" width="60" />
+            <a href="#" id="home" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " style=" background-color:#ee1790"><i class="fa fa-home"></i></a>
+            <div class="w3-dropdown-hover w3-hide-small w3-large w3-left">
+                <button class="w3-button w3-padding-large" title="Account"><i class="fa fa-user"></i></button>
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+                    <a href="#" id="pregledProfila" class="w3-bar-item w3-button">Pregled profila</a>
+                    <a href="#" id="izmenaProfila" class="w3-bar-item w3-button">Izmeni profil</a>
+                    <a href="#" id="odjava" class="w3-bar-item w3-button">Odjavi se</a>
+
+                </div>
+            </div>
+            <a href="#" id="dispecerPlus" class="w3-bar-item w3-button w3-padding-large w3-large w3-left" title="Dodaj Vozača"><i class="fa fa-plus"></i></a>
+
+            <a href="#" id="musterijaPlus" class="w3-bar-item w3-button w3-padding-large w3-large w3-left" title="Nova vožnja"><i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+
+    <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
+
+        <div id="pregledProfilaDiv">
+
+            <h5 id="korisnickoIme" class="fa fa-user-circle w3-xxlarge"></h5>
+            <br />
+            <p id="lozinka" class="fa fa-user-lock w3-xlarge"></p><br />
+            <p id="ime" class="fa fa-genderless w3-xlarge"></p><br />
+            <p id="prezime" class="fa fa-genderless w3-xlarge"></p><br />
+            <p id="pol"></p>
+            <p id="jmbg" class="fa fa-birthday-cake w3-xlarge"></p><br />
+            <p id="kontakt" class="fa fa-phone w3-xlarge"></p><br />
+            <p id="email" class="fa fa-at w3-xlarge"></p><br />
+
+
+
+        </div>
+
+        <div id="izmenaProfilaDiv">
+            <div id="tabelaIzmena">
+
+            </div>
+            <button id="izmeniK" type="button">Izmeni</button>
+            <button id="izmeniV" type="button">Izmeni</button>
+            <button id="izmeniD" type="button">Izmeni</button>
+        </div>
+
+        <!--nije gotovo-->
+        <div id="dodajVoznjuDiv">
+            <div id="tabelaDodajVoznju">
+                <table border="1">
+                    <tr><td>Vaša lokacija</td></tr>
+                    <tr><td>X</td><td><input type="number" name="X" id="x" required /></td></tr>
+                    <tr><td>Y</td><td><input type="number" name="Y" id="y" required /></td></tr>
+                    <tr><td>Adresa</td></tr>
+                    <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulica" required /></td></tr>
+                    <tr><td>Broj</td><td><input type="text" name="Broj" id="broj" required /></td></tr>
+                    <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mesto" required /></td></tr>
+                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zip" required /></td></tr>
+                    <tr><td>Tip Automobila</td><td><select name="Auto" id="auto"><option selected>Putnički</option><option>Kombi</option></select></td></tr>
+                </table>
+            </div>
+            <button id="dodaj" type="button">Dodaj</button>
+        </div>
+        <!--nije gotovo-->
+        <div class="musterija">
+            <table id="musterijaVoznje">
+                <tr>
+                    <td colspan="10">
+                        Moje voznje
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Datum i vreme
+                    </td>
+                    <td>
+                        Početna lokacija
+                    </td>
+                    <td>
+                        Tip automobila
+                    </td>
+                    <td>
+                        Mušterija
+                    </td>
+                    <td>
+                        Odredište
+                    </td>
+                    <td>
+                        Dispečer
+                    </td>
+                    <td>
+                        Vozač
+                    </td>
+                    <td>
+                        Iznos
+                    </td>
+                    <td>
+                        Komentar
+                    </td>
+                    <td>
+                        Status
+                    </td>
+                </tr>
+                <tr></tr>
+            </table>
+        </div>
+
+        <div id="dodajVozacaDiv">
+            <table border="1">
+                <tr><td colspan="2" align="center"> Registracija Vozača</td></tr>
+                <tr><td>Korisničko ime</td><td><input type="text" name="KorisnickoIme" id="korisnickoimeV" required /></td></tr>
+                <tr><td>Lozinka</td><td><input type="password" name="Lozinka" id="lozinkaV" required /></td></tr>
+                <tr><td>Ime</td><td> <input type="text" name="Ime" id="imeV" required /> </td> </tr>
+                <tr> <td>Prezime</td><td> <input type="text" name="Prezime" id="prezimeV" required /> </td></tr>
+                <tr><td> Pol </td><td><select name="Pol" id="polV"><option>Muški</option><option>Ženski</option></select></td></tr>
+                <tr> <td> JMBG</td> <td><input type="text" name="JMBG" id="jmbgV" pattern="[0-9]{13}" minlength="13" maxlength="13" required /></td></tr>
+                <tr><td> Kontakt</td> <td><input type="text" name="Kontakt" id="kontaktV" minlength="6" required /> </td> </tr>
+                <tr><td> Email </td> <td> <input type="email" name="Email" id="emailV" required /></td></tr>
+                <tr><td>Lokacija</td></tr>
+                <tr><td>X</td><td><input type="number" name="X" id="xV" required /></td></tr>
+                <tr><td>Y</td><td><input type="number" name="Y" id="yV" required /></td></tr>
+                <tr><td>Adresa</td></tr>
+                <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaV" required /></td></tr>
+                <tr><td>Broj</td><td><input type="text" name="Broj" id="brojV" required /></td></tr>
+                <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoV" required /></td></tr>
+                <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipV" required /></td></tr>
+                <tr><td>Automobil</td></tr>
+                <tr><td>Godište</td><td><input type="number" name="Godiste" id="godisteV" required /></td></tr>
+                <tr><td>Registracija</td><td><input type="text" name="Registracija" id="regV" required /></td></tr>
+                <tr><td>Broj Vozila</td><td><input type="number" name="BrojVozila" id="brV" required /></td></tr>
+                <tr><td>Tip</td><td><select name="TipAutomobila" id="tipAutoV"><option selected>Putnički</option><option>Kombi</option></select></td></tr>
+
+                <tr><td colspan="2"><button id="registracijaV" type="button">Registruj</button></td></tr>
+            </table>
+        </div>
+        <!--nije gotovo-->
+        <div class="dispecer">
+            <p>tu je dispecer</p>
+        </div>
+    </div>
+
+</body>
+</html>
