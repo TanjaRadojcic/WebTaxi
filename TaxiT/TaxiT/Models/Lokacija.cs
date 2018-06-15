@@ -12,6 +12,7 @@ namespace TaxiT.Models
         public double Y { get; set; }
         public Adresa Adresa { get; set; }
 
+        public Lokacija() { Adresa = new Adresa(); }
         public Lokacija(int id, double x, double y, Adresa a)
         {
             Id = id;

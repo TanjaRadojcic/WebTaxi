@@ -50,9 +50,9 @@ namespace TaxiT.Controllers
                 Vozaci.vozaci.Add(v.Id, v);
 
                 AddToFileVozac(v);
-                AddToFileAutomobil(v.Automobil);
-                AddToFileLokacija(v.Lokacija);
-                AddToFileAdresa(v.Lokacija.Adresa);
+               // AddToFileAutomobil(v.Automobil);
+               // AddToFileLokacija(v.Lokacija);
+               // AddToFileAdresa(v.Lokacija.Adresa);
 
                 return true;
             }
@@ -116,13 +116,51 @@ namespace TaxiT.Controllers
 
         //izmena
         // PUT: api/Vozac/5
-        public void Put(int id, [FromBody]Vozac v)
+        public bool Put(int id, [FromBody]Vozac v)
         {
+            bool postoji = false;
+            if (Vozaci.vozaci == null)
+            {
+                Vozaci.vozaci = new Dictionary<int, Vozac>();
+            }
+            foreach (Vozac vozac in Vozaci.vozaci.Values)
+            {
+                if (v.KorisnickoIme == vozac.KorisnickoIme && id != vozac.Id)
+                {
+                    postoji = true;
+                    break;
+                }
+            }
+            if (!postoji)
+            {
+                Vozaci.vozaci[id] = v;
+                ChangeToFile(v);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // DELETE: api/Vozac/5
         public void Delete(int id)
         {
+        }
+
+        [NonAction]
+        public void ChangeToFile(Vozac v)
+        {
+
+            var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt");
+            file[v.Id] =v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
+                   + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
+                   + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";"
+                   + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet;
+
+            File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt", file);
+
         }
     }
 }

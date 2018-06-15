@@ -13,6 +13,7 @@ namespace TaxiT.Models
         public string Mesto { get; set; }
         public int Zip { get; set; }
 
+        public Adresa() { }
         public Adresa(int id, string u, string b, string m, int z)
         {
             Id = id;

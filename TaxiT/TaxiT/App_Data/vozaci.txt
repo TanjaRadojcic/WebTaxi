@@ -1,1 +1,1 @@
-﻿0;fandjo;fandjo;Djordje;Radojcic;Muški;2807965800123;0628880008;djordjer@gmail.com;Vozač;0;1;2;0;Vojvode Supljikca ;28;Novi Sad;21000;0;fandjo;2010;NS111AA;11;Putnički;False
+0;fandjo;fandjo;  Djordje;  Radojcic;Muški;2807965800123;  0628880008;djordjer@gmail.com;Vozač;0;1;2;0;Vojvode Supljikca ;28;Novi Sad;21000;0;;2010;NS111AA;11;Kombi;False
