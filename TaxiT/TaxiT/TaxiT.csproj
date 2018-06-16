@@ -180,10 +180,12 @@
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\DispecerController.cs" />
     <Compile Include="Controllers\FindController.cs" />
+    <Compile Include="Controllers\KomentarController.cs" />
     <Compile Include="Controllers\KorisnikController.cs" />
     <Compile Include="Controllers\LogInController.cs" />
     <Compile Include="Controllers\VozacController.cs" />
     <Compile Include="Controllers\VoznjaController.cs" />
+    <Compile Include="Controllers\VoznjeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -17,6 +17,7 @@ namespace TaxiT.Controllers
             return Voznje.voznje;
         }
 
+       
         // GET: api/Voznja/5
         public Voznja Get(int id)
         {
@@ -43,9 +44,31 @@ namespace TaxiT.Controllers
         }
 
         // PUT: api/Voznja/5
-        public void Put(int id, [FromBody]string value)
+        public bool Put(int id, [FromBody]Voznja voznja)
         {
+            voznja.Id = id;
+            voznja.Datum = Voznje.voznje[id].Datum;
+            voznja.Musterija = Voznje.voznje[id].Musterija;
+            voznja.PocetnaLokacija = Voznje.voznje[id].PocetnaLokacija;
+            voznja.Status = Voznje.voznje[id].Status;
+            if (voznja.Komentar == null)
+            {
+                voznja.Komentar = new Komentar();
+            }
+            if (voznja.Odrediste == null)
+            {
+                voznja.Odrediste = new Lokacija();
+            }
+
+            if (Voznje.voznje != null)
+            {
+                Voznje.voznje[id] = voznja;
+                ChangeToFile(voznja);
+                return true;
+            }
+            return false;
         }
+        
 
         // DELETE: api/Voznja/5
         public void Delete(int id)
