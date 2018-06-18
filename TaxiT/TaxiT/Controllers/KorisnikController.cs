@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Hosting;
 using System.Web.Http;
 using TaxiT.Models;
 
@@ -103,7 +104,8 @@ namespace TaxiT.Controllers
         [NonAction]
         public void AddToFile(Korisnik k)
         {
-            FileStream stream = new FileStream(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/korisnici.txt", FileMode.Append);
+            string path = HostingEnvironment.MapPath("~/App_Data/korisnici.txt");
+            FileStream stream = new FileStream(path, FileMode.Append);
             using (StreamWriter outputFile = new StreamWriter(stream))
             {
                 string korisnik = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
@@ -112,13 +114,16 @@ namespace TaxiT.Controllers
             stream.Close();
         }
 
+        
+
         [NonAction]
         public void ChangeToFile(Korisnik k)
         {
-
-            var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/korisnici.txt");
+            string path = HostingEnvironment.MapPath("~/App_Data/korisnici.txt");
+            
+            var file = File.ReadAllLines(path);
             file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
-            File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/korisnici.txt", file);
+            File.WriteAllLines(path, file);
 
         }
     }

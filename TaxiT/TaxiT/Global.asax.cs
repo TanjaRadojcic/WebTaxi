@@ -24,10 +24,7 @@ namespace TaxiT
             Korisnici korisnici = new Korisnici("~/App_Data/korisnici.txt");
             Vozaci vozaci = new Vozaci("~/App_Data/vozaci.txt");
             Voznje voznje = new Voznje("~/App_Data/voznje.txt");
-           // Adrese adrese = new Adrese("~/App_Data/adrese.txt");
-           // Automobili automobili = new Automobili("~/App_Data/automobili.txt");
-           // Komentari komentari = new Komentari("~/App_Data/komentari.txt");
-           // Lokacije lokacije = new Lokacije("~/App_Data/lokacije.txt");
+           
 
         }
     }

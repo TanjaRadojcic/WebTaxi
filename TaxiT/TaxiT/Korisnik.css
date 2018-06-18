@@ -34,7 +34,7 @@ body {
         }
 
         /* Create an active/current tablink class */
-        .tab button.active {
+        .tab .active {
             background-color: #ccc;
         }
 
@@ -50,6 +50,6 @@ body {
     display: none;
 }
 
-#pregledProfilaDivK #izmenaProfilaDivK #dodajVoznjuDivK #tabelaMojeVoznjeK #pregledProfilaDivD #izmenaProfilaDivD #dodajVoznjuDivD #izmenaVoznjeK #dodajKomentarK #prikaziKomentarK #dodajKomentarD #prikaziKomentarD #tabeleD {
+#pregledProfilaDivK #izmenaProfilaDivK #dodajVoznjuDivK #tabelaMojeVoznjeK #pregledProfilaDivD #izmenaProfilaDivD #dodajVoznjuDivD #izmenaVoznjeK #dodajKomentarK #prikaziKomentarK #dodajKomentarD #prikaziKomentarD #tabeleD #dodajKomentarV #prikaziKomentarV #tabeleV #uspesnaVoznjaV {
     display: none;
 }

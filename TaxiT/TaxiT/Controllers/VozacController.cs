@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Hosting;
 using System.Web.Http;
 using TaxiT.Models;
 
@@ -44,15 +45,13 @@ namespace TaxiT.Controllers
             {
                 v.Id = Vozaci.vozaci.Count;
                 v.Uloga = Enums.Uloga.Vozač;
-                v.Automobil.Id = Automobili.automobili.Count;
+                v.Automobil.Id = Vozaci.vozaci.Count;
                 v.Automobil.Vozac = v.KorisnickoIme;
-                v.Lokacija.Id = Lokacije.lokacije.Count;
+                v.Lokacija.Id = Vozaci.vozaci.Count;
                 Vozaci.vozaci.Add(v.Id, v);
 
                 AddToFileVozac(v);
-               // AddToFileAutomobil(v.Automobil);
-               // AddToFileLokacija(v.Lokacija);
-               // AddToFileAdresa(v.Lokacija.Adresa);
+              
 
                 return true;
             }
@@ -67,8 +66,9 @@ namespace TaxiT.Controllers
         [NonAction]
         public void AddToFileVozac(Vozac v)
         {
-            FileStream stream = new FileStream(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt", FileMode.Append);
-            using (StreamWriter outputFile = new StreamWriter(stream))
+            string path = HostingEnvironment.MapPath("~/App_Data/vozaci.txt");
+            FileStream stream = new FileStream(path, FileMode.Append);
+             using (StreamWriter outputFile = new StreamWriter(stream))
             {
                 string vozac = v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
                     + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
@@ -78,42 +78,7 @@ namespace TaxiT.Controllers
             }
             stream.Close();
         }
-
-        [NonAction]
-        public void AddToFileAutomobil(Automobil v)
-        {
-            FileStream stream = new FileStream(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/automobili.txt", FileMode.Append);
-            using (StreamWriter outputFile = new StreamWriter(stream))
-            {
-                string automobil = v.Id + ";" + v.Vozac + ";" + v.Godiste + ";" + v.Registracija + ";" + v.BrojVozila + ";" + v.TipAutomobila;
-                outputFile.WriteLine(automobil);
-            }
-            stream.Close();
-        }
-        [NonAction]
-        public void AddToFileLokacija(Lokacija v)
-        {
-            FileStream stream = new FileStream(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/lokacije.txt", FileMode.Append);
-            using (StreamWriter outputFile = new StreamWriter(stream))
-            {
-                string lokacija = v.Id + ";" + v.X + ";" + v.Y + ";" + v.Adresa.Id;
-                outputFile.WriteLine(lokacija);
-            }
-            stream.Close();
-        }
-
-        [NonAction]
-        public void AddToFileAdresa(Adresa v)
-        {
-            FileStream stream = new FileStream(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/adrese.txt", FileMode.Append);
-            using (StreamWriter outputFile = new StreamWriter(stream))
-            {
-                string adresa = v.Id + ";" + v.Ulica + ";" + v.Broj + ";" + v.Mesto + ";" + v.Zip;
-                outputFile.WriteLine(adresa);
-            }
-            stream.Close();
-        }
-
+        
         //izmena
         // PUT: api/Vozac/5
         public bool Put(int id, [FromBody]Vozac v)
@@ -152,14 +117,15 @@ namespace TaxiT.Controllers
         [NonAction]
         public void ChangeToFile(Vozac v)
         {
-
-            var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt");
+            string path = HostingEnvironment.MapPath("~/App_Data/vozaci.txt");
+            
+            var file = File.ReadAllLines(path);
             file[v.Id] =v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
                    + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
                    + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";"
                    + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet;
 
-            File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt", file);
+            File.WriteAllLines(path, file);
 
         }
     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Hosting;
 using System.Web.Http;
 using TaxiT.Models;
 
@@ -66,10 +67,11 @@ namespace TaxiT.Controllers
         [NonAction]
         public void ChangeToFile(Dispecer k)
         {
+            string path = HostingEnvironment.MapPath("~/App_Data/dispeceri.txt");
             
-                var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/dispeceri.txt");
+            var file = File.ReadAllLines(path);
                 file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
-                File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/dispeceri.txt", file);
+                File.WriteAllLines(path, file);
             
         }
     }

@@ -11,7 +11,7 @@ namespace TaxiT.Models
         public int Id { get; set; }
         public DateTime Datum { get; set; }
         public Lokacija PocetnaLokacija { get; set; }
-        public Auto TipAutomobila { get; set; }
+        public Auto TipAutomobila { get; set; }//
         public string Musterija { get; set; }
         public Lokacija Odrediste { get; set; }
         public string Dispecer { get; set; }

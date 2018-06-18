@@ -180,7 +180,6 @@
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\DispecerController.cs" />
     <Compile Include="Controllers\FindController.cs" />
-    <Compile Include="Controllers\KomentarController.cs" />
     <Compile Include="Controllers\KorisnikController.cs" />
     <Compile Include="Controllers\LogInController.cs" />
     <Compile Include="Controllers\VozacController.cs" />
@@ -190,18 +189,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Adresa.cs" />
-    <Compile Include="Models\Adrese.cs" />
     <Compile Include="Models\Automobil.cs" />
-    <Compile Include="Models\Automobili.cs" />
     <Compile Include="Models\Dispecer.cs" />
     <Compile Include="Models\Dispeceri.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Komentar.cs" />
-    <Compile Include="Models\Komentari.cs" />
     <Compile Include="Models\Korisnici.cs" />
     <Compile Include="Models\Korisnik.cs" />
     <Compile Include="Models\Lokacija.cs" />
-    <Compile Include="Models\Lokacije.cs" />
     <Compile Include="Models\Vozac.cs" />
     <Compile Include="Models\Vozaci.cs" />
     <Compile Include="Models\Voznja.cs" />
@@ -209,12 +204,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\adrese.txt" />
-    <Content Include="App_Data\automobili.txt" />
     <Content Include="App_Data\dispeceri.txt" />
-    <Content Include="App_Data\komentari.txt" />
     <Content Include="App_Data\korisnici.txt" />
-    <Content Include="App_Data\lokacije.txt" />
     <Content Include="App_Data\vozaci.txt" />
     <Content Include="App_Data\voznje.txt" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
