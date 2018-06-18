@@ -30,7 +30,7 @@ namespace TaxiT.Models
                 Lokacija l = new Lokacija(Int32.Parse(tokens[2]), double.Parse(tokens[3]), double.Parse(tokens[4]), a);
 
                 Adresa a2 = new Adresa(Int32.Parse(tokens[15]), tokens[16], tokens[17], tokens[18], Int32.Parse(tokens[19]));
-                Lokacija l2 = new Lokacija(Int32.Parse(tokens[12]), double.Parse(tokens[13]), double.Parse(tokens[14]), a);
+                Lokacija l2 = new Lokacija(Int32.Parse(tokens[12]), double.Parse(tokens[13]), double.Parse(tokens[14]), a2);
 
                 Komentar k = new Komentar(Int32.Parse(tokens[23]), tokens[24], DateTime.Parse(tokens[25]), tokens[26], tokens[27], Int32.Parse(tokens[28]));
 

@@ -33,9 +33,27 @@ namespace TaxiT.Controllers
         {
             if (Voznje.voznje[id].Status == Enums.StatusVoznje.Kreirana)
             {
-                Voznje.voznje[id].Status = Enums.StatusVoznje.Otkazana;
-                ChangeToFile(Voznje.voznje[id]);
-                return true;
+                if (value == "otkazi")
+                {
+                    Voznje.voznje[id].Status = Enums.StatusVoznje.Otkazana;
+                    ChangeToFile(Voznje.voznje[id]);
+                    return true;
+                }
+                else
+                {
+                    Voznje.voznje[id].Status = Enums.StatusVoznje.Obrađena;
+                    Voznje.voznje[id].Vozac = value;
+                    foreach (var v in Vozaci.vozaci.Values)
+                    {
+                        if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                        {
+                            v.Zauzet = true;
+                            ChangeToFileVozac(v);
+                        }
+                    }
+                    ChangeToFile(Voznje.voznje[id]);
+                    return true;
+                }
             }
             return false;
         }
@@ -43,6 +61,19 @@ namespace TaxiT.Controllers
         // DELETE: api/Voznje/5
         public void Delete(int id)
         {
+        }
+        [NonAction]
+        public void ChangeToFileVozac(Vozac v)
+        {
+
+            var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt");
+            file[v.Id] = v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
+                   + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
+                   + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";"
+                   + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet;
+
+            File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt", file);
+
         }
 
         [NonAction]

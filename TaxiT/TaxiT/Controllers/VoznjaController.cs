@@ -32,10 +32,28 @@ namespace TaxiT.Controllers
                 Voznje.voznje = new Dictionary<int, Voznja>();
             }
             voznja.Id = Voznje.voznje.Count;
-            voznja.Datum = DateTime.Now;
+            voznja.Datum = DateTime.Now.Date + DateTime.Now.TimeOfDay;
             voznja.Komentar = new Komentar();
             voznja.Odrediste = new Lokacija();
-
+            if(voznja.Musterija != null)
+            {
+                voznja.Status = Enums.StatusVoznje.Kreirana;
+            }
+            if(voznja.Dispecer != null)
+            {
+                voznja.Status = Enums.StatusVoznje.Formirana;
+            }
+            if(voznja.Vozac!= null)
+            {
+                foreach(var v in Vozaci.vozaci.Values)
+                {
+                    if(v.KorisnickoIme == voznja.Vozac)
+                    {
+                        v.Zauzet = true;
+                        ChangeToFileVozac(v);
+                    }
+                }
+            }
             Voznje.voznje.Add(voznja.Id, voznja);
             
             AddToFile(voznja);
@@ -49,7 +67,10 @@ namespace TaxiT.Controllers
             voznja.Id = id;
             voznja.Datum = Voznje.voznje[id].Datum;
             voznja.Musterija = Voznje.voznje[id].Musterija;
-            voznja.PocetnaLokacija = Voznje.voznje[id].PocetnaLokacija;
+            if (voznja.PocetnaLokacija == null)
+            {
+                voznja.PocetnaLokacija = Voznje.voznje[id].PocetnaLokacija;
+            }
             voznja.Status = Voznje.voznje[id].Status;
             if (voznja.Komentar == null)
             {
@@ -58,6 +79,17 @@ namespace TaxiT.Controllers
             if (voznja.Odrediste == null)
             {
                 voznja.Odrediste = new Lokacija();
+            }
+            if(voznja.Vozac != null)
+            {
+                foreach (var v in Vozaci.vozaci.Values)
+                {
+                    if (v.KorisnickoIme == voznja.Vozac)
+                    {
+                        v.Zauzet = true;
+                        ChangeToFileVozac(v);
+                    }
+                }
             }
 
             if (Voznje.voznje != null)
@@ -73,6 +105,19 @@ namespace TaxiT.Controllers
         // DELETE: api/Voznja/5
         public void Delete(int id)
         {
+        }
+        [NonAction]
+        public void ChangeToFileVozac(Vozac v)
+        {
+
+            var file = File.ReadAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt");
+            file[v.Id] = v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
+                   + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
+                   + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";"
+                   + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet;
+
+            File.WriteAllLines(@"D:\VebProjekat\WebTaxi\TaxiT\TaxiT\App_Data/vozaci.txt", file);
+
         }
 
         [NonAction]

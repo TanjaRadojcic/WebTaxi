@@ -12,9 +12,9 @@ namespace TaxiT.Controllers
     public class VozacController : ApiController
     {
         // GET: api/Vozac
-        public IEnumerable<string> Get()
+        public Dictionary<int,Vozac> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Vozaci.vozaci;
         }
 
         // GET: api/Vozac/5
@@ -34,7 +34,7 @@ namespace TaxiT.Controllers
             }
             foreach (Vozac vozac in Vozaci.vozaci.Values)
             {
-                if (v.KorisnickoIme == vozac.KorisnickoIme)
+                if (v.KorisnickoIme == vozac.KorisnickoIme || v.Automobil.BrojVozila == vozac.Automobil.BrojVozila)
                 {
                     postoji = true;
                     break;

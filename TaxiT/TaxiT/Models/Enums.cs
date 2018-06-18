@@ -8,7 +8,7 @@ namespace TaxiT.Models
     public class Enums
     {
         public enum Uloga { Mušterija, Dispečer, Vozač }
-        public enum Auto { Putnički, Kombi}
+        public enum Auto {Svejedno,Putnički, Kombi}
         public enum StatusVoznje { Kreirana,Formirana,Utoku,Obrađena,Prihvaćena,Otkazana,Uspešna,Neuspešna}
         public enum Pol { Muški, Ženski}
     }

@@ -1,1 +1,4 @@
-0;16-Jun-18 6:37:02 PM;0;2;2;0;ulica;broj;mesto;21;Putnički;mali;0;0;0;0;;;;0;;;0;0;zato;16-Jun-18 12:00:00 AM;malli;0;3;Otkazana
+0;17-Jun-18 6:09:07 PM;0;1;1;0;Šekspirova;2;Novi Sad;21000;Svejedno;mali;0;0;0;0;;;;0;;;0;0;ne treba mi više vozilo;17-Jun-18 12:00:00 AM;mali;0;0;Otkazana
+1;17-Jun-18 6:19:39 PM;0;1;1;0; Alekse Šantića; 56; Novi Sad;21000;Svejedno;mali;0;0;0;0;;;;0;;;0;0;nisam htela;17-Jun-18 12:00:00 AM;mali;1;0;Otkazana
+2;17-Jun-18 6:22:03 PM;0;1;1;0;Tolstojeva;12;Novi Sad;21000;Svejedno;mali;0;0;0;0;;;;0;;null;0;0;;01-Jan-01 12:00:00 AM;;;0;Kreirana
+3;17-Jun-18 6:22:55 PM;0;1;1;0;Radnička;13;Novi Sad;21000;Svejedno;;0;0;0;0;;;;0;admin;fasty;0;0;;01-Jan-01 12:00:00 AM;;;0;Formirana
