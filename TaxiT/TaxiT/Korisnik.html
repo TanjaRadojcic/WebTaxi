@@ -272,11 +272,15 @@
                     Y: `${$('#yK').val()}`,
                     Adresa: adresa,
                 };
+
+                let e = document.getElementById('autoK');
+                let selValue = e.options[e.selectedIndex].text;
+
                 let Voznja = {
                     Musterija: trenutniKorisnik.KorisnickoIme,
                     PocetnaLokacija: lokacija,
-                    Auto: `${$('#autoK').val()}`,
-
+                    TipAutomobila: selValue,
+                    
                 };
                 $.ajax({
                     type: 'POST',
@@ -438,18 +442,26 @@
                     Y: `${$('#yVD').val()}`,
                     Adresa: adresa,
                 };
+
+                let e = document.getElementById('tipAutoVD');
+                let selValue = e.options[e.selectedIndex].text;
+
                 let automobil = {
                     Godiste: `${$('#godisteVD').val()}`,
                     Registracija: `${$('#regVD').val()}`,
                     BrojVozila: `${$('#brVD').val()}`,
-                    TipAutomobila: `${$('#tipAutoVD').val()}`,
+                    TipAutomobila: selValue,
                 };
+
+                let e1 = document.getElementById('polVD');
+                let selValue1 = e.options[e.selectedIndex].text;
+
                 let vozac = {
                     KorisnickoIme: `${$('#korisnickoimeVD').val()}`,
                     Lozinka: `${$('#lozinkaVD').val()}`,
                     Ime: `${$('#imeVD').val()}`,
                     Prezime: `${$('#prezimeVD').val()}`,
-                    Pol: `${$('#polVD').val()}`,
+                    Pol: selValue1,
                     JMBG: `${$('#jmbgVD').val()}`,
                     Kontakt: `${$('#kontaktVD').val()}`,
                     Email: `${$('#emailVD').val()}`,
@@ -512,7 +524,11 @@
 
             $(document).on('click', '#dodajVoznjuDugmeD', function () {
                 $.get("/api/Vozac", function (data, status) {
-                    let tip = `${$('#autoD').val()}`;
+
+                    let e = document.getElementById('autoD');
+                    let selValue = e.options[e.selectedIndex].text;
+
+                    let tip = selValue;
                     let tipBr = "";
                     if (tip == "Svejedno") {
                         tipBr = 0;
@@ -528,7 +544,7 @@
                        if (tipBr == 0) {
                            tabela += `<option>` + data[vozac].KorisnickoIme + `</option>`;
                            brojac++;
-                       } else if (data[vozac].TipAutomobila == tipBr){
+                       } else if (data[vozac].Automobil.TipAutomobila == tipBr){
                            tabela += `<option>` + data[vozac].KorisnickoIme + `</option>`;
                            brojac++;
                        }
@@ -547,6 +563,8 @@
                 });
             });
             $(document).on('click', '#dodajVoznjuDugme2D', function () {
+
+
                 let adresa = {
                     Ulica: `${$('#ulicaD').val()}`,
                     Broj: `${$('#brojD').val()}`,
@@ -558,11 +576,17 @@
                     Y: `${$('#yD').val()}`,
                     Adresa: adresa,
                 };
+
+                let e = document.getElementById('autoD');
+                let selValue = e.options[e.selectedIndex].text;
+                let e1 = document.getElementById('vozacD');
+                let selValue1 = e1.options[e1.selectedIndex].text;
+
                 let Voznja = {
                     Dispecer: trenutniKorisnik.KorisnickoIme,
                     PocetnaLokacija: lokacija,
-                    Auto: `${$('#autoD').val()}`,
-                    Vozac: `${$('#vozacD').val()}`,
+                    TipAutomobila: selValue,
+                    Vozac: selValue1,
 
                 };
                 $.ajax({
@@ -703,12 +727,15 @@
                     Y: `${$('#yV').val()}`,
                     Adresa: adresa,
                 };
-                
+
+                let e = document.getElementById('tipAutoV');
+                let selValue = e.options[e.selectedIndex].text;
+
                 let automobil = {
                     Godiste: `${$('#godisteV').val()}`,
                     Registracija: `${$('#regV').val()}`,
                     BrojVozila: `${$('#brV').val()}`,
-                    TipAutomobila: `${$('#tipAutoV').val()}`,
+                    TipAutomobila: selValue,
                 };
 
                 let korisnik = {
@@ -914,7 +941,7 @@
                         if (tipBr == 0) {
                             tabela += `<option>` + data[vozac].KorisnickoIme + `</option>`;
                             brojac++;
-                        } else if (data[vozac].TipAutomobila == tipBr) {
+                        } else if (data[vozac].Automobil.TipAutomobila == tipBr) {
                             tabela += `<option>` + data[vozac].KorisnickoIme + `</option>`;
                             brojac++;
                         }
@@ -936,8 +963,9 @@
         }
 
         function obradiDugmeD(id) {
-
-            let value =`${$('#vozacO').val()}`;
+            let e = document.getElementById('vozacO');
+            let selValue = e.options[e.selectedIndex].text;
+            let value = selValue;
 
             $.ajax({
                 type: 'PUT',
@@ -963,8 +991,7 @@
         }
 
         function izmeniVoznjuClick(id) {
-            let otkaz = "izmena" + id;
-            alert(otkaz);
+            
             $("#izmenaVoznjeK").html("");
             $.get("/api/Voznja/" + id, function (data, status) {
                 alert(data.PocetnaLokacija.X);
@@ -1050,10 +1077,14 @@
                 Y: `${$('#yI').val()}`,
                 Adresa: adresa,
             };
+
+            let e = document.getElementById('autoI');
+            let selValue = e.options[e.selectedIndex].text;
+
             let Voznja = {
 
                 PocetnaLokacija: lokacija,
-                Auto: `${$('#autoI').val()}`,
+                TipAutomobila: selValue,
 
             };
 

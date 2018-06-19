@@ -79,6 +79,7 @@ namespace TaxiT.Controllers
         {
             voznja.Id = id;
             voznja.Datum = Voznje.voznje[id].Datum;
+
             voznja.Musterija = Voznje.voznje[id].Musterija;
             if (voznja.PocetnaLokacija == null)
             {
@@ -119,6 +120,14 @@ namespace TaxiT.Controllers
             else
             {
                 voznja.Status = Enums.StatusVoznje.Uspešna;
+                foreach (var v in Vozaci.vozaci.Values)
+                {
+                    if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                    {
+                        v.Zauzet = false;
+                        ChangeToFileVozac(v);
+                    }
+                }
             }
 
             if (Voznje.voznje != null)

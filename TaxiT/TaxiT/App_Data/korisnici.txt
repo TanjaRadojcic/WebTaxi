@@ -2,3 +2,5 @@
 1;mali;0211;Jovica;Cubric;Muški;0211995800123;0631231212;jc@gmail.com;Mušterija
 2;Miša;2904;Nikolija;Arbutina;Ženski;2910996805046;0659461749;nikolija.arbutina@gmail.com;Mušterija
 3;tufnica;tackica; Maja; Djordjevic;Ženski;0404996872727; 0643784723;maya1@gmail.com;Mušterija
+4;proba;proba;proba;proba;Ženski;1111111111111;1111111;email@gmail.com;Mušterija
+5;reg;reg;reg;reg;Ženski;1111111111111;111111111;eee@gmail.com;Mušterija

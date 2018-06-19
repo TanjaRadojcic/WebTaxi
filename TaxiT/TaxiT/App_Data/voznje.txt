@@ -1,4 +1,0 @@
-0;18-Jun-18 8:26:42 PM;0;1;1;0;  Tolstojeva; 18;  Novi Sad;21000;Svejedno;mali;0;0;0;0;;;;0;;fandjo;0;0;;01-Jan-01 12:00:00 AM;;;0;Obrađena
-1;18-Jun-18 9:06:27 PM;0;1;1;0;Lole;1;NS;21000;Svejedno;mali;0;0;0;0;;;;0;;;0;0;eto;18-Jun-18 12:00:00 AM;mali;1;0;Otkazana
-2;18-Jun-18 9:16:14 PM;0;1;1;0;ulica;br;mesto;21;Svejedno;mali;0;0;0;0;;;;0;;fandjo;150;0;carski lit;18-Jun-18 12:00:00 AM;fandjo;2;3;Uspešna
-3;18-Jun-18 9:29:53 PM;0;1;1;0;krenuo;1;ns;1;Svejedno;mali;0;1;1;0;dosao;1;ns;1;;fasty;100;0;;01-Jan-01 12:00:00 AM;;;0;Uspešna
