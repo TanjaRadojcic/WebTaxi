@@ -50,6 +50,10 @@ body {
     display: none;
 }
 
-#pregledProfilaDivK #izmenaProfilaDivK #dodajVoznjuDivK #tabelaMojeVoznjeK #pregledProfilaDivD #izmenaProfilaDivD #dodajVoznjuDivD #izmenaVoznjeK #dodajKomentarK #prikaziKomentarK #dodajKomentarD #prikaziKomentarD #tabeleD #dodajKomentarV #prikaziKomentarV #tabeleV #uspesnaVoznjaV {
+#pregledProfilaDivK #izmenaProfilaDivK #dodajVoznjuDivK #tabelaMojeVoznjeK #pregledProfilaDivD #izmenaProfilaDivD #dodajVoznjuDivD #izmenaVoznjeK #dodajKomentarK #prikaziKomentarK #dodajKomentarD #prikaziKomentarD #tabeleD #dodajKomentarV #prikaziKomentarV #tabeleV #uspesnaVoznjaV #dodajKomentarOtkaziK #dodajKomentarNeuspesnaV #pretragaK {
     display: none;
+}
+
+#tabelaMojeVoznjeK {
+    overflow-x: auto;
 }

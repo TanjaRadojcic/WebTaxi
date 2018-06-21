@@ -1,184 +1,75 @@
-﻿$.get("/api/Voznja", function (data, status) {
-
-                if (name == "mojeD") {
-                    let tableOfProducts = "<table border=\"1\">
-    <tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td>Vozač</td><td>Mušterija</td><td>Iznos</td><td>Status</td><td>Komentar</td></tr>";
-    for (voznja in data) {
-    if (data[voznja].Dispecer == trenutniKorisnik.KorisnickoIme) {
-    tableOfProducts += `
+﻿<table>
     <tr>
-        <td>${data[voznja].Datum}</td>
-        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
-        <td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td>
-        <td>${data[voznja].Vozac}</td>
-        <td>${data[voznja].Musterija}</td>
-        <td>${data[voznja].Iznos}</td>`;
-
-
-        switch (data[voznja].Status) {
-        case 0:
-        tableOfProducts += `
-        <td>Kreirana-Na čekanju</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 1:
-        tableOfProducts += `
-        <td>Formirana</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 2:
-        tableOfProducts += `
-        <td>U toku</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 3:
-        tableOfProducts += `
-        <td>Obrađena</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 4:
-        tableOfProducts += `
-        <td>Prihvaćena</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 5:
-        tableOfProducts += `
-        <td>Otkazana</td>`;
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        break;
-        case 6:
-        tableOfProducts += `
-        <td>Uspešna</td>`;
-        if (data[voznja].Komentar.Opis == null) {
-        tableOfProducts += `
-        <td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClick(${data[voznja].Id});">Dodaj komentar</button></td>`;
-
-        } else {
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        }
-        break;
-        case 7:
-        tableOfProducts += `
-        <td>Neuspešna</td>`;
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        break;
-
-        }
-
-        }
-        }
-        tableOfProducts += "
-</table>";
-                    $("#mojeD").append(tableOfProducts);
-                } else if (name == "sveD") {
-                    let tableOfProducts = "<table border=\"1\">
-    <tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td>Vozač</td><td>Mušterija</td><td>Dispečer</td><td>Iznos</td><td>Status</td><td>Komentar</td></tr>";
-    for (voznja in data) {
-    tableOfProducts += `
+        <td>
+            <select name="Status" id="statusPretragaK">
+                <option>Status</option>
+                <option>Kreirana</option>
+                <option>Formirana</option>
+                <option>Obrađena</option>
+                <option>Prihvaćena</option>
+                <option>Otkazana</option>
+                <option>Uspešna</option>
+                <option>Neuspešna</option>
+            </select>
+        </td>
+    </tr>
     <tr>
-        <td>${data[voznja].Datum}</td>
-        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
-        <td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td>
-        <td>${data[voznja].Vozac}</td>
-        <td>${data[voznja].Musterija}</td>
-        <td>${data[voznja].Dispecer}</td>
-        <td>${data[voznja].Iznos}</td>`;
-
-        switch (data[voznja].Status) {
-        case 0:
-        tableOfProducts += `
-        <td>Kreirana-Na čekanju</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 1:
-        tableOfProducts += `
-        <td>Formirana</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 2:
-        tableOfProducts += `
-        <td>U toku</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 3:
-        tableOfProducts += `
-        <td>Obrađena</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 4:
-        tableOfProducts += `
-        <td>Prihvaćena</td>`;
-        tableOfProducts += `
-        <td>Nema komentara</td>`;
-        break;
-        case 5:
-        tableOfProducts += `
-        <td>Otkazana</td>`;
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        break;
-        case 6:
-        tableOfProducts += `
-        <td>Uspešna</td>`;
-        if (data[voznja].Komentar.Opis == null) {
-        tableOfProducts += `
-        <td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClick(${data[voznja].Id});">Dodaj komentar</button></td>`;
-
-        } else {
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        }
-        break;
-        case 7:
-        tableOfProducts += `
-        <td>Neuspešna</td>`;
-        tableOfProducts += `
-        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClick(${data[voznja].Id});">Vidi komentar</button></td>`;
-
-        break;
-
-        }
-
-        }
-        tableOfProducts += "
-</table>";
-                    $("#sveD").append(tableOfProducts);
-                } else if (name == "kreiraneD") {
-                    let tableOfProducts = "<table border=\"1\">
-    <tr><td>Datum</td><td>Početna lokacija</td><td>Mušterija</td><td>Tip Automobila</td></tr>";
-    for (voznja in data) {
-    if (data[voznja].Status == 0) {
-    tableOfProducts += `
     <tr>
-        <td>${data[voznja].Datum}</td>
-        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
-        <td>${data[voznja].Musterija}</td>
-        <td>${data[voznja].TipAutomobila}</td>`;
-        tableOfProducts += `
-        <td><button id="obradi${data[voznja].Id}" type="button" onclick="obradiVoznjuClick(${data[voznja].Id});">Obradi Vožnju</button></td>`;
+        <td>Datum od</td>
+        <td>Datum do</td>
+    </tr>
+    <tr>
+        <td><input type="date" name="DatumOdK" id="DatumOdK" /></td>
+        <td><input type="date" name="DatumDoK" id="DatumDoK" /></td>
+        <td>
+            <select name="Ocena" id="ocenaPretragaOdK">
+                <option value="0">Ocena od</option>
+                <option value="0">0a</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </td>
+        <td>
+            <select name="Ocena" id="ocenaPretragaDoK">
+                <option>Ocena do</option>
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </td>
+        <td>
+            <input type="number" name="cenaOdK" id="cenaOdK" placeholder="Cena od" />
+        </td>
+        <td>
+            <input type="number" name="cenaDoK" id="cenaDoK" placeholder="Cena do" />
+        </td>
+    </tr>
 
-        }
-        }
-        tableOfProducts += "
-</table>";
-                    $("#kreiraneD").append(tableOfProducts);
+    <tr>
+        <td>
+            Sortiraj po:
+        </td>
+        <td>
+            <select name="SortK" id="SortK">
+                <option>Datumu(Najnoviji)</option>
+                <option>Oceni(najveća-najmanja) </option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><button id="refreshK" type="button"><i class="fa fa-undo"></i></button></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
 
-                }
-            });
+        <td><button id="pretraziK" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+    </tr>
+</table>

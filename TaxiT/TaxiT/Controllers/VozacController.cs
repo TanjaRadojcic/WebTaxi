@@ -19,9 +19,9 @@ namespace TaxiT.Controllers
         }
 
         // GET: api/Vozac/5
-        public string Get(int id)
+        public Vozac Get(int id)
         {
-            return "value";
+            return Vozaci.vozaci[id];
         }
 
         //registracija

@@ -19,9 +19,9 @@ namespace TaxiT.Controllers
         }
 
         // GET: api/Dispecer/5
-        public string Get(int id)
+        public Dispecer Get(int id)
         {
-            return "value";
+            return Dispeceri.dispeceri[id];
         }
 
         // POST: api/Dispecer

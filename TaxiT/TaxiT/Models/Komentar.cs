@@ -15,7 +15,7 @@ namespace TaxiT.Models
         public string Voznja { get; set; }
         public int Ocena { get; set; }
 
-        public Komentar() { }
+        public Komentar() { Ocena = 0; }
         public Komentar(int id, string o, DateTime d, string k, string v, int oc)
         {
             Id = id;
