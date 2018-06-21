@@ -33,7 +33,7 @@ namespace TaxiT.Controllers
                 Voznje.voznje = new Dictionary<int, Voznja>();
             }
             voznja.Id = Voznje.voznje.Count;
-            voznja.Datum = DateTime.Now.Date + DateTime.Now.TimeOfDay;
+            voznja.Datum = DateTime.Now;
             voznja.Komentar = new Komentar();
             voznja.Odrediste = new Lokacija();
 
@@ -77,6 +77,7 @@ namespace TaxiT.Controllers
 
                     break;
                 case Enums.StatusVoznje.Neuspešna:
+                    voznja.Komentar.DatumObjave = DateTime.Now;
                     Voznje.voznje[id].Komentar = voznja.Komentar;
                     Voznje.voznje[id].Status = voznja.Status;
                     foreach (var v in Vozaci.vozaci.Values)
@@ -103,6 +104,7 @@ namespace TaxiT.Controllers
                     break;
                 case Enums.StatusVoznje.Otkazana:
                     Voznje.voznje[id].Status = voznja.Status;
+                    voznja.Komentar.DatumObjave = DateTime.Now;
                     Voznje.voznje[id].Komentar = voznja.Komentar;
                     break;
                 case Enums.StatusVoznje.Prihvaćena:
@@ -118,73 +120,28 @@ namespace TaxiT.Controllers
                     }
                     break;
                 case Enums.StatusVoznje.Uspešna:
-                    Voznje.voznje[id].Status = voznja.Status;
-                    Voznje.voznje[id].Odrediste = voznja.Odrediste;
-                    Voznje.voznje[id].Iznos = voznja.Iznos;
-                    foreach (var v in Vozaci.vozaci.Values)
+                    if (voznja.Komentar.Korisnik == null)
                     {
-                        if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                        Voznje.voznje[id].Status = voznja.Status;
+                        Voznje.voznje[id].Odrediste = voznja.Odrediste;
+                        Voznje.voznje[id].Iznos = voznja.Iznos;
+                        foreach (var v in Vozaci.vozaci.Values)
                         {
-                            v.Zauzet = false;
-                            ChangeToFileVozac(v);
+                            if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                            {
+                                v.Zauzet = false;
+                                ChangeToFileVozac(v);
+                            }
                         }
+                    }
+                    else
+                    {
+                        voznja.Komentar.DatumObjave = DateTime.Now;
+                        Voznje.voznje[id].Komentar = voznja.Komentar;
                     }
                     break;
 
             }
-           /* voznja.Id = id;
-            voznja.Datum = Voznje.voznje[id].Datum;
-
-            voznja.Musterija = Voznje.voznje[id].Musterija;
-            if (voznja.PocetnaLokacija == null)
-            {
-                voznja.PocetnaLokacija = Voznje.voznje[id].PocetnaLokacija;
-            }
-            voznja.Status = Voznje.voznje[id].Status;
-            if (voznja.Komentar == null)
-            {
-                voznja.Komentar = new Komentar();
-            }
-            if (voznja.Odrediste == null)
-            {
-                voznja.Odrediste = new Lokacija();
-            }
-            if(voznja.Vozac != null)
-            {
-                foreach (var v in Vozaci.vozaci.Values)
-                {
-                    if (v.KorisnickoIme == voznja.Vozac)
-                    {
-                        v.Zauzet = true;
-                        ChangeToFileVozac(v);
-                    }
-                }
-            }
-            if(voznja.Dispecer == null)
-            {
-                voznja.Dispecer = Voznje.voznje[id].Dispecer;
-            }
-            if (voznja.Vozac == null)
-            {
-                voznja.Vozac = Voznje.voznje[id].Vozac;
-            }
-            if(voznja.Iznos == 0)
-            {
-                voznja.Iznos = Voznje.voznje[id].Iznos;
-            }
-            else
-            {
-                voznja.Status = Enums.StatusVoznje.Uspešna;
-                foreach (var v in Vozaci.vozaci.Values)
-                {
-                    if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
-                    {
-                        v.Zauzet = false;
-                        ChangeToFileVozac(v);
-                    }
-                }
-            }*/
-
             if (Voznje.voznje != null)
             {
                 ChangeToFile(Voznje.voznje[id]);
@@ -220,10 +177,10 @@ namespace TaxiT.Controllers
             FileStream stream = new FileStream(path, FileMode.Append);
             using (StreamWriter outputFile = new StreamWriter(stream))
             {
-                string voznja = v.Id + ";" + v.Datum.ToString() + ";"  + v.PocetnaLokacija.Id + ";" + v.PocetnaLokacija.X + ";" + v.PocetnaLokacija.Y + ";" + v.PocetnaLokacija.Adresa.Id + ";" +
+                string voznja = v.Id + ";" + v.Datum.ToString("yyyy-MM-dd HH:mm") + ";"  + v.PocetnaLokacija.Id + ";" + v.PocetnaLokacija.X + ";" + v.PocetnaLokacija.Y + ";" + v.PocetnaLokacija.Adresa.Id + ";" +
                     v.PocetnaLokacija.Adresa.Ulica + ";" + v.PocetnaLokacija.Adresa.Broj + ";" + v.PocetnaLokacija.Adresa.Mesto + ";" + v.PocetnaLokacija.Adresa.Zip + ";" + v.TipAutomobila + ";" + 
                     v.Musterija + ";" + v.Odrediste.Id + ";" + v.Odrediste.X + ";" + v.Odrediste.Y + ";" + v.Odrediste.Adresa.Id + ";" + v.Odrediste.Adresa.Ulica + ";" + v.Odrediste.Adresa.Broj + ";"
-                    + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString()
+                    + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString("yyyy-MM-dd HH:mm")
                     + ";" + v.Komentar.Korisnik + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
                 outputFile.WriteLine(voznja);
             }
@@ -236,10 +193,10 @@ namespace TaxiT.Controllers
             string path = HostingEnvironment.MapPath("~/App_Data/voznje.txt");
             
             var file = File.ReadAllLines(path);
-            file[v.Id] = v.Id + ";" + v.Datum.ToString() + ";" + v.PocetnaLokacija.Id + ";" + v.PocetnaLokacija.X + ";" + v.PocetnaLokacija.Y + ";" + v.PocetnaLokacija.Adresa.Id + ";" +
+            file[v.Id] = v.Id + ";" + v.Datum.ToString("yyyy-MM-dd HH:mm") + ";" + v.PocetnaLokacija.Id + ";" + v.PocetnaLokacija.X + ";" + v.PocetnaLokacija.Y + ";" + v.PocetnaLokacija.Adresa.Id + ";" +
                     v.PocetnaLokacija.Adresa.Ulica + ";" + v.PocetnaLokacija.Adresa.Broj + ";" + v.PocetnaLokacija.Adresa.Mesto + ";" + v.PocetnaLokacija.Adresa.Zip + ";" + v.TipAutomobila + ";" +
                     v.Musterija + ";" + v.Odrediste.Id + ";" + v.Odrediste.X + ";" + v.Odrediste.Y + ";" + v.Odrediste.Adresa.Id + ";" + v.Odrediste.Adresa.Ulica + ";" + v.Odrediste.Adresa.Broj + ";"
-                    + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString()
+                    + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString("yyyy-MM-dd HH:mm")
                     + ";" + v.Komentar.Korisnik + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
             File.WriteAllLines(path, file);
 

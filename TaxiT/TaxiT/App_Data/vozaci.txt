@@ -1,3 +1,3 @@
 0;fandjo;fandjo;Djordje;Radojcic;Muški;2807965800123;0628880008;djordjer@gmail.com;Vozač;0;1;2;0;Vojvode Supljikca ;28;Novi Sad;21000;0;;2010;NS111AA;11;Putnički;False
-1;fasty;fasty;Pera;Perić;Muški;1201980800653;0624382213;fasty@gmail.com;Vozač;0;2;2;0;Kaće Dejanović;14;Novi Sad;21000;0;fasty;2005;NS111AB;1;Kombi;True
+1;fasty;fasty;Pera;Perić;Muški;1201980800653;0624382213;fasty@gmail.com;Vozač;0;2;2;0;Kaće Dejanović;14;Novi Sad;21000;0;fasty;2005;NS111AB;1;Kombi;False
 2;eliDriver;1005;Elena;Kevac;Ženski;1005994805011;0651231231;elikevi@gmail.com;Vozač;0;1;1;0;Puškinova;26;Novi Sad;21000;0;eliDriver;2011;NS123EK;10;Kombi;True
