@@ -1,75 +1,49 @@
-﻿<table>
-    <tr>
-        <td>
-            <select name="Status" id="statusPretragaK">
-                <option>Status</option>
-                <option>Kreirana</option>
-                <option>Formirana</option>
-                <option>Obrađena</option>
-                <option>Prihvaćena</option>
-                <option>Otkazana</option>
-                <option>Uspešna</option>
-                <option>Neuspešna</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-    <tr>
-        <td>Datum od</td>
-        <td>Datum do</td>
-    </tr>
-    <tr>
-        <td><input type="date" name="DatumOdK" id="DatumOdK" /></td>
-        <td><input type="date" name="DatumDoK" id="DatumDoK" /></td>
-        <td>
-            <select name="Ocena" id="ocenaPretragaOdK">
-                <option value="0">Ocena od</option>
-                <option value="0">0a</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </td>
-        <td>
-            <select name="Ocena" id="ocenaPretragaDoK">
-                <option>Ocena do</option>
-                <option>0</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-        </td>
-        <td>
-            <input type="number" name="cenaOdK" id="cenaOdK" placeholder="Cena od" />
-        </td>
-        <td>
-            <input type="number" name="cenaDoK" id="cenaDoK" placeholder="Cena do" />
-        </td>
-    </tr>
+﻿$("#pretragaV2").css("display", "inline");
+                    let tip = localStorage.getItem("ulogovaniTip");
+                    let status = localStorage.getItem("ulogovaniStatus");
+                    let tableOfProducts = "<table>
+    <tr><td>Datum</td><td>Početna lokacija</td><td>Mušterija</td><td>Tip Automobila</td></tr>";
+    for (voznja in data) {
+    if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
 
-    <tr>
-        <td>
-            Sortiraj po:
-        </td>
-        <td>
-            <select name="SortK" id="SortK">
-                <option>Datumu(Najnoviji)</option>
-                <option>Oceni(najveća-najmanja) </option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td><button id="refreshK" type="button"><i class="fa fa-undo"></i></button></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+    var date = new Date(data[voznja].Datum);
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
 
-        <td><button id="pretraziK" type="button"><i class="fa fa-check-circle"></i></button></td>
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
 
-    </tr>
-</table>
+    var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+    var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+    tableOfProducts += `
+    <tr>
+        <td>${formatedDate}</td>
+        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
+        <td>${data[voznja].Musterija}</td>`;
+        if (data[voznja].TipAutomobila == 0) {
+        tableOfProducts += `
+        <td>Svejedno</td>`;
+        } else if (data[voznja].TipAutomobila == 1) {
+        tableOfProducts += `
+        <td>Putnički</td>`;
+        } else if (data[voznja].TipAutomobila == 2) {
+        tableOfProducts += `
+        <td>Kombi</td>`;
+        }
+
+        if (status == "true") {
+        tableOfProducts += `
+        <td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});" disabled>Preuzmi Vožnju</button></td>`;
+
+        } else {
+        tableOfProducts += `
+        <td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});">Preuzmi Vožnju</button></td>`;
+
+        }
+
+        }

@@ -53,6 +53,9 @@
                                 $("#dodajKomentarD").css("display", "none");
                                 $("#prikaziKomentarD").css("display", "none");
                                 $("#tabeleD").css("display", "inline");
+                                $("#pretragaD1").css("display", "none");
+                                $("#pretragaD2").css("display", "none");
+                                $("#pretragaD3").css("display", "none");
                                 break;
                             case 2:
                                 koje = "vozac";
@@ -68,6 +71,9 @@
                                 $("#tabeleV").css("display", "inline");
                                 $("#uspesnaVoznjaV").css("display", "none");
                                 $("#dodajKomentarNeuspesnaV").css("display", "none");
+                                $("#pretragaV1").css("display", "none");
+                                $("#pretragaV2").css("display", "none");
+
                                 localStorage.setItem("ulogovaniTip", data.Automobil.TipAutomobila);
                                 localStorage.setItem("ulogovaniStatus", data.Zauzet);
 
@@ -518,6 +524,9 @@
                 $("#tabeleD").css("display", "inline");
                 $("#dodajKomentarD").css("display", "none");
                 $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
             });
 
             $("#pregledProfilaD").click(function () {
@@ -824,6 +833,8 @@
                 $("#uspesnaVoznjaV").css("display", "none");
                 $("#tabeleV").css("display", "inline");
                 $("#dodajKomentarNeuspesnaV").css("display", "none");
+                $("#pretragaV1").css("display", "none");
+                $("#pretragaV2").css("display", "none");
                 
             });
 
@@ -963,7 +974,284 @@
                 })
             });
 
-            
+            $("#refreshV1").click(function () {
+
+
+                $("#pretragaV1").css("display", "inline");
+                document.getElementById('cenaOdV1').value = '';
+                document.getElementById('cenaDoV1').value = '';
+                document.getElementById('ocenaPretragaOdV1').selectedIndex = 0;
+                document.getElementById('ocenaPretragaDoV1').selectedIndex = 0;
+                document.getElementById('statusPretragaV1').selectedIndex = 0;
+                document.getElementById('DatumOdV1').value = '';
+                document.getElementById('DatumDoV1').value = '';
+
+                $("#pretraziV1").click();
+            });
+            $("#refreshV2").click(function () {
+                
+                document.getElementById('DatumOdV2').value = '';
+                document.getElementById('DatumDoV2').value = '';
+                $("#pretragaV2").css("display", "inline");
+                $("#pretraziV2").click();
+            });
+
+            $("#pretraziV1").click(function () {
+                $("#LondonV").html("");
+                $("#pretragaV2").css("display", "none");
+                let id = localStorage.getItem("ulogovaniId");
+
+                let e = document.getElementById('statusPretragaV1');
+                let selValue = e.options[e.selectedIndex].value;
+                let statusPretrage = selValue;
+
+                let datumOd = `${$('#DatumOdV1').val()}`;
+                if (datumOd == "") {
+                    var date = new Date("2018-01-01");
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumOd = date.getFullYear() + "-" + month + "-" + day;
+
+                }
+
+                let datumDo = `${$('#DatumDoV1').val()}`;
+                if (datumDo == "") {
+                    var date = new Date();
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumDo = date.getFullYear() + "-" + month + "-" + day;
+                }
+
+                let e1 = document.getElementById('ocenaPretragaOdV1');
+                let selValue1 = e1.options[e1.selectedIndex].value;
+                let ocenaOd = selValue1;
+
+                let e2 = document.getElementById('ocenaPretragaDoV1');
+                let selValue2 = e2.options[e2.selectedIndex].value;
+                let ocenaDo = selValue2;
+
+                let cenaOd = `${$('#cenaOdV1').val()}`;
+                if (cenaOd == "") {
+                    cenaOd = 0;
+                }
+
+                let cenaDo = `${$('#cenaDoV1').val()}`;
+                if (cenaDo == "") {
+                    cenaDo = 9999;
+                }
+
+                let e3 = document.getElementById('SortV1');
+                let selValue3 = e3.options[e3.selectedIndex].value;
+                let sort = selValue3;
+
+                $.get("/api/Vozac/" + id, function (data, status) {
+                    localStorage.setItem("ulogovaniStatus", data.Zauzet);
+                })
+
+                $.get("/api/Voznja", function (data, status) {
+
+
+                   
+                    let ulogovani = localStorage.getItem("ulogovani");
+                    let tableOfProducts = "<table id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td>Dispečer</td> <td>Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
+                    for (voznja in data) {
+                        if (data[voznja].Vozac == ulogovani) {
+
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                            if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Dispecer}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+
+
+                                switch (data[voznja].Status) {
+                                    case 0:
+                                        tableOfProducts += `<td>Kreirana-Na čekanju</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        break;
+                                    case 1:
+                                        tableOfProducts += `<td>Formirana</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        tableOfProducts += `<td><button id="uspesna${data[voznja].Id}" type="button" onclick="uspesnaClickV(${data[voznja].Id});">Uspešna</button>`;
+                                        tableOfProducts += ` <button id="neuspesna${data[voznja].Id}" type="button" onclick="neuspesnaClickV(${data[voznja].Id});">Neuspešna</button></td>`;
+
+                                        break;
+                                    case 2:
+                                        tableOfProducts += `<td>Obrađena</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        tableOfProducts += `<td><button id="uspesna${data[voznja].Id}" type="button" onclick="uspesnaClickV(${data[voznja].Id});">Uspešna</button>`;
+                                        tableOfProducts += ` <button id="neuspesna${data[voznja].Id}" type="button" onclick="neuspesnaClickV(${data[voznja].Id});">Neuspešna</button></td>`;
+
+                                        break;
+                                    case 3:
+                                        tableOfProducts += `<td>Prihvaćena</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        tableOfProducts += `<td><button id="uspesna${data[voznja].Id}" type="button" onclick="uspesnaClickV(${data[voznja].Id});">Uspešna</button>`;
+                                        tableOfProducts += ` <button id="neuspesna${data[voznja].Id}" type="button" onclick="neuspesnaClickV(${data[voznja].Id});">Neuspešna</button></td>`;
+
+                                        break;
+                                    case 4:
+                                        tableOfProducts += `<td>Otkazana</td>`;
+                                        tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickV(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        break;
+                                    case 5:
+                                        tableOfProducts += `<td>Uspešna</td>`;
+                                        if (data[voznja].Komentar.Korisnik == null) {
+                                            tableOfProducts += `<td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClickV(${data[voznja].Id});">Dodaj komentar</button></td>`;
+
+                                        } else {
+                                            tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickV(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        }
+                                        break;
+                                    case 6:
+                                        tableOfProducts += `<td>Neuspešna</td>`;
+                                        tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickV(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        break;
+
+                                }
+                            }
+
+                        }
+                    }
+                    tableOfProducts += "</table>";
+                    $("#LondonV").append(tableOfProducts);
+                });
+
+
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById("LondonV").style.display = "block";
+                event.currentTarget.className += " active";
+
+            });
+
+            $("#pretraziV2").click(function () {
+                $("#TokyoV").html("");
+                $("#pretragaV1").css("display", "none");
+                
+                let id = localStorage.getItem("ulogovaniId");
+
+                
+                let datumOd = `${$('#DatumOdV2').val()}`;
+                if (datumOd == "") {
+                    var date = new Date("2018-01-01");
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumOd = date.getFullYear() + "-" + month + "-" + day;
+
+                }
+
+                let datumDo = `${$('#DatumDoV2').val()}`;
+                if (datumDo == "") {
+                    var date = new Date();
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumDo = date.getFullYear() + "-" + month + "-" + day;
+                }
+
+                
+
+                let e3 = document.getElementById('SortV2');
+                let selValue3 = e3.options[e3.selectedIndex].value;
+                let sort = selValue3;
+
+                $.get("/api/Vozac/" + id, function (data, status) {
+                    localStorage.setItem("ulogovaniStatus", data.Zauzet);
+                })
+
+                $.get("/api/Voznja", function (data, status) {
+
+                    let tip = localStorage.getItem("ulogovaniTip");
+                    let status2 = localStorage.getItem("ulogovaniStatus");
+                    let tableOfProducts = "<table id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Mušterija</td><td>Tip Automobila</td></tr>";
+                    for (voznja in data) {
+                        if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
+
+
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                            if (date2 >= datumOd && date2 <= datumDo) {
+                               
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Musterija}</td>`;
+                                if (data[voznja].TipAutomobila == 0) {
+                                    tableOfProducts += `<td>Svejedno</td>`;
+                                } else if (data[voznja].TipAutomobila == 1) {
+                                    tableOfProducts += `<td>Putnički</td>`;
+                                } else if (data[voznja].TipAutomobila == 2) {
+                                    tableOfProducts += `<td>Kombi</td>`;
+                                }
+
+                                if (status2 == "true") {
+                                    tableOfProducts += `<td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});" disabled>Preuzmi Vožnju</button></td>`;
+
+                                } else {
+                                    tableOfProducts += `<td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});">Preuzmi Vožnju</button></td>`;
+
+                                }
+                                
+                            }
+
+                        }
+                    }
+                    tableOfProducts += "</table>";
+                $("#TokyoV").append(tableOfProducts);
+                });
+
+
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById("TokyoV").style.display = "block";
+                event.currentTarget.className += " active";
+
+            });
 
         });
 
@@ -971,15 +1259,35 @@
             $("#London").html("");
             $("#Paris").html("");
             $("#Tokyo").html("");
+            $("#pretragaD1").css("display", "none");
+            $("#pretragaD2").css("display", "none");
+            $("#pretragaD3").css("display", "none");
 
             $.get("/api/Voznja", function (data, status) {
 
                 if (cityName == "London") {
+                    $("#pretragaD1").css("display", "inline");
                     let ulogovani = localStorage.getItem("ulogovani");
                     let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td>Vozač</td> <td>Mušterija</td> <td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
                     for (voznja in data) {
                         if (data[voznja].Dispecer == ulogovani) {
-                            tableOfProducts += `<tr><td>${data[voznja].Datum}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Vozac}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Iznos}</td>`;
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+
+
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Vozac}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Iznos}</td>`;
 
 
                             switch (data[voznja].Status) {
@@ -1027,9 +1335,25 @@
                     tableOfProducts += "</table>";
                     $("#London").append(tableOfProducts);
                 } else if (cityName == "Paris") {
+                    $("#pretragaD2").css("display", "inline");
                     let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td>Vozač</td> <td>Mušterija</td> <td>Dispečer</td> <td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
                     for (voznja in data) {
-                        tableOfProducts += `<tr><td>${data[voznja].Datum}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Vozac}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Dispecer}</td><td>${data[voznja].Iznos}</td>`;
+                        var date = new Date(data[voznja].Datum);
+                        var month = date.getMonth() + 1;
+                        var day = date.getDate();
+                        var hours = date.getHours();
+                        var minutes = date.getMinutes();
+
+                        if (month < 10) month = '0' + month;
+                        if (day < 10) day = '0' + day;
+                        if (hours < 10) hours = '0' + hours;
+                        if (minutes < 10) minutes = '0' + minutes;
+
+                        var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                        var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+
+                        tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Vozac}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Dispecer}</td><td>${data[voznja].Iznos}</td>`;
 
                         switch (data[voznja].Status) {
                             case 0:
@@ -1075,10 +1399,25 @@
                     tableOfProducts += "</table>";
                     $("#Paris").append(tableOfProducts);
                 } else if (cityName == "Tokyo") {
+                    $("#pretragaD3").css("display", "inline");
                     let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Mušterija</td> <td>Tip Automobila</td></tr>";
                     for (voznja in data) {
                         if (data[voznja].Status == 0) {
-                            tableOfProducts += `<tr><td>${data[voznja].Datum}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Musterija}</td>`;
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Musterija}</td>`;
                             if (data[voznja].TipAutomobila == 0) {
                                 tableOfProducts += `<td>Svejedno</td>`;
                             } else if (data[voznja].TipAutomobila == 1) {
@@ -1322,6 +1661,10 @@
         }
         function zatvoriKomentarD() {
            
+            $("#prikaziKomentarD").css("display", "none");
+        }
+        function otkaziKomentarDugmeD() {
+
             $("#prikaziKomentarD").css("display", "none");
         }
 
@@ -1699,6 +2042,9 @@
             
             $("#prikaziKomentarV").css("display", "none");
         }
+        function otkaziKomentarDugmeV() {
+            $("#prikaziKomentarV").css("display", "none");
+        }
 
         function dodajKomentarClickV(id) {
             $("#dodajKomentarV").css("display", "inline");
@@ -1749,9 +2095,94 @@
 
         }
 
+
+        function sortTableV1() {
+            var n = document.getElementById("SortV1").value;
+            if (n == 1) {
+                n = 6;
+            }
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("mojeV");
+            switching = true;
+
+            while (switching) {
+
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if (n == 6) {
+                        if (Number(x.innerHTML) < Number(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function sortTableV2() {
+            var n = document.getElementById("SortV2").value;
+            
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("kreiraneV");
+            switching = true;
+
+            while (switching) {
+
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("TD")[0];
+                    y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                    if (n == 1) {
+                        if (new Date(x.innerHTML) > new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
         function openCityV(evt, cityName) {
             $("#LondonV").html("");
             $("#TokyoV").html("");
+            $("#pretragaV1").css("display", "none");
+            $("#pretragaV2").css("display", "none");
 
             let id = localStorage.getItem("ulogovaniId");
 
@@ -1761,11 +2192,26 @@
             $.get("/api/Voznja", function (data, status) {
 
                 if (cityName == "LondonV") {
+                    $("#pretragaV1").css("display", "inline");
                     let ulogovani = localStorage.getItem("ulogovani");
-                    let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td>Dispečer</td> <td>Mušterija</td> <td>Iznos</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
+                    let tableOfProducts = "<table id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td>Dispečer</td> <td>Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
                     for (voznja in data) {
                         if (data[voznja].Vozac == ulogovani) {
-                            tableOfProducts += `<tr><td>${data[voznja].Datum}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Dispecer}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Iznos}</td>`;
+
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${data[voznja].Dispecer}</td><td>${data[voznja].Musterija}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
 
                             switch (data[voznja].Status) {
@@ -1822,12 +2268,28 @@
                     tableOfProducts += "</table>";
                     $("#LondonV").append(tableOfProducts);
                 } else if (cityName == "TokyoV") {
+                    $("#pretragaV2").css("display", "inline");
                     let tip = localStorage.getItem("ulogovaniTip");
                     let status = localStorage.getItem("ulogovaniStatus");
-                    let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Mušterija</td> <td>Tip Automobila</td></tr>";
+                    let tableOfProducts = "<table id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Mušterija</td><td>Tip Automobila</td></tr>";
                     for (voznja in data) {
-                        if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila==0)) {
-                            tableOfProducts += `<tr><td>${data[voznja].Datum}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Musterija}</td>`;
+                        if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
+
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Musterija}</td>`;
                             if (data[voznja].TipAutomobila == 0) {
                                 tableOfProducts += `<td>Svejedno</td>`;
                             } else if (data[voznja].TipAutomobila == 1) {
@@ -2114,6 +2576,121 @@
                 </div>
                 <button id="izmeniV" type="button">Izmeni</button>
             </div>
+            <div id="pretragaV1">
+                <table id="tableV1">
+                    <tr>
+                        <td>
+                            <select name="Status" id="statusPretragaV1">
+                                <option value="-1">Status</option>
+                                <option value="0">Kreirana</option>
+                                <option value="1">Formirana</option>
+                                <option value="2">Obrađena</option>
+                                <option value="3">Prihvaćena</option>
+                                <option value="4">Otkazana</option>
+                                <option value="5">Uspešna</option>
+                                <option value="6">Neuspešna</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdV1" id="DatumOdV1" /></td>
+                        <td><input type="date" name="DatumDoV1" id="DatumDoV1" /></td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaOdV1">
+                                <option value="0">Ocena od</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaDoV1">
+                                <option value="5">Ocena do</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="cenaOdV1" id="cenaOdV1" placeholder="Cena od" />
+                        </td>
+                        <td>
+                            <input type="number" name="cenaDoV1" id="cenaDoV1" placeholder="Cena do" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Sortiraj po:
+                        </td>
+                        <td>
+                            <select name="SortV1" id="SortV1" onchange="sortTableV1()">
+                                <option value="0">Datumu(Najnoviji)</option>
+                                <option value="1">Oceni(najveća-najmanja) </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id="refreshV1" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td><button id="pretraziV1" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <div id="pretragaV2">
+                <table id="tableV2">
+                    
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdV2" id="DatumOdV2" /></td>
+                        <td><input type="date" name="DatumDoV2" id="DatumDoV2" /></td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Sortiraj po:
+                        </td>
+                        <td>
+                            <select name="SortV2" id="SortV2" onchange="sortTableV2()">
+                                <option value="0">Datumu(Najnoviji)</option>
+                                <option value="1">Datumu(Najstariji)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id="refreshV2" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td><button id="pretraziV2" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
+                </table>
+
+            </div>
 
             <div id="tabeleV" class="w3-left">
 
@@ -2146,8 +2723,8 @@
                         <td><input type="range" name="Ocena" id="ocenaV" min="1" max="5" /></td>
                     </tr>
                     <tr>
-                        <td colspan="2"> <button onclick="dodajKomentarDugmeV();" type="button">Dodaj</button></td>
-
+                        <td> <button onclick="dodajKomentarDugmeV();" type="button">Dodaj</button></td>
+                        <td> <button onclick="otkaziKomentarDugmeV();" type="button">Otkaži</button></td>
                     </tr>
                 </table>
             </div>
@@ -2162,7 +2739,7 @@
                     </tr>
                     <tr>
                         <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaVN" min="1" max="5" value="1" disabled/></td>
+                        <td><input type="range" name="Ocena" id="ocenaVN" min="1" max="5" value="1" disabled /></td>
                     </tr>
                     <tr>
                         <td colspan="2"> <button onclick="dodajKomentarNeuspesnaDugmeV();" type="button">Dodaj</button></td>
@@ -2286,6 +2863,200 @@
 
             </div>
 
+            <div id="pretragaD1">
+                <table id="tableD1">
+                    <tr>
+                        <td>
+                            <select name="Status" id="statusPretragaD1">
+                                <option value="-1">Status</option>
+                                <option value="0">Kreirana</option>
+                                <option value="1">Formirana</option>
+                                <option value="2">Obrađena</option>
+                                <option value="3">Prihvaćena</option>
+                                <option value="4">Otkazana</option>
+                                <option value="5">Uspešna</option>
+                                <option value="6">Neuspešna</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdD1" id="DatumOdD1" /></td>
+                        <td><input type="date" name="DatumDoD1" id="DatumDoD1" /></td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaOdD1">
+                                <option value="0">Ocena od</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaDoD1">
+                                <option value="5">Ocena do</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="cenaOdD1" id="cenaOdD1" placeholder="Cena od" />
+                        </td>
+                        <td>
+                            <input type="number" name="cenaDoD1" id="cenaDoD1" placeholder="Cena do" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Sortiraj po:
+                        </td>
+                        <td>
+                            <select name="SortD1" id="SortD1" onchange="sortTableD1()">
+                                <option value="0">Datumu(Najnoviji)</option>
+                                <option value="1">Oceni(najveća-najmanja) </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id="refreshD1" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td><button id="pretraziD1" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <div id="pretragaD2">
+                <table id="tableD2">
+                    <tr>
+                        <td>
+                            <select name="Status" id="statusPretragaD2">
+                                <option value="-1">Status</option>
+                                <option value="0">Kreirana</option>
+                                <option value="1">Formirana</option>
+                                <option value="2">Obrađena</option>
+                                <option value="3">Prihvaćena</option>
+                                <option value="4">Otkazana</option>
+                                <option value="5">Uspešna</option>
+                                <option value="6">Neuspešna</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdD2" id="DatumOdD2" /></td>
+                        <td><input type="date" name="DatumDoD2" id="DatumDoD2" /></td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaOdD2">
+                                <option value="0">Ocena od</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="Ocena" id="ocenaPretragaDoD2">
+                                <option value="5">Ocena do</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="cenaOdD2" id="cenaOdD2" placeholder="Cena od" />
+                        </td>
+                        <td>
+                            <input type="number" name="cenaDoD2" id="cenaDoD2" placeholder="Cena do" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Sortiraj po:
+                        </td>
+                        <td>
+                            <select name="SortD2" id="SortD2" onchange="sortTableD2()">
+                                <option value="0">Datumu(Najnoviji)</option>
+                                <option value="1">Oceni(najveća-najmanja) </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id="refreshD2" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td><button id="pretraziD2" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
+                </table>
+
+            </div>
+            <div id="pretragaD3">
+                <table id="tableD3">
+
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdD3" id="DatumOdD3" /></td>
+                        <td><input type="date" name="DatumDoD3" id="DatumDoD3" /></td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Sortiraj po:
+                        </td>
+                        <td>
+                            <select name="SortD3" id="SortD3" onchange="sortTableD3()">
+                                <option value="0">Datumu(Najnoviji)</option>
+                                <option value="1">Datumu(Najstariji)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button id="refreshD3" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td><button id="pretraziD3" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
+                </table>
+
+            </div>
+
             <div id="tabeleD" class="w3-left">
 
                 <div class="tab">
@@ -2308,36 +3079,37 @@
 
             </div>
             <div id="dodajKomentarD" class="w3-right">
-        <table border="1">
-            <tr>
-                <td colspan="2">Dodaj Komentar</td>
-            </tr>
-            <tr>
-                <td>Opis</td>
-                <td><input type="text" name="Opis" id="opisD" required /></td>
-            </tr>
-            <tr>
-                <td>Ocena</td>
-                <td><input type="range" name="Ocena" id="ocenaD" min="1" max="5" /></td>
-            </tr>
-            <tr>
-                <td colspan="2"> <button onclick="dodajKomentarDugmeD();" type="button">Dodaj</button></td>
+                <table border="1">
+                    <tr>
+                        <td colspan="2">Dodaj Komentar</td>
+                    </tr>
+                    <tr>
+                        <td>Opis</td>
+                        <td><input type="text" name="Opis" id="opisD" required /></td>
+                    </tr>
+                    <tr>
+                        <td>Ocena</td>
+                        <td><input type="range" name="Ocena" id="ocenaD" min="1" max="5" /></td>
+                    </tr>
+                    <tr>
+                        <td> <button onclick="dodajKomentarDugmeD();" type="button">Dodaj</button></td>
+                        <td> <button onclick="otkaziKomentarDugmeD();" type="button">Otkaži</button></td>
 
-            </tr>
-        </table>
-    </div>
-    <div id="prikaziKomentarD" class="w3-right w3-large">
-        <div class="w3-card w3-padding-large">
+                    </tr>
+                </table>
+            </div>
+            <div id="prikaziKomentarD" class="w3-right w3-large">
+                <div class="w3-card w3-padding-large">
 
-            <p id="opisPD" class="fa fa-pencil-alt"></p><br />
-            <p id="datumPD" class="fa fa-calendar-alt"></p><br />
-            <p id="korisnikPD" class="fa fa-user-circle"></p><br />
-            <p id="OcenaPD" class="fa fa-star"></p><br />
-            <button id="gasiKom" onclick="zatvoriKomentarD();" class="fa fa-times"></button>
-        </div>
-    </div>
+                    <p id="opisPD" class="fa fa-pencil-alt"></p><br />
+                    <p id="datumPD" class="fa fa-calendar-alt"></p><br />
+                    <p id="korisnikPD" class="fa fa-user-circle"></p><br />
+                    <p id="OcenaPD" class="fa fa-star"></p><br />
+                    <button id="gasiKom" onclick="zatvoriKomentarD();" class="fa fa-times"></button>
+                </div>
+            </div>
 
-            <div  id="obradaVoznjeD">
+            <div id="obradaVoznjeD">
 
             </div>
         </div>
