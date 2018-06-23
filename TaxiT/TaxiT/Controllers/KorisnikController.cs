@@ -24,9 +24,9 @@ namespace TaxiT.Controllers
         }
 
         // GET: api/Korisnik/5
-        public string Get(int id)
+        public Korisnik Get(int id)
         {
-            return "value";
+            return Korisnici.korisnici[id];
         }
 
         //registracija

@@ -13,9 +13,9 @@ namespace TaxiT.Controllers
     public class DispecerController : ApiController
     {
         // GET: api/Dispecer
-        public IEnumerable<string> Get()
+        public Dictionary<int,Dispecer> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Dispeceri.dispeceri;
         }
 
         // GET: api/Dispecer/5

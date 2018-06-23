@@ -1,49 +1,203 @@
-﻿$("#pretragaV2").css("display", "inline");
-                    let tip = localStorage.getItem("ulogovaniTip");
-                    let status = localStorage.getItem("ulogovaniStatus");
-                    let tableOfProducts = "<table>
-    <tr><td>Datum</td><td>Početna lokacija</td><td>Mušterija</td><td>Tip Automobila</td></tr>";
-    for (voznja in data) {
-    if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
+﻿let vozacIme = "";
+ let vozacPrezime = "";
 
-    var date = new Date(data[voznja].Datum);
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
+ if (data[voznja].Vozac != -1) {
+     $.get("/api/Vozac/" + data[voznja].Vozac, function (vozac, status) {
+         vozacIme = vozac.Ime;
+         vozacPrezime = vozac.Prezime;
+     });
+ }
 
-    if (month < 10) month = '0' + month;
-    if (day < 10) day = '0' + day;
-    if (hours < 10) hours = '0' + hours;
-    if (minutes < 10) minutes = '0' + minutes;
+ let dispIme = "";
+ let dispPrezime = "";
 
-    var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
-    var date2 = date.getFullYear() + "-" + month + "-" + day;
+ if (data[voznja].Dispecer != -1) {
+     $.get("/api/Dispecer/" + data[voznja].Dispecer, function (disp, status) {
+         dispIme = disp.Ime;
+         dispPrezime = disp.Prezime;
+     });
+ }
+let korIme = "";
+  let korPrezime = "";
 
-    tableOfProducts += `
-    <tr>
-        <td>${formatedDate}</td>
-        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
-        <td>${data[voznja].Musterija}</td>`;
-        if (data[voznja].TipAutomobila == 0) {
-        tableOfProducts += `
-        <td>Svejedno</td>`;
-        } else if (data[voznja].TipAutomobila == 1) {
-        tableOfProducts += `
-        <td>Putnički</td>`;
-        } else if (data[voznja].TipAutomobila == 2) {
-        tableOfProducts += `
-        <td>Kombi</td>`;
-        }
+  if (data[voznja].Musterija != -1) {
+      $.get("/api/Korisnik/" + data[voznja].Musterija, function (kor, status) {
+          korIme = kor.Ime;
+          korPrezime = kor.Prezime;
+      });
+  }
 
-        if (status == "true") {
-        tableOfProducts += `
-        <td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});" disabled>Preuzmi Vožnju</button></td>`;
+<td colspan=\"2\">Vozač</td>
+<td colspan=\"2\">Dispečer</td>
+<td colspan=\"2\">Mušterija</td>
 
-        } else {
-        tableOfProducts += `
-        <td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});">Preuzmi Vožnju</button></td>`;
+<td>${vozacIme}</td>
+<td>${vozacPrezime}</td>
+<td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td>
 
-        }
 
-        }
+$.get("/api/Korisnik/" + korId, function (kor, status2) {
+                                    korIme = kor.Ime;
+                                    korPrezime = kor.Prezime;
+                                })
+
+
+
+var listOfObjects = [];
+var a = ["car", "bike", "scooter"];
+a.forEach(function(entry) {
+    var singleObj = {}
+    singleObj['type'] = 'vehicle';
+    singleObj['value'] = entry;
+    listOfObjects.push(singleObj);
+});
+
+
+
+let listOfObjects = [];
+
+            $.get("/api/Voznja", function (data, status) {
+
+                for (voznja in data) {
+                    let singleObj = {}
+                    let lokacija = {}
+                    let adresa = {}
+                    let odrediste = {}
+                    let adresa2 = {}
+                    let kom = {}
+
+                    singleObj['Id'] = data[voznja].Id;
+                    singleObj['Datum'] = data[voznja].Datum;
+
+                    lokacija['X'] = data[voznja].PocetnaLokacija.X;
+                    lokacija['Y'] = data[voznja].PocetnaLokacija.Y;
+                    adresa['Ulica'] = data[voznja].PocetnaLokacija.Adresa.Ulica;
+                    adresa['Broj'] = data[voznja].PocetnaLokacija.Adresa.Broj;
+                    adresa['Mesto'] = data[voznja].PocetnaLokacija.Adresa.Mesto;
+                    adresa['Zip'] = data[voznja].PocetnaLokacija.Adresa.Zip;
+                    lokacija['Adresa'] = adresa;
+
+                    singleObj['PocetnaLokacija'] = lokacija;
+                    singleObj['TipAutomobila'] = data[voznja].TipAutomobila;
+                    singleObj['Musterija'] = data[voznja].Musterija;
+
+
+                    odrediste['X'] = data[voznja].PocetnaLokacija.X;
+                    odrediste['Y'] = data[voznja].PocetnaLokacija.Y;
+                    adresa2['Ulica'] = data[voznja].PocetnaLokacija.Adresa.Ulica;
+                    adresa2['Broj'] = data[voznja].PocetnaLokacija.Adresa.Broj;
+                    adresa2['Mesto'] = data[voznja].PocetnaLokacija.Adresa.Mesto;
+                    adresa2['Zip'] = data[voznja].PocetnaLokacija.Adresa.Zip;
+                    odrediste['Adresa'] = adresa2;
+                    singleObj['Odrediste'] = odrediste;
+
+                    singleObj['Dispecer'] = data[voznja].Dispecer;
+                    singleObj['Vozac'] = data[voznja].Vozac;
+                    singleObj['Iznos'] = data[voznja].Iznos;
+
+                    kom['Opis'] = data[voznja].Komentar.Opis;
+                    kom['DatumObjave'] = data[voznja].Komentar.DatumObjave;
+                    kom['Korisnik'] = data[voznja].Komentar.Korisnik;
+                    kom['Voznja'] = data[voznja].Komentar.Voznja;
+                    kom['Ocena'] = data[voznja].Komentar.Ocena;
+
+                    singleObj['Komentar'] = kom;
+                    singleObj['Status'] = data[voznja].Status;
+
+                    listOfObjects.push(singleObj);
+                    alert("get" + listOfObjects[0].Musterija);
+                }
+
+            });
+
+
+
+
+
+
+            let korisnici = [];
+            $.get("/api/Korisnik", function (kor, status) {
+                for (korisnik in kor) {
+                    let singleObj = {}
+                    singleObj['Id'] = kor[korisnik].Id;
+                    singleObj['Ime'] = kor[korisnik].Ime;
+                    singleObj['Prezime'] = kor[korisnik].Prezime;
+                    korisnici.push(singleObj);
+                }
+            });
+
+            let dispeceri = [];
+            $.get("/api/Dispecer", function (disp, status) {
+                for (korisnik in disp) {
+                    let singleObj = {}
+                    singleObj['Id'] = disp[korisnik].Id;
+                    singleObj['Ime'] = disp[korisnik].Ime;
+                    singleObj['Prezime'] = disp[korisnik].Prezime;
+                    dispeceri.push(singleObj);
+                }
+            });
+
+            let vozaci = [];
+            $.get("/api/Vozac", function (kor, status) {
+                for (korisnik in kor) {
+                    let singleObj = {}
+                    singleObj['Id'] = kor[korisnik].Id;
+                    singleObj['Ime'] = kor[korisnik].Ime;
+                    singleObj['Prezime'] = kor[korisnik].Prezime;
+                    vozaci.push(singleObj);
+                }
+            });
+
+
+vozacIme = vozaci[data[voznja].Vozac].Ime;
+vozacPrezime = vozaci[data[voznja].Vozac].Prezime;
+
+dispIme = dispeceri[data[voznja].Dispecer].Ime;
+dispPrezime = dispeceri[data[voznja].Dispecer].Prezime;
+
+ korIme = korisnici[data[voznja].Musterija].Ime;
+korPrezime = korisnici[data[voznja].Musterija].Prezime;
+
+
+$.ajax({
+    type: 'GET',
+    url: '/api/Vozac/' + data[voznja].Vozac,
+    async: false,
+    success: function (v) {
+        vozacIme = v.Ime;
+        vozacPrezime = v.Prezime;
+    }
+})
+
+$.ajax({
+    type: 'GET',
+    url: '/api/Dispecer/' + data[voznja].Dispecer,
+    async: false,
+    success: function (v) {
+        dispIme = v.Ime;
+        dispPrezime = v.Prezime;
+    }
+})
+
+
+$.ajax({
+    type: 'GET',
+    url: '/api/Korisnik/' + data[voznja].Musterija,
+    async: false,
+    success: function (v) {
+        korIme = v.Ime;
+        korPrezime = v.Prezime;
+    }
+})
+
+$.ajax({
+ type: 'GET',
+ url: '/api/Voznja',
+ async: false,
+ success: function (data) {
+
+$.ajax({
+ type: 'GET',
+ url: '/api/Voznja/' + id,
+ async: false,
+ success: function (data) {

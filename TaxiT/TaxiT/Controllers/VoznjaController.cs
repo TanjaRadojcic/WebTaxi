@@ -40,10 +40,10 @@ namespace TaxiT.Controllers
             if(voznja.Status == Enums.StatusVoznje.Formirana)
             {
 
-                voznja.Musterija = "";
+                voznja.Musterija = -1;
                 foreach (var v in Vozaci.vozaci.Values)
                 {
-                    if (v.KorisnickoIme == voznja.Vozac)
+                    if (v.Id == voznja.Vozac)
                     {
                         v.Zauzet = true;
                         ChangeToFileVozac(v);
@@ -53,8 +53,8 @@ namespace TaxiT.Controllers
             }
             else if(voznja.Status == Enums.StatusVoznje.Kreirana)
             {
-                voznja.Dispecer = "";
-                voznja.Vozac = "";
+                voznja.Dispecer = -1;
+                voznja.Vozac = -1;
             }
             
             Voznje.voznje.Add(voznja.Id, voznja);
@@ -82,7 +82,7 @@ namespace TaxiT.Controllers
                     Voznje.voznje[id].Status = voznja.Status;
                     foreach (var v in Vozaci.vozaci.Values)
                     {
-                        if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                        if (v.Id == Voznje.voznje[id].Vozac)
                         {
                             v.Zauzet = false;
                             ChangeToFileVozac(v);
@@ -95,7 +95,7 @@ namespace TaxiT.Controllers
                     Voznje.voznje[id].Status = voznja.Status;
                     foreach (var v in Vozaci.vozaci.Values)
                     {
-                        if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                        if (v.Id == Voznje.voznje[id].Vozac)
                         {
                             v.Zauzet = true;
                             ChangeToFileVozac(v);
@@ -112,7 +112,7 @@ namespace TaxiT.Controllers
                     Voznje.voznje[id].Vozac = voznja.Vozac;
                     foreach (var v in Vozaci.vozaci.Values)
                     {
-                        if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                        if (v.Id == Voznje.voznje[id].Vozac)
                         {
                             v.Zauzet = true;
                             ChangeToFileVozac(v);
@@ -120,14 +120,14 @@ namespace TaxiT.Controllers
                     }
                     break;
                 case Enums.StatusVoznje.Uspešna:
-                    if (voznja.Komentar.Korisnik == null)
+                    if (voznja.Komentar == null)
                     {
                         Voznje.voznje[id].Status = voznja.Status;
                         Voznje.voznje[id].Odrediste = voznja.Odrediste;
                         Voznje.voznje[id].Iznos = voznja.Iznos;
                         foreach (var v in Vozaci.vozaci.Values)
                         {
-                            if (v.KorisnickoIme == Voznje.voznje[id].Vozac)
+                            if (v.Id == Voznje.voznje[id].Vozac)
                             {
                                 v.Zauzet = false;
                                 ChangeToFileVozac(v);
@@ -181,7 +181,7 @@ namespace TaxiT.Controllers
                     v.PocetnaLokacija.Adresa.Ulica + ";" + v.PocetnaLokacija.Adresa.Broj + ";" + v.PocetnaLokacija.Adresa.Mesto + ";" + v.PocetnaLokacija.Adresa.Zip + ";" + v.TipAutomobila + ";" + 
                     v.Musterija + ";" + v.Odrediste.Id + ";" + v.Odrediste.X + ";" + v.Odrediste.Y + ";" + v.Odrediste.Adresa.Id + ";" + v.Odrediste.Adresa.Ulica + ";" + v.Odrediste.Adresa.Broj + ";"
                     + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString("yyyy-MM-dd HH:mm")
-                    + ";" + v.Komentar.Korisnik + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
+                    + ";" + v.Komentar.Korisnik + ";" + v.Komentar.KorisnikUloga + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
                 outputFile.WriteLine(voznja);
             }
             stream.Close();
@@ -197,7 +197,7 @@ namespace TaxiT.Controllers
                     v.PocetnaLokacija.Adresa.Ulica + ";" + v.PocetnaLokacija.Adresa.Broj + ";" + v.PocetnaLokacija.Adresa.Mesto + ";" + v.PocetnaLokacija.Adresa.Zip + ";" + v.TipAutomobila + ";" +
                     v.Musterija + ";" + v.Odrediste.Id + ";" + v.Odrediste.X + ";" + v.Odrediste.Y + ";" + v.Odrediste.Adresa.Id + ";" + v.Odrediste.Adresa.Ulica + ";" + v.Odrediste.Adresa.Broj + ";"
                     + v.Odrediste.Adresa.Mesto + ";" + v.Odrediste.Adresa.Zip + ";" + v.Dispecer + ";" + v.Vozac + ";" + v.Iznos + ";" + v.Komentar.Id + ";" + v.Komentar.Opis + ";" + v.Komentar.DatumObjave.ToString("yyyy-MM-dd HH:mm")
-                    + ";" + v.Komentar.Korisnik + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
+                    + ";" + v.Komentar.Korisnik + ";" + v.Komentar.KorisnikUloga + ";" + v.Komentar.Voznja + ";" + v.Komentar.Ocena + ";" + v.Status;
             File.WriteAllLines(path, file);
 
         }
