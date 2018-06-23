@@ -33,7 +33,10 @@ let korIme = "";
 
 <td>${vozacIme}</td>
 <td>${vozacPrezime}</td>
-<td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td>
+<td>${korIme}</td>
+<td>${korPrezime}</td>
+<td>${dispIme}</td>
+<td>${dispPrezime}</td>
 
 
 $.get("/api/Korisnik/" + korId, function (kor, status2) {
@@ -201,3 +204,377 @@ $.ajax({
  url: '/api/Voznja/' + id,
  async: false,
  success: function (data) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ function openCity(evt, cityName) {
+            $("#London").html("");
+            $("#Paris").html("");
+            $("#Tokyo").html("");
+            $("#pretragaD1").css("display", "none");
+            $("#pretragaD2").css("display", "none");
+            $("#pretragaD3").css("display", "none");
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/Voznja',
+                async: false,
+                success: function (data) {
+
+                    if (cityName == "London") {
+                        $("#pretragaD1").css("display", "inline");
+                        let ulogovani = localStorage.getItem("ulogovaniId");
+                        let tableOfProducts = "<table>
+    <tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+    for (voznja in data) {
+    if (data[voznja].Dispecer == ulogovani) {
+    var date = new Date(data[voznja].Datum);
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+
+    var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+    var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+    let vozacIme = "";
+    let vozacPrezime = "";
+
+    if (data[voznja].Vozac != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Vozac/' + data[voznja].Vozac,
+    async: false,
+    success: function (v) {
+    vozacIme = v.Ime;
+    vozacPrezime = v.Prezime;
+    }
+    })
+    }
+
+    let korIme = "";
+    let korPrezime = "";
+
+    if (data[voznja].Musterija != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Korisnik/' + data[voznja].Musterija,
+    async: false,
+    success: function (v) {
+    korIme = v.Ime;
+    korPrezime = v.Prezime;
+    }
+    })
+    }
+
+
+    tableOfProducts += `
+    <tr>
+        <td>${formatedDate}</td>
+        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
+        <td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td>
+        <td>${vozacIme}</td>
+        <td>${vozacPrezime}</td>
+        <td>${korIme}</td>
+        <td>${korPrezime}</td>
+        <td>${data[voznja].Iznos}</td>`;
+
+
+        switch (data[voznja].Status) {
+        case 0:
+        tableOfProducts += `
+        <td>Kreirana-Na čekanju</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 1:
+        tableOfProducts += `
+        <td>Formirana</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 2:
+        tableOfProducts += `
+        <td>Obrađena</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 3:
+        tableOfProducts += `
+        <td>Prihvaćena</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 4:
+        tableOfProducts += `
+        <td>Otkazana</td>`;
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        break;
+        case 5:
+        tableOfProducts += `
+        <td>Uspešna</td>`;
+        if (data[voznja].Komentar.Korisnik == -1) {
+        tableOfProducts += `
+        <td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClickD(${data[voznja].Id});">Dodaj komentar</button></td>`;
+
+        } else {
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        }
+        break;
+        case 6:
+        tableOfProducts += `
+        <td>Neuspešna</td>`;
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        break;
+
+        }
+
+        }
+        }
+        tableOfProducts += "
+</table>";
+                        $("#London").append(tableOfProducts);
+                    } else if (cityName == "Paris") {
+                        $("#pretragaD2").css("display", "inline");
+                        let tableOfProducts = "<table>
+    <tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+    for (voznja in data) {
+    var date = new Date(data[voznja].Datum);
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+
+    var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+    var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+    let vozacIme = "";
+    let vozacPrezime = "";
+
+    if (data[voznja].Vozac != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Vozac/' + data[voznja].Vozac,
+    async: false,
+    success: function (v) {
+    vozacIme = v.Ime;
+    vozacPrezime = v.Prezime;
+    }
+    })
+    }
+
+    let dispIme = "";
+    let dispPrezime = "";
+
+    if (data[voznja].Dispecer != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Dispecer/' + data[voznja].Dispecer,
+    async: false,
+    success: function (v) {
+    dispIme = v.Ime;
+    dispPrezime = v.Prezime;
+    }
+    })
+    }
+    let korIme = "";
+    let korPrezime = "";
+
+    if (data[voznja].Musterija != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Korisnik/' + data[voznja].Musterija,
+    async: false,
+    success: function (v) {
+    korIme = v.Ime;
+    korPrezime = v.Prezime;
+    }
+    })
+    }
+
+
+    tableOfProducts += `
+    <tr>
+        <td>${formatedDate}</td>
+        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
+        <td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td>
+        <td>${vozacIme}</td>
+        <td>${vozacPrezime}</td>
+        <td>${korIme}</td>
+        <td>${korPrezime}</td>
+        <td>${dispIme}</td>
+        <td>${dispPrezime}</td>
+        <td>${data[voznja].Iznos}</td>`;
+
+        switch (data[voznja].Status) {
+        case 0:
+        tableOfProducts += `
+        <td>Kreirana-Na čekanju</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 1:
+        tableOfProducts += `
+        <td>Formirana</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 2:
+        tableOfProducts += `
+        <td>Obrađena</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 3:
+        tableOfProducts += `
+        <td>Prihvaćena</td>`;
+        tableOfProducts += `
+        <td>Nema komentara</td>`;
+        break;
+        case 4:
+        tableOfProducts += `
+        <td>Otkazana</td>`;
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        break;
+        case 5:
+        tableOfProducts += `
+        <td>Uspešna</td>`;
+        if (data[voznja].Komentar.Korisnik == -1) {
+        tableOfProducts += `
+        <td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClickD(${data[voznja].Id});">Dodaj komentar</button></td>`;
+
+        } else {
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        }
+        break;
+        case 6:
+        tableOfProducts += `
+        <td>Neuspešna</td>`;
+        tableOfProducts += `
+        <td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+        break;
+
+        }
+
+        }
+        tableOfProducts += "
+</table>";
+                        $("#Paris").append(tableOfProducts);
+                    } else if (cityName == "Tokyo") {
+                        $("#pretragaD3").css("display", "inline");
+                        let tableOfProducts = "<table>
+    <tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+    for (voznja in data) {
+    if (data[voznja].Status == 0) {
+    var date = new Date(data[voznja].Datum);
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+
+    if (month < 10) month = '0' + month;
+    if (day < 10) day = '0' + day;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+
+    var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+    var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+    let korIme = "";
+    let korPrezime = "";
+
+    if (data[voznja].Musterija != -1) {
+    $.ajax({
+    type: 'GET',
+    url: '/api/Korisnik/' + data[voznja].Musterija,
+    async: false,
+    success: function (v) {
+    korIme = v.Ime;
+    korPrezime = v.Prezime;
+    }
+    })
+    }
+
+    tableOfProducts += `
+    <tr>
+        <td>${formatedDate}</td>
+        <td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td>
+        <td>${korIme}</td>
+        <td>${korPrezime}</td>`;
+        if (data[voznja].TipAutomobila == 0) {
+        tableOfProducts += `
+        <td>Svejedno</td>`;
+        } else if (data[voznja].TipAutomobila == 1) {
+        tableOfProducts += `
+        <td>Putnički</td>`;
+        } else if (data[voznja].TipAutomobila == 2) {
+        tableOfProducts += `
+        <td>Kombi</td>`;
+        }
+
+        tableOfProducts += `
+        <td><button id="obradi${data[voznja].Id}" type="button" onclick="obradiVoznjuClick(${data[voznja].Id});">Obradi Vožnju</button></td>`;
+
+        }
+        }
+        tableOfProducts += "
+</table>";
+                        $("#Tokyo").append(tableOfProducts);
+
+                    }
+                }
+            });
+
+
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }

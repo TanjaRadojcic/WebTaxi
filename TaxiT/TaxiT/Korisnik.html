@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-pink.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+
     <link rel="stylesheet" type="text/css" href="Korisnik.css">
     <script src="Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript">
+        let lokacijaMapa = "";
         $(document).ready(function () {
             let ulogovani = localStorage.getItem("ulogovani");
             let koje = "";
@@ -25,6 +28,7 @@
                     if (data != null) {
                         trenutniKorisnik = data;
                         localStorage.setItem("ulogovaniId", data.Id);
+                        $("#mapa").css("display", "none");
                         switch (data.Uloga) {
                             case 0:
                                 koje = "musterija";
@@ -34,8 +38,8 @@
                                 $("#dodajVoznjuDivK").css("display", "none");
                                 $("#tabelaMojeVoznjeK").css("display", "inline");
                                 $("#pretragaK").css("display", "inline");
-
-
+                                $("#mapa").css("display", "none");
+                                
                                 $("#homeK").click();
                                 $(".dispecer").css("display", "none");
 
@@ -111,8 +115,8 @@
                 $("#dodajKomentarOtkaziK").css("display", "none");
                 $("#pretragaK").css("display", "inline");
                 $("#tabelaMojeVoznjeK").html("");
+                $("#mapa").css("display", "none");
 
-                
                 $.ajax({
                     type: 'GET',
                     url: '/api/Voznja',
@@ -234,10 +238,10 @@
 
             });
 
-            
+
             $("#refreshK").click(function () {
 
-               
+
 
                 document.getElementById('cenaOdK').value = '';
                 document.getElementById('cenaDoK').value = '';
@@ -273,18 +277,18 @@
                     if (month < 10) month = '0' + month;
                     if (day < 10) day = '0' + day;
                     datumOd = date.getFullYear() + "-" + month + "-" + day;
-                    
-                } 
+
+                }
 
                 let datumDo = `${$('#DatumDoK').val()}`;
                 if (datumDo == "") {
                     var date = new Date();
                     var month = date.getMonth() + 1;
                     var day = date.getDate();
-                    if (month <10) month = '0' + month;
-                    if (day <10) day = '0' + day;
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
                     datumDo = date.getFullYear() + "-" + month + "-" + day;
-                } 
+                }
 
                 let e1 = document.getElementById('ocenaPretragaOdK');
                 let selValue1 = e1.options[e1.selectedIndex].value;
@@ -308,7 +312,7 @@
                 let selValue3 = e3.options[e3.selectedIndex].value;
                 let sort = selValue3;
 
-               
+
                 $.ajax({
                     type: 'GET',
                     url: '/api/Voznja',
@@ -431,7 +435,7 @@
 
             });
 
-            
+
 
             $("#pregledProfilaK").click(function () {
 
@@ -472,7 +476,7 @@
                 izmena += " <tr><td>Lozinka</td><td><input type=\"text\" name=\"Lozinka\" id=\"lozinka1\" value=\"" + trenutniKorisnik.Lozinka + "\" required /></td></tr>";
                 izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\" " + trenutniKorisnik.Ime + "\" required /></td></tr>";
                 izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\" " + trenutniKorisnik.Prezime + "\" id=\"prezime1\" required /></td></tr>";
-                
+
                 izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
                 izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" minlength=\"6\" value=\" " + trenutniKorisnik.Kontakt + "\" required /></td></tr>";
                 izmena += " <tr><td>Email</td><td><input type=\"email\" name=\"Email\" id=\"email1\" value=\" " + trenutniKorisnik.Email + "\" required /></td></tr></table>";
@@ -526,31 +530,34 @@
                 $("#dodajVoznjuDivK").css("display", "inline");
                 $("#tabelaMojeVoznjeK").css("display", "none");
                 $("#pretragaK").css("display", "none");
+                $("#mapa").css("display", "inline");
 
             });
 
             $("#dodajVoznjuK").click(function () {
-                let adresa = {
-                    Ulica: `${$('#ulicaK').val()}`,
-                    Broj: `${$('#brojK').val()}`,
-                    Mesto: `${$('#mestoK').val()}`,
-                    Zip: `${$('#zipK').val()}`,
-                };
-                let lokacija = {
-                    X: `${$('#xK').val()}`,
-                    Y: `${$('#yK').val()}`,
-                    Adresa: adresa,
-                };
+                //let adresa = {
+                //    Ulica: `${$('#ulicaK').val()}`,
+                //    Broj: `${$('#brojK').val()}`,
+                //    Mesto: `${$('#mestoK').val()}`,
+                //    Zip: `${$('#zipK').val()}`,
+                //};
+                //let lokacija = {
+                //    X: `${$('#xK').val()}`,
+                //    Y: `${$('#yK').val()}`,
+                //    Adresa: adresa,
+                //};
+
+                let lokacija2 = lokacijaMapa;
 
                 let e = document.getElementById('autoK');
                 let selValue = e.options[e.selectedIndex].text;
 
                 let Voznja = {
                     Musterija: trenutniKorisnik.Id,
-                    PocetnaLokacija: lokacija,
+                    PocetnaLokacija: lokacija2,
                     TipAutomobila: selValue,
                     Status: "Kreirana",
-                    
+
                 };
                 $.ajax({
                     type: 'POST',
@@ -606,6 +613,9 @@
                 $("#pretragaD1").css("display", "none");
                 $("#pretragaD2").css("display", "none");
                 $("#pretragaD3").css("display", "none");
+                $("#mapa").css("display", "none");
+                $("#dodajVoznjuD").css("display", "none");
+               
                 openCityV(event, 'London');
             });
 
@@ -702,21 +712,22 @@
                 $("#dodajVozacaDivD").css("display", "inline");
                 $("#dodajVoznjuDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
+                $("#mapa").css("display", "inline");
 
             });
             $("#registracijaV").click(function () {
-                let adresa = {
-                    Ulica: `${$('#ulicaVD').val()}`,
-                    Broj: `${$('#brojVD').val()}`,
-                    Mesto: `${$('#mestoVD').val()}`,
-                    Zip: `${$('#zipVD').val()}`,
-                };
-                let lokacija = {
-                    X: `${$('#xVD').val()}`,
-                    Y: `${$('#yVD').val()}`,
-                    Adresa: adresa,
-                };
-
+                //let adresa = {
+                //    Ulica: `${$('#ulicaVD').val()}`,
+                //    Broj: `${$('#brojVD').val()}`,
+                //    Mesto: `${$('#mestoVD').val()}`,
+                //    Zip: `${$('#zipVD').val()}`,
+                //};
+                //let lokacija = {
+                //    X: `${$('#xVD').val()}`,
+                //    Y: `${$('#yVD').val()}`,
+                //    Adresa: adresa,
+                //};
+                let lokacija2 = lokacijaMapa;
                 let e = document.getElementById('tipAutoVD');
                 let selValue = e.options[e.selectedIndex].text;
 
@@ -739,7 +750,7 @@
                     JMBG: `${$('#jmbgVD').val()}`,
                     Kontakt: `${$('#kontaktVD').val()}`,
                     Email: `${$('#emailVD').val()}`,
-                    Lokacija: lokacija,
+                    Lokacija: lokacija2,
                     Automobil: automobil,
 
                 };
@@ -768,30 +779,32 @@
             });
 
             $("#PlusVoznjaD").click(function () {
-                
+
                 $("#izmenaProfilaDivD").css("display", "none");
                 $("#pregledProfilaDivD").css("display", "none");
                 $("#dodajVozacaDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
+                $("#mapa").css("display", "inline");
                 $("#dodajVoznjuD").html("");
-               
-                
-                    let tabela = `<table border="1"><tr><td colspan="2">Lokacija</td></tr><tr><td>X</td><td><input type="number" name="X" id="xD" required /></td></tr>`;
-                    tabela += `<tr><td>Y</td><td><input type="number" name="Y" id="yD" required /></td></tr>`;
-                    tabela += `<tr><td colspan="2">Adresa</td></tr><tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaD" required /></td></tr>`;
-                    tabela += `<tr><td>Broj</td><td><input type="text" name="Broj" id="brojD" required /></td></tr>`;
-                    tabela += `<tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoD" required /></td></tr>`;
-                    tabela += `<tr><td>ZIP</td><td><input type="number" name="Zip" id="zipD" required /></td></tr>`;
-                    tabela += `<tr><td>Tip Automobila</td><td><select name="Auto" id="autoD"><option>Svejedno</option><option>Putnički</option><option>Kombi</option></select></td></tr>`;
-                    
-                    tabela += `<tr><td colspan="2"><button id="dodajVoznjuDugmeD" type="button">Dodaj</button></td></tr></table>`;
-                    
-                    $("#dodajVoznjuD").append(tabela);
-                
-                
 
-                
-                
+
+                let tabela = `<table border="1">`;
+                //tabela += `<tr><td colspan="2">Lokacija</td></tr> <tr><td>X</td><td><input type="number" name="X" id="xD" required /></td></tr>`;
+                //tabela += `<tr><td>Y</td><td><input type="number" name="Y" id="yD" required /></td></tr>`;
+                //tabela += `<tr><td colspan="2">Adresa</td></tr><tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaD" required /></td></tr>`;
+                //tabela += `<tr><td>Broj</td><td><input type="text" name="Broj" id="brojD" required /></td></tr>`;
+                //tabela += `<tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoD" required /></td></tr>`;
+                //tabela += `<tr><td>ZIP</td><td><input type="number" name="Zip" id="zipD" required /></td></tr>`;
+                tabela += `<tr><td>Tip Automobila</td><td><select name="Auto" id="autoD"><option>Svejedno</option><option>Putnički</option><option>Kombi</option></select></td></tr>`;
+
+                tabela += `<tr><td colspan="2"><button id="dodajVoznjuDugmeD" type="button">Dodaj</button></td></tr></table>`;
+
+                $("#dodajVoznjuD").append(tabela);
+
+
+
+
+
                 $("#dodajVoznjuD").css("display", "inline");
 
             });
@@ -844,17 +857,18 @@
             $(document).on('click', '#dodajVoznjuDugme2D', function () {
 
 
-                let adresa = {
-                    Ulica: `${$('#ulicaD').val()}`,
-                    Broj: `${$('#brojD').val()}`,
-                    Mesto: `${$('#mestoD').val()}`,
-                    Zip: `${$('#zipD').val()}`,
-                };
-                let lokacija = {
-                    X: `${$('#xD').val()}`,
-                    Y: `${$('#yD').val()}`,
-                    Adresa: adresa,
-                };
+                //let adresa = {
+                //    Ulica: `${$('#ulicaD').val()}`,
+                //    Broj: `${$('#brojD').val()}`,
+                //    Mesto: `${$('#mestoD').val()}`,
+                //    Zip: `${$('#zipD').val()}`,
+                //};
+                //let lokacija = {
+                //    X: `${$('#xD').val()}`,
+                //    Y: `${$('#yD').val()}`,
+                //    Adresa: adresa,
+                //};
+                let lokacija2 = lokacijaMapa;
 
                 let e = document.getElementById('autoD');
                 let selValue = e.options[e.selectedIndex].text;
@@ -863,7 +877,7 @@
 
                 let Voznja = {
                     Dispecer: trenutniKorisnik.KorisnickoIme,
-                    PocetnaLokacija: lokacija,
+                    PocetnaLokacija: lokacija2,
                     TipAutomobila: selValue,
                     Vozac: selValue1,
                     Status: "Formirana",
@@ -996,10 +1010,321 @@
                 let ime = `${$('#imeD1').val()}`;
                 let prezime = `${$('#prezimeD1').val()}`;
 
+                $("#London").html("");
+                $("#Paris").html("");
+                $("#Tokyo").html("");
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/Voznja',
+                    async: false,
+                    success: function (data) {
+                        let ulogovani = localStorage.getItem("ulogovaniId");
+                        let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+                        for (voznja in data) {
+                            if (data[voznja].Dispecer == ulogovani) {
+                                var date = new Date(data[voznja].Datum);
+                                var month = date.getMonth() + 1;
+                                var day = date.getDate();
+                                var hours = date.getHours();
+                                var minutes = date.getMinutes();
+
+                                if (month < 10) month = '0' + month;
+                                if (day < 10) day = '0' + day;
+                                if (hours < 10) hours = '0' + hours;
+                                if (minutes < 10) minutes = '0' + minutes;
+
+                                var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                                var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                                let vozacIme = "";
+                                let vozacPrezime = "";
+
+                                if (data[voznja].Vozac != -1) {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/api/Vozac/' + data[voznja].Vozac,
+                                        async: false,
+                                        success: function (v) {
+                                            vozacIme = v.Ime;
+                                            vozacPrezime = v.Prezime;
+                                        }
+                                    })
+                                }
+
+                                let korIme = "";
+                                let korPrezime = "";
+
+                                if (data[voznja].Musterija != -1) {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/api/Korisnik/' + data[voznja].Musterija,
+                                        async: false,
+                                        success: function (v) {
+                                            korIme = v.Ime;
+                                            korPrezime = v.Prezime;
+                                        }
+                                    })
+                                }
+
+                                if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td>`;
+
+
+                                    switch (data[voznja].Status) {
+                                        case 0:
+                                            tableOfProducts += `<td>Kreirana-Na čekanju</td>`;
+                                            tableOfProducts += `<td>Nema komentara</td>`;
+                                            break;
+                                        case 1:
+                                            tableOfProducts += `<td>Formirana</td>`;
+                                            tableOfProducts += `<td>Nema komentara</td>`;
+                                            break;
+                                        case 2:
+                                            tableOfProducts += `<td>Obrađena</td>`;
+                                            tableOfProducts += `<td>Nema komentara</td>`;
+                                            break;
+                                        case 3:
+                                            tableOfProducts += `<td>Prihvaćena</td>`;
+                                            tableOfProducts += `<td>Nema komentara</td>`;
+                                            break;
+                                        case 4:
+                                            tableOfProducts += `<td>Otkazana</td>`;
+                                            tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                            break;
+                                        case 5:
+                                            tableOfProducts += `<td>Uspešna</td>`;
+                                            if (data[voznja].Komentar.Korisnik == -1) {
+                                                tableOfProducts += `<td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClickD(${data[voznja].Id});">Dodaj komentar</button></td>`;
+
+                                            } else {
+                                                tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                            }
+                                            break;
+                                        case 6:
+                                            tableOfProducts += `<td>Neuspešna</td>`;
+                                            tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                            break;
+
+                                    }
+                                }
+
+                            }
+                        }
+                        tableOfProducts += "</table>";
+                        $("#London").append(tableOfProducts);
+                    }
+                })
+
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById("London").style.display = "block";
+                event.currentTarget.className += " active";
 
             });
 
+            $("#pretraziD2").click(function () {
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                let id = localStorage.getItem("ulogovaniId");
 
+                let e = document.getElementById('statusPretragaD2');
+                let selValue = e.options[e.selectedIndex].value;
+                let statusPretrage = selValue;
+
+                let datumOd = `${$('#DatumOdD2').val()}`;
+                if (datumOd == "") {
+                    var date = new Date("2018-01-01");
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumOd = date.getFullYear() + "-" + month + "-" + day;
+
+                }
+
+                let datumDo = `${$('#DatumDoD2').val()}`;
+                if (datumDo == "") {
+                    var date = new Date();
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumDo = date.getFullYear() + "-" + month + "-" + day;
+                }
+
+                let e1 = document.getElementById('ocenaPretragaOdD2');
+                let selValue1 = e1.options[e1.selectedIndex].value;
+                let ocenaOd = selValue1;
+
+                let e2 = document.getElementById('ocenaPretragaDoD2');
+                let selValue2 = e2.options[e2.selectedIndex].value;
+                let ocenaDo = selValue2;
+
+                let cenaOd = `${$('#cenaOdD2').val()}`;
+                if (cenaOd == "") {
+                    cenaOd = 0;
+                }
+
+                let cenaDo = `${$('#cenaDoD2').val()}`;
+                if (cenaDo == "") {
+                    cenaDo = 9999;
+                }
+
+                let e3 = document.getElementById('SortD2');
+                let selValue3 = e3.options[e3.selectedIndex].value;
+                let sort = selValue3;
+
+                let e4 = document.getElementById('ulogaPretragaD2');
+                let selValue4 = e4.options[e4.selectedIndex].value;
+                let uloga = selValue4;
+
+                let ime = `${$('#imeD2').val()}`;
+                let prezime = `${$('#prezimeD2').val()}`;
+
+                $("#London").html("");
+                $("#Paris").html("");
+                $("#Tokyo").html("");
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/Voznja',
+                    async: false,
+                    success: function (data) {
+                        $("#pretragaD2").css("display", "inline");
+                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        for (voznja in data) {
+                            var date = new Date(data[voznja].Datum);
+                            var month = date.getMonth() + 1;
+                            var day = date.getDate();
+                            var hours = date.getHours();
+                            var minutes = date.getMinutes();
+
+                            if (month < 10) month = '0' + month;
+                            if (day < 10) day = '0' + day;
+                            if (hours < 10) hours = '0' + hours;
+                            if (minutes < 10) minutes = '0' + minutes;
+
+                            var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                            var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                            let vozacIme = "";
+                            let vozacPrezime = "";
+
+                            if (data[voznja].Vozac != -1) {
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/api/Vozac/' + data[voznja].Vozac,
+                                    async: false,
+                                    success: function (v) {
+                                        vozacIme = v.Ime;
+                                        vozacPrezime = v.Prezime;
+                                    }
+                                })
+                            }
+
+                            let dispIme = "";
+                            let dispPrezime = "";
+
+                            if (data[voznja].Dispecer != -1) {
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/api/Dispecer/' + data[voznja].Dispecer,
+                                    async: false,
+                                    success: function (v) {
+                                        dispIme = v.Ime;
+                                        dispPrezime = v.Prezime;
+                                    }
+                                })
+                            }
+                            let korIme = "";
+                            let korPrezime = "";
+
+                            if (data[voznja].Musterija != -1) {
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/api/Korisnik/' + data[voznja].Musterija,
+                                    async: false,
+                                    success: function (v) {
+                                        korIme = v.Ime;
+                                        korPrezime = v.Prezime;
+                                    }
+                                })
+                            }
+
+                            if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
+
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+
+                                switch (data[voznja].Status) {
+                                    case 0:
+                                        tableOfProducts += `<td>Kreirana-Na čekanju</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        break;
+                                    case 1:
+                                        tableOfProducts += `<td>Formirana</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        break;
+                                    case 2:
+                                        tableOfProducts += `<td>Obrađena</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        break;
+                                    case 3:
+                                        tableOfProducts += `<td>Prihvaćena</td>`;
+                                        tableOfProducts += `<td>Nema komentara</td>`;
+                                        break;
+                                    case 4:
+                                        tableOfProducts += `<td>Otkazana</td>`;
+                                        tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        break;
+                                    case 5:
+                                        tableOfProducts += `<td>Uspešna</td>`;
+                                        if (data[voznja].Komentar.Korisnik == -1) {
+                                            tableOfProducts += `<td><button id="dodajKomentar${data[voznja].Id}" type="button" onclick="dodajKomentarClickD(${data[voznja].Id});">Dodaj komentar</button></td>`;
+
+                                        } else {
+                                            tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        }
+                                        break;
+                                    case 6:
+                                        tableOfProducts += `<td>Neuspešna</td>`;
+                                        tableOfProducts += `<td><button id="vidiKomentar${data[voznja].Id}" type="button" onclick="vidiKomentarClickD(${data[voznja].Id});">Vidi komentar</button></td>`;
+
+                                        break;
+
+                                }
+                            }
+
+                        }
+                        tableOfProducts += "</table>";
+                        $("#Paris").append(tableOfProducts);
+
+                    }
+                })
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById("Paris").style.display = "block";
+                event.currentTarget.className += " active";
+            });
 
 
 
@@ -1014,7 +1339,7 @@
 
                 $("#pregledProfilaDivV").css("display", "none");
                 $("#izmenaProfilaDivV").css("display", "none");
-                
+                $("#mapa").css("display", "none");
                 $("#dodajKomentarV").css("display", "none");
                 $("#prikaziKomentarV").css("display", "none");
                 $("#uspesnaVoznjaV").css("display", "none");
@@ -1023,7 +1348,7 @@
                 $("#pretragaV1").css("display", "none");
                 $("#pretragaV2").css("display", "none");
                 openCityV(event, 'LondonV');
-                
+
             });
 
             $("#pregledProfilaV").click(function () {
@@ -1058,7 +1383,7 @@
                 } else {
                     $("#automobilV").html("Kombi");
                 }
-               
+
 
             });
 
@@ -1072,7 +1397,7 @@
                 $("#uspesnaVoznjaV").css("display", "none");
                 $("#pretragaV1").css("display", "none");
                 $("#pretragaV2").css("display", "none");
-                
+                $("#mapa").css("display", "inline");
 
                 let izmena = "<table class=\"w3-large\" border=1>";
                 izmena += " <tr><td>Korisničko ime</td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" value=\"" + trenutniKorisnik.KorisnickoIme + "\" required /></td></tr>";
@@ -1083,12 +1408,12 @@
                 izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
                 izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" minlength=\"6\" value=\" " + trenutniKorisnik.Kontakt + "\" required /></td></tr>";
                 izmena += " <tr><td>Email</td><td><input type=\"email\" name=\"Email\" id=\"email1\" value=\" " + trenutniKorisnik.Email + "\" required /></td></tr>";
-                izmena += " <tr><td colspan=\"2\">Lokacija</td></tr><tr><td>X</td><td><input type=\"number\" name=\"X\" id=\"xV\" value=\"" + trenutniKorisnik.Lokacija.X + "\" required /></td ></tr > ";
-                izmena += " <tr><td>Y</td><td><input type=\"number\" name=\"Y\" id=\"yV\" value=\"" + trenutniKorisnik.Lokacija.Y + "\" required /></td ></tr >";
-                izmena += " <tr><td colspan=\"2\">Adresa</td></tr><tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Ulica + "\" required /></td ></tr >";
-                izmena += " <tr><td>Broj</td><td><input type=\"text\" name=\"Broj\" id=\"brojV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Broj + "\" required /></td ></tr>";
-                izmena += " <tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Mesto + "\" required /></td ></tr>";
-                izmena += " <tr><td>ZIP</td><td><input type=\"number\" name=\"Zip\" id=\"zipV\" pattern=\"[0-9]{5}\" minlength=\"5\" maxlength=\"5\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Zip + "\" required /></td></tr>";
+                //izmena += " <tr><td colspan=\"2\">Lokacija</td></tr><tr><td>X</td><td><input type=\"number\" name=\"X\" id=\"xV\" value=\"" + trenutniKorisnik.Lokacija.X + "\" required /></td ></tr > ";
+                //izmena += " <tr><td>Y</td><td><input type=\"number\" name=\"Y\" id=\"yV\" value=\"" + trenutniKorisnik.Lokacija.Y + "\" required /></td ></tr >";
+                //izmena += " <tr><td colspan=\"2\">Adresa</td></tr><tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Ulica + "\" required /></td ></tr >";
+                //izmena += " <tr><td>Broj</td><td><input type=\"text\" name=\"Broj\" id=\"brojV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Broj + "\" required /></td ></tr>";
+                //izmena += " <tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Mesto + "\" required /></td ></tr>";
+                //izmena += " <tr><td>ZIP</td><td><input type=\"number\" name=\"Zip\" id=\"zipV\" pattern=\"[0-9]{5}\" minlength=\"5\" maxlength=\"5\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Zip + "\" required /></td></tr>";
                 izmena += " <tr><td colspan=\"2\">Automobil</td></tr>";
                 izmena += " <tr><td>Godište</td><td><input type=\"number\" name=\"Godiste\" id=\"godisteV\" value=\"" + trenutniKorisnik.Automobil.Godiste + "\" required/></td></tr>";
                 izmena += " <tr><td>Registracija</td><td><input type=\"text\" name=\"Registracija\" id=\"regV\" value=\"" + trenutniKorisnik.Automobil.Registracija + "\" required /></td></tr>";
@@ -1100,23 +1425,24 @@
                     izmena += " <tr><td>Tip</td><td><select name=\"TipAutomobila\" id=\"tipAutoV\"><option>Putnički</option><option selected>Kombi</option></select></td></tr></table>";
 
                 }
-                
+
                 $("#tabelaIzmenaV").html(izmena);
 
             });
 
             $("#izmeniV").click(function () {
-                let adresa = {
-                    Ulica: `${$('#ulicaV').val()}`,
-                    Broj: `${$('#brojV').val()}`,
-                    Mesto: `${$('#mestoV').val()}`,
-                    Zip: `${$('#zipV').val()}`,
-                };
-                let lokacija = {
-                    X: `${$('#xV').val()}`,
-                    Y: `${$('#yV').val()}`,
-                    Adresa: adresa,
-                };
+                //let adresa = {
+                //    Ulica: `${$('#ulicaV').val()}`,
+                //    Broj: `${$('#brojV').val()}`,
+                //    Mesto: `${$('#mestoV').val()}`,
+                //    Zip: `${$('#zipV').val()}`,
+                //};
+                //let lokacija = {
+                //    X: `${$('#xV').val()}`,
+                //    Y: `${$('#yV').val()}`,
+                //    Adresa: adresa,
+                //};
+                let lokacija2 = lokacijaMapa;
 
                 let e = document.getElementById('tipAutoV');
                 let selValue = e.options[e.selectedIndex].text;
@@ -1140,7 +1466,7 @@
                     Email: `${$('#email1').val()}`,
                     Voznje: trenutniKorisnik.Voznje,
                     Uloga: trenutniKorisnik.Uloga,
-                    Lokacija: lokacija,
+                    Lokacija: lokacija2,
                     Automobil: automobil,
                 };
 
@@ -1181,7 +1507,7 @@
                 $("#pretraziV1").click();
             });
             $("#refreshV2").click(function () {
-                
+
                 document.getElementById('DatumOdV2').value = '';
                 document.getElementById('DatumDoV2').value = '';
                 $("#pretragaV2").css("display", "inline");
@@ -1375,10 +1701,10 @@
             $("#pretraziV2").click(function () {
                 $("#TokyoV").html("");
                 $("#pretragaV1").css("display", "none");
-                
+
                 let id = localStorage.getItem("ulogovaniId");
 
-                
+
                 let datumOd = `${$('#DatumOdV2').val()}`;
                 if (datumOd == "") {
                     var date = new Date("2018-01-01");
@@ -1400,7 +1726,7 @@
                     datumDo = date.getFullYear() + "-" + month + "-" + day;
                 }
 
-                
+
 
                 let e3 = document.getElementById('SortV2');
                 let selValue3 = e3.options[e3.selectedIndex].value;
@@ -1504,7 +1830,7 @@
             $("#pretragaD2").css("display", "none");
             $("#pretragaD3").css("display", "none");
 
-            
+
 
             $.ajax({
                 type: 'GET',
@@ -1515,7 +1841,7 @@
                     if (cityName == "London") {
                         $("#pretragaD1").css("display", "inline");
                         let ulogovani = localStorage.getItem("ulogovaniId");
-                        let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Dispecer == ulogovani) {
                                 var date = new Date(data[voznja].Datum);
@@ -1563,7 +1889,7 @@
                                 }
 
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
 
                                 switch (data[voznja].Status) {
@@ -1612,7 +1938,7 @@
                         $("#London").append(tableOfProducts);
                     } else if (cityName == "Paris") {
                         $("#pretragaD2").css("display", "inline");
-                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
                             var month = date.getMonth() + 1;
@@ -1673,7 +1999,7 @@
                             }
 
 
-                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
                             switch (data[voznja].Status) {
                                 case 0:
@@ -1797,7 +2123,7 @@
                     voznja = data;
                 }
             });
-            
+
             $.ajax({
                 type: 'GET',
                 url: '/api/Vozac',
@@ -1830,7 +2156,7 @@
                     $("#obradaVoznjeD").append(tabela);
                 }
             });
-            
+
             $("#obradaVoznjeD").css("display", "inline");
         }
 
@@ -1892,16 +2218,16 @@
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("musterijaVoznje");
             switching = true;
-            
+
             while (switching) {
-                
+
                 switching = false;
                 rows = table.getElementsByTagName("TR");
-                
+
                 for (i = 2; i < (rows.length - 1); i++) {
-                    
+
                     shouldSwitch = false;
-                    
+
                     x = rows[i].getElementsByTagName("TD")[n];
                     y = rows[i + 1].getElementsByTagName("TD")[n];
 
@@ -1929,9 +2255,11 @@
 
         //radi
         function izmeniVoznjuClick(id) {
-            
+            $("#mapa").css("display", "inline");
+            $("#pretragaK").css("display", "none");
+            $("#tabelaMojeVoznjeK").css("display", "none");
             $("#izmenaVoznjeK").html("");
-
+            
             $.ajax({
                 type: 'GET',
                 url: '/api/Voznja/' + id,
@@ -1940,14 +2268,17 @@
 
 
                     localStorage.setItem("voznjaZaIzmenu", data.Id);
-                    let izmena = "<table border=\"1\"><tr><td colspan=\"2\">Vaša lokacija</td></tr>";
-                    izmena += "<tr><td>X</td><td><input type=\"number\" name=\"X\" id=\"xI\" value = \"" + data.PocetnaLokacija.X + "\" required /></td></tr>";
-                    izmena += "<tr><td>Y</td><td><input type=\"number\" name=\"Y\" id=\"yI\" value = \"" + data.PocetnaLokacija.Y + "\" required /></td></tr>";
-                    izmena += "<tr><td colspan=\"2\">Adresa</td></tr>";
-                    izmena += "<tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaI\" value = \" " + data.PocetnaLokacija.Adresa.Ulica + "\" required /></td></tr>";
-                    izmena += "<tr><td>Broj</td><td><input type=\"text\" name=\"Broj\" id=\"brojI\" value = \" " + data.PocetnaLokacija.Adresa.Broj + "\" required /></td></tr>";
-                    izmena += "<tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoI\" value = \" " + data.PocetnaLokacija.Adresa.Mesto + "\" required /></td></tr>";
-                    izmena += "<tr><td>Zip</td><td><input type=\"number\" name=\"Zip\" id=\"zipI\" value=\"" + data.PocetnaLokacija.Adresa.Zip + "\" required/></td></tr>";
+
+                    
+                    let izmena = "<table border=\"1\">";
+                    //izmena += "<tr><td colspan=\"2\">Vaša lokacija</td></tr > ";
+                    //izmena += "<tr><td>X</td><td><input type=\"number\" name=\"X\" id=\"xI\" value = \"" + data.PocetnaLokacija.X + "\" required /></td></tr>";
+                    //izmena += "<tr><td>Y</td><td><input type=\"number\" name=\"Y\" id=\"yI\" value = \"" + data.PocetnaLokacija.Y + "\" required /></td></tr>";
+                    //izmena += "<tr><td colspan=\"2\">Adresa</td></tr>";
+                    //izmena += "<tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaI\" value = \" " + data.PocetnaLokacija.Adresa.Ulica + "\" required /></td></tr>";
+                    //izmena += "<tr><td>Broj</td><td><input type=\"text\" name=\"Broj\" id=\"brojI\" value = \" " + data.PocetnaLokacija.Adresa.Broj + "\" required /></td></tr>";
+                    //izmena += "<tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoI\" value = \" " + data.PocetnaLokacija.Adresa.Mesto + "\" required /></td></tr>";
+                    //izmena += "<tr><td>Zip</td><td><input type=\"number\" name=\"Zip\" id=\"zipI\" value=\"" + data.PocetnaLokacija.Adresa.Zip + "\" required/></td></tr>";
 
                     if (data.TipAutomobila == 0) {
                         izmena += "<tr><td>Tip Automobila</td><td><select name=\"Auto\" id=\"autoI\"><option selected>Svejedno</option><option>Putnički</option><option>Kombi</option></select></td></tr>";
@@ -2013,7 +2344,7 @@
                             }
                         })
                     }
-                    
+
                     $("#OcenaP").text(data.Komentar.Ocena);
 
                 }
@@ -2023,7 +2354,7 @@
 
         }
         function zatvoriKomentarK() {
-           
+
             $("#prikaziKomentarK").css("display", "none");
         }
         function otkaziKomentarDugmeK() {
@@ -2075,7 +2406,7 @@
                     }
 
 
-                    
+
                     $("#OcenaPD").text(data.Komentar.Ocena);
 
                 }
@@ -2085,7 +2416,7 @@
 
         }
         function zatvoriKomentarD() {
-           
+
             $("#prikaziKomentarD").css("display", "none");
         }
         function otkaziKomentarDugmeD() {
@@ -2096,27 +2427,28 @@
         //radi
         function izmeniVoznjuKlik() {
 
-           
+
             let IdIzmene = localStorage.getItem("voznjaZaIzmenu");
-            
-            let adresa = {
-                Ulica: `${$('#ulicaI').val()}`,
-                Broj: `${$('#brojI').val()}`,
-                Mesto: `${$('#mestoI').val()}`,
-                Zip: `${$('#zipI').val()}`,
-            };
-            let lokacija = {
-                X: `${$('#xI').val()}`,
-                Y: `${$('#yI').val()}`,
-                Adresa: adresa,
-            };
+
+            //let adresa = {
+            //    Ulica: `${$('#ulicaI').val()}`,
+            //    Broj: `${$('#brojI').val()}`,
+            //    Mesto: `${$('#mestoI').val()}`,
+            //    Zip: `${$('#zipI').val()}`,
+            //};
+            //let lokacija = {
+            //    X: `${$('#xI').val()}`,
+            //    Y: `${$('#yI').val()}`,
+            //    Adresa: adresa,
+            //};
+            let lokacija2 = lokacijaMapa;
 
             let e = document.getElementById('autoI');
             let selValue = e.options[e.selectedIndex].text;
 
             let Voznja = {
 
-                PocetnaLokacija: lokacija,
+                PocetnaLokacija: lokacija2,
                 TipAutomobila: selValue,
                 Status: "Kreirana",
 
@@ -2150,8 +2482,8 @@
             $("#dodajKomentarOtkaziK").css("display", "inline");
             localStorage.setItem("otkazanaVoznja", id);
 
-            
-            
+
+
 
         }
         //radi
@@ -2209,7 +2541,7 @@
 
         function dodajKomentarDugmeK() {
             let v = localStorage.getItem("voznja");
-            
+
             let ulogovani = localStorage.getItem("ulogovaniId");
 
             let komentar = {
@@ -2250,7 +2582,7 @@
                 }
             })
 
-           
+
         }
 
 
@@ -2312,29 +2644,33 @@
 
 
 
-       //radi
+        //radi
         function uspesnaClickV(id) {
             $("#uspesnaVoznjaV").css("display", "inline");
+            $("#mapa").css("display", "inline");
             localStorage.setItem("uspesnaVoznja", id);
         }
         //radi
         function uspesnaVoznjaDugmeV() {
             let voznjaId = localStorage.getItem("uspesnaVoznja");
 
-            let adresa = {
-                Ulica: `${$('#ulicaV').val()}`,
-                Broj: `${$('#brojV').val()}`,
-                Mesto: `${$('#mestoV').val()}`,
-                Zip: `${$('#zipV').val()}`,
-            };
-            let lokacija = {
-                X: `${$('#xV').val()}`,
-                Y: `${$('#yV').val()}`,
-                Adresa: adresa,
-            };
+            //let adresa = {
+            //    Ulica: `${$('#ulicaV').val()}`,
+            //    Broj: `${$('#brojV').val()}`,
+            //    Mesto: `${$('#mestoV').val()}`,
+            //    Zip: `${$('#zipV').val()}`,
+            //};
+            //let lokacija = {
+            //    X: `${$('#xV').val()}`,
+            //    Y: `${$('#yV').val()}`,
+            //    Adresa: adresa,
+            //};
+
+            let lokacija2 = lokacijaMapa;
+
             let Voznja = {
 
-                Odrediste: lokacija,
+                Odrediste: lokacija2,
                 Iznos: `${$('#iznosV').val()}`,
                 Status: "Uspešna",
 
@@ -2444,7 +2780,7 @@
 
                 }
             })
-            
+
         }
         //radi
         function vidiKomentarClickV(id) {
@@ -2494,7 +2830,7 @@
 
 
 
-                    
+
                     $("#OcenaPV").text(data.Komentar.Ocena);
 
                 }
@@ -2505,7 +2841,7 @@
         }
         //radi
         function zatvoriKomentarV() {
-            
+
             $("#prikaziKomentarV").css("display", "none");
         }
         function otkaziKomentarDugmeV() {
@@ -2607,7 +2943,7 @@
 
         function sortTableV2() {
             var n = document.getElementById("SortV2").value;
-            
+
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("kreiraneV");
             switching = true;
@@ -2653,7 +2989,7 @@
 
             let id = localStorage.getItem("ulogovaniId");
 
-           
+
 
             $.ajax({
                 type: 'GET',
@@ -2838,7 +3174,7 @@
                 }
             });
 
-            
+
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
@@ -2855,6 +3191,9 @@
     </script>
 </head>
 <body>
+    <div class="w3-container w3-content" style="margin-top:150px" id="mapa">
+        <div  id="map" style="width:700px;height: 400px;margin-top:50px;margin-left:30px"></div>
+    </div>
     <div class="musterija">
         <div class="w3-top">
             <div class="w3-bar " style=" background-color:#f176ad">
@@ -2898,15 +3237,16 @@
             <!--nije gotovo-->
             <div id="dodajVoznjuDivK">
                 <div id="tabelaDodajVoznju">
+                    
                     <table border="1">
-                        <tr><td colspan="2">Vaša lokacija</td></tr>
+                        <!--<tr><td colspan="2">Vaša lokacija</td></tr>
                         <tr><td>X</td><td><input type="number" name="X" id="xK" required /></td></tr>
                         <tr><td>Y</td><td><input type="number" name="Y" id="yK" required /></td></tr>
                         <tr><td colspan="2">Adresa</td></tr>
                         <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaK" required /></td></tr>
                         <tr><td>Broj</td><td><input type="text" name="Broj" id="brojK" required /></td></tr>
                         <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoK" required /></td></tr>
-                        <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipK" required /></td></tr>
+                        <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipK" required /></td></tr>-->
                         <tr>
                             <td>Tip Automobila</td>
                             <td>
@@ -2969,13 +3309,13 @@
                             </select>
                         </td>
                         <td>
-                            <input type="number"  name="cenaOdK" id="cenaOdK" placeholder="Cena od" />
+                            <input type="number" name="cenaOdK" id="cenaOdK" placeholder="Cena od" />
                         </td>
                         <td>
-                            <input type="number"  name="cenaDoK" id="cenaDoK" placeholder="Cena do" />
+                            <input type="number" name="cenaDoK" id="cenaDoK" placeholder="Cena do" />
                         </td>
                     </tr>
-                    
+
                     <tr>
                         <td>
                             Sortiraj po:
@@ -2993,7 +3333,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        
+
                         <td><button id="pretraziK" type="button"><i class="fa fa-check-circle"></i></button></td>
 
                     </tr>
@@ -3004,9 +3344,13 @@
             <div id="tabelaMojeVoznjeK">
 
             </div>
-            <div id="izmenaVoznjeK" class="w3-right">
+
+
+            <div id="izmenaVoznjeK">
 
             </div>
+
+
             <div id="dodajKomentarK" class="w3-right">
                 <table border="1">
                     <tr>
@@ -3037,7 +3381,7 @@
                     </tr>
                     <tr>
                         <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaKO" min="1" max="5" value="1" disabled/></td>
+                        <td><input type="range" name="Ocena" id="ocenaKO" min="1" max="5" value="1" disabled /></td>
                     </tr>
                     <tr>
                         <td colspan="2"> <button onclick="dodajKomentarOtkaziDugmeK();" type="button">Dodaj</button></td>
@@ -3060,7 +3404,7 @@
 
     </div>
 
-   
+
     <div class="vozac">
         <div class="w3-top">
             <div class="w3-bar " style=" background-color:#f176ad">
@@ -3180,7 +3524,7 @@
             </div>
             <div id="pretragaV2">
                 <table id="tableV2">
-                    
+
                     <tr>
                         <td>Datum od</td>
                         <td>Datum do</td>
@@ -3188,7 +3532,7 @@
                     <tr>
                         <td><input type="date" name="DatumOdV2" id="DatumOdV2" /></td>
                         <td><input type="date" name="DatumDoV2" id="DatumDoV2" /></td>
-                        
+
                     </tr>
 
                     <tr>
@@ -3284,7 +3628,7 @@
 
             <div id="uspesnaVoznjaV">
                 <table border="1">
-                    <tr>
+                    <!--<tr>
                         <td colspan="2">Odredište</td>
                     </tr>
                     <tr><td colspan="2">Lokacija</td></tr>
@@ -3294,7 +3638,7 @@
                     <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaV" required /></td></tr>
                     <tr><td>Broj</td><td><input type="text" name="Broj" id="brojV" required /></td></tr>
                     <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoV" required /></td></tr>
-                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipV" required /></td></tr>
+                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipV" required /></td></tr>-->
                     <tr>
                         <td>Iznos</td>
                         <td><input type="number" name="Iznos" id="iznosV" required /></td>
@@ -3363,14 +3707,14 @@
                     <tr> <td> JMBG</td> <td><input type="text" name="JMBG" id="jmbgVD" pattern="[0-9]{13}" minlength="13" maxlength="13" required /></td></tr>
                     <tr><td> Kontakt</td> <td><input type="text" name="Kontakt" id="kontaktVD" minlength="6" required /> </td> </tr>
                     <tr><td> Email </td> <td> <input type="email" name="Email" id="emailVD" required /></td></tr>
-                    <tr><td colspan="2">Lokacija</td></tr>
+                    <!--<tr><td colspan="2">Lokacija</td></tr>
                     <tr><td>X</td><td><input type="number" name="X" id="xVD" required /></td></tr>
                     <tr><td>Y</td><td><input type="number" name="Y" id="yVD" required /></td></tr>
                     <tr><td colspan="2">Adresa</td></tr>
                     <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaVD" required /></td></tr>
                     <tr><td>Broj</td><td><input type="text" name="Broj" id="brojVD" required /></td></tr>
                     <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoVD" required /></td></tr>
-                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipVD" required /></td></tr>
+                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipVD" required /></td></tr>-->
                     <tr><td colspan="2">Automobil</td></tr>
                     <tr><td>Godište</td><td><input type="number" name="Godiste" id="godisteVD" required /></td></tr>
                     <tr><td>Registracija</td><td><input type="text" name="Registracija" id="regVD" required /></td></tr>
@@ -3544,7 +3888,7 @@
                             <input type="number" name="cenaDoD2" id="cenaDoD2" placeholder="Cena do" />
                         </td>
                     </tr>
-                    
+
                     <tr>
                         <td>
                             Sortiraj po:
@@ -3676,12 +4020,87 @@
             <div id="obradaVoznjeD">
 
             </div>
+
+
+
+
+
+
+
         </div>
     </div>
 
-
     <script>
 
+        function myMap() {
+
+            var mapCanvas = document.getElementById("map");
+            var myCenter = new google.maps.LatLng(45.251984, 19.837242);
+            var mapOptions = { center: myCenter, zoom: 14 };
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            google.maps.event.addListener(map, 'click', function (event) {
+                placeMarker(map, event.latLng);
+            });
+        }
+
+        function placeMarker(map, location) {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+            let lok = displayLocation(location.lat(), location.lng());
+
+            var infowindow = new google.maps.InfoWindow({
+                content: 'X: ' + location.lat() + '<br>Y: ' + location.lng() + '<br> ' + lok.Ulica + '<br> ' + lok.Mesto
+
+            });
+            infowindow.open(map, marker);
+
+
+        }
+
+        function displayLocation(latitude, longitude) {
+            var request = new XMLHttpRequest();
+            let adresaM = "";
+            var method = 'GET';
+            var url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='
+                + latitude + ',' + longitude + '&sensor=true';
+            var async = false;
+
+            request.open(method, url, async);
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    var data = JSON.parse(request.responseText);
+                    var address = data.results[0];
+                    var value = address.formatted_address.split(",");
+                    count = value.length;
+                    country = value[count - 1];
+                    state = value[count - 2];
+                    city = value[count - 3];
+                    alert(city + "- " + state + "- ");
+                    // document.write(address.formatted_address);
+                    adresaM = {
+                        Ulica: city,
+                        Mesto: state,
+
+                    }
+                    lokacijaMapa = {
+                        X: latitude,
+                        Y: longitude,
+                        Adresa: adresaM,
+                    };
+                    
+                }
+            };
+            request.send();
+            return adresaM;
+        };
+
+
+
     </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrjeABCsOwW1rhi7eW6_b_fWF8OK2HeiA&callback=myMap"></script>
+
 </body>
 </html>
