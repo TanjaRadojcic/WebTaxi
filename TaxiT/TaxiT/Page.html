@@ -578,3 +578,186 @@ $.ajax({
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
         }
+
+
+
+
+AIzaSyBrjeABCsOwW1rhi7eW6_b_fWF8OK2HeiA
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+    <div id="map" style="width:100%;height:500px;"></div>
+
+    <script>
+        var geocoder;
+        function myMap() {
+            geocoder = new google.maps.Geocoder;
+            var mapCanvas = document.getElementById("map");
+            var myCenter = new google.maps.LatLng(51.508742, -0.120850);
+            var mapOptions = { center: myCenter, zoom: 5 };
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            google.maps.event.addListener(map, 'click', function (event) {
+                placeMarker(map, event.latLng);
+            });
+        }
+
+        function placeMarker(map, location) {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+
+            geocoder.geocode({ 'location': location }, function (results, status) {
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'X: ' + location.lat() + '<br>Y: ' + location.lng() + "<br>Adresa: " + results[0].formatted_address
+                });
+                infowindow.open(map, marker);
+            })
+
+        }
+
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrjeABCsOwW1rhi7eW6_b_fWF8OK2HeiA&callback=myMap"></script>
+
+</body>
+</html>
+
+
+
+ // create a layer with the OSM source
+        var layer = new ol.layer.Tile({
+            source: new ol.source.OSM()
+        });
+
+        // create an interaction to add to the map that isn't there by default
+        var interaction = new ol.interaction.DragRotateAndZoom();
+
+        // create a control to add to the map that isn't there by default
+        var control = new ol.control.FullScreen();
+
+        // center on london, transforming to map projection
+        var center = ol.proj.transform([-1.812, 52.443], 'EPSG:4326', 'EPSG:3857');
+
+        // an overlay to position at the center
+        var overlay = new ol.Overlay({
+            position: center,
+            element: document.getElementById('overlay')
+        });
+
+        // view, starting at the center
+        var view = new ol.View({
+            center: center,
+            zoom: 6
+        });
+
+        // finally, the map with our custom interactions, controls and overlays
+        var map = new ol.Map({
+            target: 'map',
+            layers: [layer],
+            interactions: [interaction],
+            controls: [control],
+            overlays: [overlay],
+            view: view
+        });
+    </script>
+
+
+
+<script src="https://openlayers.org/en/v4.1.0/build/ol.js"></script>
+
+<script>
+
+    var osmLayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+    });
+    var birmingham = ol.proj.transform([-1.81185, 52.44314], 'EPSG:4326', 'EPSG:3857');
+    var view = new ol.View({
+        center: birmingham,
+        zoom: 6
+    });
+    var map = new ol.Map({
+        target: 'map'
+    });
+    map.addLayer(osmLayer);
+    map.setView(view);
+</script>
+
+
+
+OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    );
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger
+                        }, this.handlerOptions
+                    );
+                },
+
+                trigger: function(e) {
+                    var lonlat = map.getLonLatFromPixel(e.xy);
+                    alert("You clicked near " + lonlat.lat + " N, " +
+                                              + lonlat.lon + " E");
+                }
+
+            });
+            var map;
+            function init(){
+                map = new OpenLayers.Map('map');
+
+                var ol_wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0?", {layers: 'basic'} );
+
+            var jpl_wms = new OpenLayers.Layer.WMS( "NASA Global Mosaic",
+                "http://t1.hypercube.telascience.org/cgi-bin/landsat7",
+                {layers: "landsat7"});
+
+                jpl_wms.setVisibility(false);
+
+                map.addLayers([ol_wms, jpl_wms]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                // map.setCenter(new OpenLayers.LonLat(0, 0), 0);
+                map.zoomToMaxExtent();
+
+                var click = new OpenLayers.Control.Click();
+                map.addControl(click);
+                click.activate();
+
+            }
+
+
+
+
+
+
+        var osmLayer = new ol.layer.Tile({
+            source: new ol.source.OSM()
+        });
+        var birmingham = ol.proj.transform([-1.81185, 52.44314], 'EPSG:4326', 'EPSG:3857');
+        var view = new ol.View({
+            center: birmingham,
+            zoom: 6
+        });
+        var map = new ol.Map({
+            target: 'map'
+        });
+        map.addLayer(osmLayer);
+        map.setView(view);

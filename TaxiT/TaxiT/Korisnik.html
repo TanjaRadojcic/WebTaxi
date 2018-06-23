@@ -942,14 +942,17 @@
 
 
                 $("#pretragaD3").css("display", "inline");
-
+               
                 document.getElementById('imeD3').value = '';
                 document.getElementById('prezimeD3').value = '';
+               
                 document.getElementById('DatumOdD3').value = '';
                 document.getElementById('DatumDoD3').value = '';
 
                 $("#pretraziD3").click();
+
             });
+
 
             $("#pretraziD1").click(function () {
                 $("#pretragaD2").css("display", "none");
@@ -1201,7 +1204,7 @@
                     url: '/api/Voznja',
                     async: false,
                     success: function (data) {
-                        $("#pretragaD2").css("display", "inline");
+                        
                         let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
@@ -1324,6 +1327,122 @@
                 }
                 document.getElementById("Paris").style.display = "block";
                 event.currentTarget.className += " active";
+            });
+
+            $("#pretraziD3").click(function () {
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                let id = localStorage.getItem("ulogovaniId");
+
+                
+
+                let datumOd = `${$('#DatumOdD3').val()}`;
+                if (datumOd == "") {
+                    var date = new Date("2018-01-01");
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumOd = date.getFullYear() + "-" + month + "-" + day;
+
+                }
+
+                let datumDo = `${$('#DatumDoD3').val()}`;
+                if (datumDo == "") {
+                    var date = new Date();
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    if (month < 10) month = '0' + month;
+                    if (day < 10) day = '0' + day;
+                    datumDo = date.getFullYear() + "-" + month + "-" + day;
+                }
+                
+
+                let e3 = document.getElementById('SortD3');
+                let selValue3 = e3.options[e3.selectedIndex].value;
+                let sort = selValue3;
+
+                let e4 = document.getElementById('ulogaPretragaD3');
+                let selValue4 = e4.options[e4.selectedIndex].value;
+                let uloga = selValue4;
+
+                let ime = `${$('#imeD3').val()}`;
+                let prezime = `${$('#prezimeD3').val()}`;
+
+                $("#London").html("");
+                $("#Paris").html("");
+                $("#Tokyo").html("");
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/Voznja',
+                    async: false,
+                    success: function (data) {
+
+                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+                        for (voznja in data) {
+                            if (data[voznja].Status == 0) {
+                                var date = new Date(data[voznja].Datum);
+                                var month = date.getMonth() + 1;
+                                var day = date.getDate();
+                                var hours = date.getHours();
+                                var minutes = date.getMinutes();
+
+                                if (month < 10) month = '0' + month;
+                                if (day < 10) day = '0' + day;
+                                if (hours < 10) hours = '0' + hours;
+                                if (minutes < 10) minutes = '0' + minutes;
+
+                                var formatedDate = date.getFullYear() + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                                var date2 = date.getFullYear() + "-" + month + "-" + day;
+
+                                let korIme = "";
+                                let korPrezime = "";
+
+                                if (data[voznja].Musterija != -1) {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/api/Korisnik/' + data[voznja].Musterija,
+                                        async: false,
+                                        success: function (v) {
+                                            korIme = v.Ime;
+                                            korPrezime = v.Prezime;
+                                        }
+                                    })
+                                }
+
+                                if (date2 >= datumOd && date2 <= datumDo) {
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td>`;
+                                    if (data[voznja].TipAutomobila == 0) {
+                                        tableOfProducts += `<td>Svejedno</td>`;
+                                    } else if (data[voznja].TipAutomobila == 1) {
+                                        tableOfProducts += `<td>Putnički</td>`;
+                                    } else if (data[voznja].TipAutomobila == 2) {
+                                        tableOfProducts += `<td>Kombi</td>`;
+                                    }
+
+                                    tableOfProducts += `<td><button id="obradi${data[voznja].Id}" type="button" onclick="obradiVoznjuClick(${data[voznja].Id});">Obradi Vožnju</button></td>`;
+                                }
+                            }
+                        }
+                        tableOfProducts += "</table>";
+                        $("#Tokyo").append(tableOfProducts);
+
+                    }
+                })
+
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById("Tokyo").style.display = "block";
+                event.currentTarget.className += " active";
+
             });
 
 
@@ -1936,7 +2055,8 @@
                         }
                         tableOfProducts += "</table>";
                         $("#London").append(tableOfProducts);
-                    } else if (cityName == "Paris") {
+                    }
+                    else if (cityName == "Paris") {
                         $("#pretragaD2").css("display", "inline");
                         let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
@@ -2044,7 +2164,8 @@
                         }
                         tableOfProducts += "</table>";
                         $("#Paris").append(tableOfProducts);
-                    } else if (cityName == "Tokyo") {
+                    }
+                    else if (cityName == "Tokyo") {
                         $("#pretragaD3").css("display", "inline");
                         let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
                         for (voznja in data) {
