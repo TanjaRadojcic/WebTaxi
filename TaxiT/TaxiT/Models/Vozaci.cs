@@ -29,7 +29,7 @@ namespace TaxiT.Models
                 Lokacija l = new Lokacija(Int32.Parse(tokens[10]), double.Parse(tokens[11]), double.Parse(tokens[12]), a);
                 Automobil auto = new Automobil(Int32.Parse(tokens[18]), tokens[19], Int32.Parse(tokens[20]), tokens[21], Int32.Parse(tokens[22]), tipA);
                 bool zauzet;
-                if (tokens[24] == "true")
+                if (tokens[24] == "True")
                 {
                     zauzet = true;
                 }
@@ -37,9 +37,18 @@ namespace TaxiT.Models
                 {
                     zauzet = false;
                 }
-                    
 
-                Vozac p = new Vozac(Int32.Parse(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga,l,auto,zauzet);
+                bool blok;
+                if (tokens[25] == "True")
+                {
+                    blok = true;
+                }
+                else
+                {
+                    blok = false;
+                }
+
+                Vozac p = new Vozac(Int32.Parse(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga,l,auto,zauzet, blok);
                 vozaci.Add(p.Id, p);
             }
             sr.Close();

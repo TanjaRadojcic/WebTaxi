@@ -108,7 +108,7 @@ namespace TaxiT.Controllers
             FileStream stream = new FileStream(path, FileMode.Append);
             using (StreamWriter outputFile = new StreamWriter(stream))
             {
-                string korisnik = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
+                string korisnik = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga + ";" + k.Blokiran;
                 outputFile.WriteLine(korisnik);
             }
             stream.Close();
@@ -122,7 +122,7 @@ namespace TaxiT.Controllers
             string path = HostingEnvironment.MapPath("~/App_Data/korisnici.txt");
             
             var file = File.ReadAllLines(path);
-            file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga;
+            file[k.Id] = k.Id + ";" + k.KorisnickoIme + ";" + k.Lozinka + ";" + k.Ime + ";" + k.Prezime + ";" + k.Pol + ";" + k.JMBG + ";" + k.Kontakt + ";" + k.Email + ";" + k.Uloga + ";" + k.Blokiran;
             File.WriteAllLines(path, file);
 
         }

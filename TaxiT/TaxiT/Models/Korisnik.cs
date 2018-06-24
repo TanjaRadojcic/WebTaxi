@@ -19,10 +19,10 @@ namespace TaxiT.Models
         public string Email { get; set; }
         public Uloga Uloga { get; set; }
         public List<Voznja> Voznje { get; set; } 
+        public bool Blokiran { get; set; }
+        public Korisnik() { Blokiran = false; }
 
-        public Korisnik() { }
-
-        public Korisnik(int id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u)
+        public Korisnik(int id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u, bool b)
         {
             Id = id;
             KorisnickoIme = k;
@@ -35,6 +35,7 @@ namespace TaxiT.Models
             Email = e;
             Uloga = u;
             Voznje = new List<Voznja>();
+            Blokiran = b;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace TaxiT.Models
         public bool Zauzet { get; set; }
 
         public Vozac() { }
-        public Vozac(int id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u, Lokacija lok, Automobil a,bool z)
+        public Vozac(int id, string k, string l, string i, string p, Pol pol, string jmbg, string kontakt, string e, Uloga u, Lokacija lok, Automobil a,bool z, bool b)
         {
             Id = id;
             KorisnickoIme = k;
@@ -29,6 +29,7 @@ namespace TaxiT.Models
             Lokacija = lok;
             Automobil = a;
             Zauzet = z;
+            Blokiran = b;
         }
     }
 }

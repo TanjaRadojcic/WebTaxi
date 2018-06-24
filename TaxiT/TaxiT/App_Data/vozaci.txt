@@ -1,3 +1,6 @@
-0;fandjo;fandjo; Djordje; Radojcic;Muški;2807965800123; 0628880008;djordjer@gmail.com;Vozač;0;45.2504337168311;19.8412734021042;0;Železnička 26-28;; Novi Sad 21000;0;0;;2010;NS111AA;11;Kombi;False
-1;fasty;fasty;Pera;Perić;Muški;1201980800653;0624382213;fasty@gmail.com;Vozač;0;2;2;0;Kaće Dejanović;14;Novi Sad;21000;0;fasty;2005;NS111AB;1;Kombi;True
-2;eliDriver;1005;Elena;Kevac;Ženski;1005994805011;0651231231;elikevi@gmail.com;Vozač;0;1;1;0;Puškinova;26;Novi Sad;21000;0;eliDriver;2011;NS123EK;10;Kombi;True
+0;fandjo;fandjo;Djordje;Radojcic;Muški;2807965800123;0628880008;djordjer@gmail.com;Vozač;0;45.2473311646793;19.8489149736329;0;Bulevar cara Lazara 46;; Novi Sad;0;0;;2010;NS111AA;11;Kombi;False;False
+1;fasty;fasty;Pera;Perić;Muški;1201980800653;0624382213;fasty@gmail.com;Vozač;0;45.2610468704435;19.831834666626;0;Bulеvar oslobođenja 10;; Novi Sad 21000;0;0;;2005;NS111AB;1;Kombi;True;False
+2;eliDriver;1005;Elena;Kevac;Ženski;1005994805011;0651231231;elikevi@gmail.com;Vozač;0;1;1;0;Puškinova;26;Novi Sad;21000;0;eliDriver;2011;NS123EK;10;Kombi;False;False
+3;2;2;2;2;Muški;2222222222222;22222;22@gmail.com;Vozač;3;45.2516214550965;19.8370703386231;0;Bulеvar oslobođenja 91;; Novi Sad 21000;0;3;2;2222;22;22;Putnički;False;False
+4;6;6;6;6;Muški;6666666666666;6;6@gmail.com;Vozač;0;45.2600802331772;19.8296888994141;0;Gagarinova;; Novi Sad 21000;0;0;6;6;6;6;Putnički;False;False
+5;88;8;8;8;Muški;8888888888888;8;8@gmail.com;Vozač;0;45.2412879524745;19.8302897142335;0;Bulevar cara Lazara 86;; Novi Sad 21000;0;0;88;8;8;68;Putnički;False;False

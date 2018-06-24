@@ -23,38 +23,88 @@
         $(document).ready(function() {
             
             $("#LogIn").click(function () {
+                
+                let v = document.getElementById("usernameLI");
+                let v1 = document.getElementById("passLI");
+                if (!v.checkValidity() && !v1.checkValidity()){
+                    alert("unesite korisničko ime i lozinku!");
+                } else if (!v.checkValidity()) {
+                    alert("unesite korisničko ime!");
 
-                let korisnik = {
-                    KorisnickoIme: `${$('#usernameLI').val()}`,
-                    Lozinka: `${$('#passLI').val()}`
+                }
+                else if (!v1.checkValidity()) {
+                    alert("unesite lozinku!");
+                }
+                else {
+                    let korisnik = {
+                        KorisnickoIme: `${$('#usernameLI').val()}`,
+                        Lozinka: `${$('#passLI').val()}`
 
-                };
+                    };
 
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/LogIn',
+                        data: JSON.stringify(korisnik),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data) {
+                                localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                                $(location).attr('href', 'Korisnik.html');
+                            }
+                            else {
+                                alert("Korisnicko ime ili lozinka je pogresna!");
+                            }
+                        },
+                        error: function (errorData) {
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/LogIn',
-                    data: JSON.stringify(korisnik),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data) {
-                            localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
-                            $(location).attr('href', 'Korisnik.html');
                         }
-                        else {
-                            alert("Korisnicko ime ili lozinka je pogresna!");
-                        }
-                    },
-                    error: function (errorData) {
 
-                    }
-                    
 
-                })
+                    })
+                }
             });
 
             $("#registracija").click(function () {
+
+                let v = document.getElementById("korisnickoime");
+                let v1 = document.getElementById("lozinka");
+                let v2 = document.getElementById("ime1");
+                let v3 = document.getElementById("prezime1");
+                //let v4 = document.getElementById("pol");
+                let v5 = document.getElementById("jmbg1");
+                let v6 = document.getElementById("kontakt1");
+                let v7 = document.getElementById("email1");
+                if (!v.checkValidity() && !v1.checkValidity() && !v2.checkValidity() && !v3.checkValidity() && !v5.checkValidity() && !v6.checkValidity() && !v7.checkValidity()) {
+                    alert("Popunite polja za registraciju!");
+                } else if (!v.checkValidity() || !v1.checkValidity() || !v2.checkValidity() || !v3.checkValidity() || !v5.checkValidity() || !v6.checkValidity() || !v7.checkValidity()){
+                    let greska = "Niste dobro uneli:\n";
+                    if (!v.checkValidity()){
+                        greska +="-Korisničko ime\n";
+                    }
+                    if (!v1.checkValidity()) {
+                        greska += "-Lozinku\n";
+                    }
+                    if (!v2.checkValidity()) {
+                        greska += "-Ime\n";
+                    }
+                    if (!v3.checkValidity()) {
+                        greska += "-Prezime\n";
+                    }
+                    
+                    if (!v5.checkValidity()) {
+                        greska += "-JMBG\n";
+                    }
+                    if (!v6.checkValidity()) {
+                        greska += "-Kontakt\n";
+                    }
+                    if (!v7.checkValidity()) {
+                        greska += "-Email\n";
+                    }
+                    alert(greska);
+                }
+                else { 
                 let korisnik = {
                     KorisnickoIme: `${$('#korisnickoime').val()}`,
                     Lozinka: `${$('#lozinka').val()}`,
@@ -64,10 +114,6 @@
                     JMBG: `${$('#jmbg1').val()}`,
                     Kontakt: `${$('#kontakt1').val()}`,
                     Email: `${$('#email1').val()}`,
-                    
-                    
-                    
-
 
                 };
 
@@ -88,10 +134,10 @@
                         }
                     },
                     error: function (errorData) {
-                            
+
                     }
                 })
-
+            }
 
 
             });
@@ -117,10 +163,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="KorisnickoIme" id="usernameLI" tabindex="1" required />
+                                <input type="text" name="KorisnickoIme" id="usernameLI" tabindex="1" required/>
                             </td>
                             <td>
-                                <input type="password" name="Lozinka" id="passLI" tabindex="2" required />
+                                <input type="password" name="Lozinka" id="passLI" tabindex="2" required/>
                             </td>
                             <td>
                                 <label id="loginbutton" for="logIn">
@@ -151,25 +197,22 @@
                     </tr>
                     <tr>
                         <td><label for="korisnickoime">Korisničko ime</label></td>
-                        <td><input type="text" name="KorisnickoIme" id="korisnickoime" required/></td>
+                        <td><input type="text" name="KorisnickoIme" id="korisnickoime" pattern=".{4,}" minlength="4" maxlength="13" required/></td>
                     </tr>
                     <tr>
                         <td><label for="lozinka">Lozinka</label></td>
-                        <td><input type="password" name="Lozinka" id="lozinka" required /></td>
+                        <td><input type="password" name="Lozinka" id="lozinka" pattern=".{4,}" minlength="4" maxlength="13" required /></td>
                     </tr>
                     <tr>
                         <td><label>Ime</label></td>
-                        <td><input type="text" name="Ime" id="ime1" required /></td>
+                        <td><input type="text" name="Ime" id="ime1" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /></td>
                     </tr>
                     <tr> <td><label >Prezime</label> </td>
-                        <td><input type="text" name="Prezime" id="prezime1" required /></td>
+                        <td><input type="text" name="Prezime" id="prezime1" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /></td>
                     </tr>
                     <tr>
-                        <td>
-                            <label for="pol">Pol</label>
-                        </td>
-                        <td>
-                            <select name="Pol" id="pol">
+                        <td><label for="pol">Pol</label></td>
+                        <td><select name="Pol" id="pol">
                                 <option>Muški</option>
                                 <option>Ženski</option>
                             </select>
@@ -177,37 +220,22 @@
                     </tr>
                     <tr>
                         <td> <label >JMBG</label> </td>
-                        <td><input type="text" name="JMBG" id="jmbg1" pattern="[0-9]{13}" minlength="13" maxlength="13" required />
-                        </td>
+                        <td><input type="text" name="JMBG" id="jmbg1" pattern="[0-9]{13}" minlength="13" maxlength="13" required /></td>
+                    </tr>
+                    <tr>
+                        <td><label >Kontakt</label></td>
+                        <td><input type="text" name="Kontakt" id="kontakt1" pattern="[0-9]{6,14}" minlength="6" maxlength="14" required /></td>
 
                     </tr>
                     <tr>
-                        <td>
-                            <label >Kontakt</label>
-                        </td>
-                        <td>
-                            <input type="text" name="Kontakt" id="kontakt1" minlength="6" required />
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-                            <label >Email</label>
-                        </td>
-                        <td>
-                            <input type="email" name="Email" id="email1" required />
-                        </td>
+                        <td><label >Email</label></td>
+                        <td><input type="email" name="Email" id="email1" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required /></td>
 
                     </tr>
 
 
                     <tr>
-                        <td colspan="2">
-                            <label id="registrationbutton" for="registration">
-                                <!-- <input value="Registracija" tabindex="4" type="submit" id="registration" />-->
-                                <button id="registracija" type="button">Registruj se</button>
-                            </label>
-                        </td>
+                        <td colspan="2"><button id="registracija" type="button">Registruj se</button></td>
                     </tr>
                 </table>
 

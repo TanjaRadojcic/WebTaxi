@@ -45,9 +45,9 @@ namespace TaxiT.Controllers
             {
                 v.Id = Vozaci.vozaci.Count;
                 v.Uloga = Enums.Uloga.Vozač;
-                v.Automobil.Id = Vozaci.vozaci.Count;
+                //v.Automobil.Id = Vozaci.vozaci.Count;
                 v.Automobil.Vozac = v.KorisnickoIme;
-                v.Lokacija.Id = Vozaci.vozaci.Count;
+               // v.Lokacija.Id = Vozaci.vozaci.Count;
                 Vozaci.vozaci.Add(v.Id, v);
 
                 AddToFileVozac(v);
@@ -73,7 +73,7 @@ namespace TaxiT.Controllers
                 string vozac = v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
                     + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
                     + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";" 
-                    + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila +";"+v.Zauzet;
+                    + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila +";"+v.Zauzet + ";" + v.Blokiran;
                  outputFile.WriteLine(vozac);
             }
             stream.Close();
@@ -123,7 +123,7 @@ namespace TaxiT.Controllers
             file[v.Id] =v.Id + ";" + v.KorisnickoIme + ";" + v.Lozinka + ";" + v.Ime + ";" + v.Prezime + ";" + v.Pol + ";" + v.JMBG + ";" + v.Kontakt + ";" + v.Email
                    + ";" + v.Uloga + ";" + v.Lokacija.Id + ";" + v.Lokacija.X + ";" + v.Lokacija.Y + ";" + v.Lokacija.Adresa.Id + ";" + v.Lokacija.Adresa.Ulica + ";" + v.Lokacija.Adresa.Broj + ";"
                    + v.Lokacija.Adresa.Mesto + ";" + v.Lokacija.Adresa.Zip + ";" + v.Automobil.Id + ";" + v.Automobil.Vozac + ";" + v.Automobil.Godiste + ";" + v.Automobil.Registracija + ";"
-                   + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet;
+                   + v.Automobil.BrojVozila + ";" + v.Automobil.TipAutomobila + ";" + v.Zauzet + ";" + v.Blokiran;
 
             File.WriteAllLines(path, file);
 

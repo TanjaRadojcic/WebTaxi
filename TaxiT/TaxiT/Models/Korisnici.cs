@@ -25,7 +25,17 @@ namespace TaxiT.Models
                 Enum.TryParse(tokens[5], out Pol pol);
                 Enum.TryParse(tokens[9], out Uloga uloga);
 
-                Korisnik p = new Korisnik(Int32.Parse(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga);
+                bool blok;
+                if (tokens[10] == "True")
+                {
+                    blok = true;
+                }
+                else
+                {
+                    blok = false;
+                }
+
+                Korisnik p = new Korisnik(Int32.Parse(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], pol, tokens[6], tokens[7], tokens[8], uloga, blok);
 
                 korisnici.Add(p.Id, p);
             }
