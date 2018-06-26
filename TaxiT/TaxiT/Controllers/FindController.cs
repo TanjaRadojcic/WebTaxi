@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 using TaxiT.Models;
 
@@ -26,8 +27,16 @@ namespace TaxiT.Controllers
         public Korisnik Post([FromBody]string value)
         {
             Korisnik k;
+            Regex r1 = new Regex(".{4,13}"); //korisnicko ime i lozinka
 
-            foreach(var korisnik in Korisnici.korisnici.Values)
+            #region Validacija
+            if (String.IsNullOrEmpty(value) || !r1.IsMatch(value))
+            {
+                return null;
+            }
+            #endregion
+
+            foreach (var korisnik in Korisnici.korisnici.Values)
             {
                 if(korisnik.KorisnickoIme == value)
                 {
@@ -52,8 +61,8 @@ namespace TaxiT.Controllers
                 }
             }
 
-            
             return null;
+            
         }
 
         // PUT: api/Find/5

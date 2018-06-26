@@ -1,8 +1,7 @@
-0;adminko;adminko;aaaa;aaaaa;Muški;2222222222222;11111111;tanja@gmail.com;Mušterija;False
-1;mali;0211;Jovica;Čubrić;Muški;0211995800123;0631231212;jc@gmail.com;Mušterija;False
-2;Miša;2904;Nikolija;Arbutina;Ženski;2910996805046;0659461749;nikolija.arbutina@gmail.com;Mušterija;True
-3;tufnica;tackica;Maja;Djordjevic;Ženski;0404996872727;0643784723;maya1@gmail.com;Mušterija;False
-4;proba;proba;proba;proba;Ženski;1111111111111;1111111;email@gmail.com;Mušterija;True
-5;reg;reg;reg;reg;Ženski;1111111111111;111111111;eee@gmail.com;Mušterija;False
-6;;;;;Muški;;;;Mušterija;False
-7;pera;pera;pera;pera;Muški;1111111111111;111111;email@gmail.com;Mušterija;False
+0;mali;0211;Jovica;Čubrić;Muški;0211995800123;0631231212;jc@gmail.com;Mušterija;False
+1;coa92;minja;Aleksandar;Tanasković;Muški;2802992800345;0658937289;alextasko@gmail.com;Mušterija;False
+2;niki;2910;Nikolija;Arbutina;Ženski;2910996805046;0659461749;nikolija.arbutina@gmail.com;Mušterija;False
+3;ancika;macka;Anika;Vuković;Ženski;2812998805003;06584729518;vukovicjunior@gmail.com;Mušterija;False
+4;maya01;simsa;Maja;Đorđević;Ženski;0404996827727;06183658936;maya.simsa1@gmail.com;Mušterija;False
+5;malaEli;1005;Elena;Kevac;Ženski;1005994806543;06183745648;elikevi@gmail.com;Mušterija;False
+6;acika;mili;Aleksandar;Dondur;Muški;2204996800971;06487237367;dondura@gmail.com;Mušterija;False

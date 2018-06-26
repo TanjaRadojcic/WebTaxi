@@ -15,6 +15,11 @@ namespace TaxiT.Controllers
         // GET: api/Voznja
         public Dictionary<int,Voznja> Get()
         {
+            if(Voznje.voznje == null)
+            {
+                Voznje.voznje = new Dictionary<int, Voznja>();
+            }
+
             return Voznje.voznje;
         }
 
@@ -22,7 +27,15 @@ namespace TaxiT.Controllers
         // GET: api/Voznja/5
         public Voznja Get(int id)
         {
-            return Voznje.voznje[id];
+            if (id >= 0 && id <= Voznje.voznje.Count)
+            {
+                return Voznje.voznje[id];
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         // POST: api/Voznja
@@ -47,6 +60,7 @@ namespace TaxiT.Controllers
                     {
                         v.Zauzet = true;
                         ChangeToFileVozac(v);
+                        break;
                     }
                 }
 

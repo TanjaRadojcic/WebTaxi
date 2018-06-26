@@ -19,7 +19,7 @@
             let ulogovani = localStorage.getItem("ulogovani");
             let koje = "";
             let trenutniKorisnik = "";
-
+            localStorage.setItem("zabrana","0");
             $.ajax({
                 type: 'POST',
                 url: '/api/Find',
@@ -28,6 +28,14 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data != null) {
+
+                        if (data.Blokiran == true) {
+                            localStorage.removeItem("ulogovani");
+                            let koje = "";
+                            let trenutniKorisnik = "";
+                            $(location).attr('href', 'Index.html');
+                            
+                        }
                         trenutniKorisnik = data;
                         localStorage.setItem("ulogovaniId", data.Id);
                         localStorage.setItem("ulogovaniUloga", data.Uloga);
@@ -105,6 +113,7 @@
                 //alert(trenutniKorisnik.KorisnickoIme);
                 let id = localStorage.getItem("ulogovaniId");
                 let uloga = localStorage.getItem("ulogovaniUloga");
+                let zauzetVozac = false;
 
                 if (uloga == 0) {
                     $.ajax({
@@ -125,23 +134,31 @@
                         async: false,
                         success: function (v) {
                             
-                          blokada = v.Blokiran;
-                            
+                            blokada = v.Blokiran;
+                            zauzetVozac = v.Zauzet;
                         }
                     })
                 }
                 if (uloga != 1) {
-                   // alert(blokada);
+                   
                     if (blokada == true) {
-                        $(':button').prop('disabled', true);
+                        $(':button:not(.ac)').prop('disabled', true);
                         
                     } else {
-                        $(':button').prop('disabled', false);
+                        let z = localStorage.getItem("zabrana");
+                        if (z == "0") {
+                            $(':button:not(.noBtn)').prop('disabled', false);
+                        } else if (z == "1") {
+                            $(':button:not(.noBtn)').prop('disabled', true);
+                        }
+                        if (zauzetVozac == true) {
+                            $('.zauzetVozacDugmici').prop('disabled', true);
+                        } 
                     }
                 }
                
 
-            }, 2000);
+            }, 500);
 
             $("#odjavaK").click(function () {
                 localStorage.removeItem("ulogovani");
@@ -161,16 +178,16 @@
                 $("#pretragaK").css("display", "inline");
                 $("#tabelaMojeVoznjeK").html("");
                 $("#mapa").css("display", "none");
-
+                
                 $.ajax({
                     type: 'GET',
                     url: '/api/Voznja',
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table border=\"1\" id=\"musterijaVoznje\"><tr><td colspan=\"13\" align=\"center\">Moje voznje</td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
+                        let tableOfProducts = "<table  class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\"  align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
                         for (voznja in data) {
-                            if (data[voznja].Musterija == trenutniKorisnik.Id) {
+                            if (data[voznja].Musterija == localStorage.getItem("ulogovaniId")) {
                                 var date = new Date(data[voznja].Datum);
                                 var month = date.getMonth() + 1;
                                 var day = date.getDate();
@@ -263,11 +280,11 @@
 
                                 if (data[voznja].Status == 0) {
 
-                                    tableOfProducts += `<td><button id="otkaziVoznju${data[voznja].Id}" type="button" onclick="otkaziVoznjuClick(${data[voznja].Id});">Otkazi Voznju</button></td>`;
-                                    tableOfProducts += `<td><button id="izmeniVoznju${data[voznja].Id}" type="button" onclick="izmeniVoznjuClick(${data[voznja].Id});">Izmeni Voznju</button></td>`;
+                                    tableOfProducts += `<td><button  id="otkaziVoznju${data[voznja].Id}" type="button" onclick="otkaziVoznjuClick(${data[voznja].Id});">Otkazi Voznju</button></td>`;
+                                    tableOfProducts += `<td><button  id="izmeniVoznju${data[voznja].Id}" type="button" onclick="izmeniVoznjuClick(${data[voznja].Id});">Izmeni Voznju</button></td>`;
                                 } else {
-                                    tableOfProducts += `<td><button id="otkaziVoznju${data[voznja].Id}" type="button" onclick="otkaziVoznjuClick(${data[voznja].Id});" disabled>Otkazi Voznju</button></td>`;
-                                    tableOfProducts += `<td><button id="izmeniVoznju${data[voznja].Id}" type="button" onclick="izmeniVoznjuClick(${data[voznja].Id});" disabled>Izmeni Voznju</button></td>`;
+                                    tableOfProducts += `<td><button class="noBtn" id="otkaziVoznju${data[voznja].Id}" type="button" onclick="otkaziVoznjuClick(${data[voznja].Id});" disabled>Otkazi Voznju</button></td>`;
+                                    tableOfProducts += `<td><button class="noBtn" id="izmeniVoznju${data[voznja].Id}" type="button" onclick="izmeniVoznjuClick(${data[voznja].Id});" disabled>Izmeni Voznju</button></td>`;
 
                                 }
                             }
@@ -284,9 +301,7 @@
             });
             
             $("#refreshK").click(function () {
-
-
-
+                
                 document.getElementById('cenaOdK').value = '';
                 document.getElementById('cenaDoK').value = '';
                 document.getElementById('ocenaPretragaOdK').selectedIndex = 0;
@@ -363,7 +378,7 @@
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table border=\"1\" id=\"musterijaVoznje\"><tr><td colspan=\"13\" align=\"center\">Moje voznje</td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\" align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Musterija == trenutniKorisnik.Id) {
                                 var date = new Date(data[voznja].Datum);
@@ -485,7 +500,8 @@
                 $("#izmenaProfilaDivK").css("display", "none");
                 $("#dodajVoznjuDivK").css("display", "none");
                 $("#tabelaMojeVoznjeK").css("display", "none");
-
+                $("#mapa").css("display", "none");
+                
                 $("#pretragaK").css("display", "none");
 
                 $("#korisnickoImeK").text(trenutniKorisnik.KorisnickoIme);
@@ -512,12 +528,13 @@
                 $("#dodajVoznjuDivK").css("display", "none");
                 $("#tabelaMojeVoznjeK").css("display", "none");
                 $("#pretragaK").css("display", "none");
-
+                $("#mapa").css("display", "none");
+                
                 let izmena = "<table class=\"w3-large\" border=1>";
                 izmena += " <tr><td>Korisničko ime</td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" value=\"" + trenutniKorisnik.KorisnickoIme + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
                 izmena += " <tr><td>Lozinka</td><td><input type=\"text\" name=\"Lozinka\" id=\"lozinka1\" value=\"" + trenutniKorisnik.Lozinka + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
-                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2, 13 }\" required /></td></tr>";
-                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2,13}\" required /></td></tr>";
+                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
+                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
 
                 izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
                 izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" value=\"" + trenutniKorisnik.Kontakt + "\"  pattern=\"[0-9]{6,14}\" minlength=\"6\" maxlength=\"14\" required /></td></tr>";
@@ -563,42 +580,52 @@
                     }
                     alert(greska);
                 } else {
+                    let jmbg = `${$('#jmbgVD').val()}`;
+                    let danRodjenja = jmbg.substring(0, 2);
+                    let mesecRodjenja = jmbg.substring(2, 4);
+                    let godinaRodjenja = jmbg.substring(4, 7);
+                    danRodjenja = parseInt(danRodjenja);
+                    mesecRodjenja = parseInt(mesecRodjenja);
+                    godinaRodjenja = parseInt(godinaRodjenja);
+                    if (danRodjenja <= 0 || danRodjenja > 31 || mesecRodjenja <= 0 || mesecRodjenja > 12 || (godinaRodjenja > 18 && godinaRodjenja < 900)) {
+                        alert("JMBG je neispravan!");
+                    } else {
 
+                        let korisnik = {
+                            Id: trenutniKorisnik.Id,
+                            KorisnickoIme: `${$('#korisnickoime').val()}`,
+                            Lozinka: `${$('#lozinka1').val()}`,
+                            Ime: `${$('#ime1').val()}`,
+                            Prezime: `${$('#prezime1').val()}`,
+                            Pol: trenutniKorisnik.Pol,
+                            JMBG: `${$('#jmbg1').val()}`,
+                            Kontakt: `${$('#kontakt1').val()}`,
+                            Email: `${$('#email1').val()}`,
+                            Voznje: trenutniKorisnik.Voznje,
+                            Uloga: trenutniKorisnik.Uloga,
+                        };
 
-                    let korisnik = {
-                        Id: trenutniKorisnik.Id,
-                        KorisnickoIme: `${$('#korisnickoime').val()}`,
-                        Lozinka: `${$('#lozinka1').val()}`,
-                        Ime: `${$('#ime1').val()}`,
-                        Prezime: `${$('#prezime1').val()}`,
-                        Pol: trenutniKorisnik.Pol,
-                        JMBG: `${$('#jmbg1').val()}`,
-                        Kontakt: `${$('#kontakt1').val()}`,
-                        Email: `${$('#email1').val()}`,
-                        Voznje: trenutniKorisnik.Voznje,
-                        Uloga: trenutniKorisnik.Uloga,
-                    };
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/Korisnik/' + trenutniKorisnik.Id,
+                            data: JSON.stringify(korisnik),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    alert("Uspesna izmena");
+                                    localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                                    $(location).attr('href', 'Korisnik.html');
+                                }
+                                else {
+                                    alert("Korisnicko ime je zauzeto!");
+                                }
+                            },
+                            error: function (errorData) {
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: '/api/Korisnik/' + trenutniKorisnik.Id,
-                        data: JSON.stringify(korisnik),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data) {
-                                alert("Uspesna izmena");
-                                localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
-                                $(location).attr('href', 'Korisnik.html');
                             }
-                            else {
-                                alert("Korisnicko ime je zauzeto!");
-                            }
-                        },
-                        error: function (errorData) {
-
-                        }
-                    })
+                        })
+                    }
                 }
             });
             
@@ -616,50 +643,48 @@
             $("#dodajVoznjuK").click(function () {
                 
                 let lokacija2 = lokacijaMapa;
+                if (lokacija2 == "") {
+                    alert("Izaberite lokaciju!");
+                } else {
 
-                let e = document.getElementById('autoK');
-                let selValue = e.options[e.selectedIndex].text;
 
-                let Voznja = {
-                    Musterija: trenutniKorisnik.Id,
-                    PocetnaLokacija: lokacija2,
-                    TipAutomobila: selValue,
-                    Status: "Kreirana",
+                    lokacijaMapa = "";
 
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/Voznja',
-                    data: JSON.stringify(Voznja),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data) {
-                            alert("Dodata voznja");
-                            $(location).attr('href', 'Korisnik.html');
+                    let e = document.getElementById('autoK');
+                    let selValue = e.options[e.selectedIndex].text;
+
+                    let Voznja = {
+                        Musterija: trenutniKorisnik.Id,
+                        PocetnaLokacija: lokacija2,
+                        TipAutomobila: selValue,
+                        Status: "Kreirana",
+
+                    };
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/Voznja',
+                        data: JSON.stringify(Voznja),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data) {
+                                alert("Uspešno ste dodali vožnju!");
+                                $(location).attr('href', 'Korisnik.html');
+                            }
+                            else {
+                                alert("Voznja nije dodata!");
+                            }
+                        },
+                        error: function (errorData) {
+
                         }
-                        else {
-                            alert("Voznja nije dodata!");
-                        }
-                    },
-                    error: function (errorData) {
-
-                    }
-                })
+                    })
+                }
             });
 
+            
 
-
-
-
-
-
-
-
-
-
-
-
+           
 
 
             $("#odjavaD").click(function () {
@@ -678,13 +703,14 @@
                 $("#tabeleD").css("display", "inline");
                 $("#dodajKomentarD").css("display", "none");
                 $("#prikaziKomentarD").css("display", "none");
-                $("#pretragaD1").css("display", "none");
+                $("#pretragaD1").css("display", "inline");
                 $("#pretragaD2").css("display", "none");
                 $("#pretragaD3").css("display", "none");
                 $("#mapa").css("display", "none");
+                $("#obradaVoznjeD").css("display", "none");
                 $("#dodajVoznjuD").css("display", "none");
                 $("#blokDivD").css("display", "none");
-                openCityV(event, 'London');
+                openCity(event, 'London');
             });
 
             $("#pregledProfilaD").click(function () {
@@ -697,6 +723,17 @@
                 $("#blokDivD").css("display", "none");
                 $("#mapa").css("display", "none");
                 $("#dodajVoznjuD").css("display", "none");
+
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+               
+                
+
 
                 $("#korisnickoImeD").text(trenutniKorisnik.KorisnickoIme);
                 $("#lozinkaD").text(trenutniKorisnik.Lozinka);
@@ -725,12 +762,23 @@
                 $("#tabeleD").css("display", "none");
                 $("#mapa").css("display", "none");
                 $("#dodajVoznjuD").css("display", "none");
+                
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+                
+                
+
 
                 let izmena = "<table class=\"w3-large\" border=1>";
                 izmena += " <tr><td>Korisničko ime</td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" value=\"" + trenutniKorisnik.KorisnickoIme + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
                 izmena += " <tr><td>Lozinka</td><td><input type=\"text\" name=\"Lozinka\" id=\"lozinka1\" value=\"" + trenutniKorisnik.Lozinka + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
-                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2,13}\" required /></td></tr>";
-                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2,13}\" required /></td></tr>";
+                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
+                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
 
                 izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
                 izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" minlength=\"6\" value=\"" + trenutniKorisnik.Kontakt + "\" pattern=\"[0-9]{6,14}\" minlength=\"6\" maxlength=\"14\" required /></td></tr>";
@@ -742,7 +790,7 @@
 
             $("#izmeniD").click(function () {
                 let v = document.getElementById("korisnickoime");
-                let v1 = document.getElementById("lozinka");
+                let v1 = document.getElementById("lozinka1");
                 let v2 = document.getElementById("ime1");
                 let v3 = document.getElementById("prezime1");
                 let v5 = document.getElementById("jmbg1");
@@ -776,42 +824,52 @@
                     }
                     alert(greska);
                 } else {
+                    let jmbg = `${$('#jmbgVD').val()}`;
+                    let danRodjenja = jmbg.substring(0, 2);
+                    let mesecRodjenja = jmbg.substring(2, 4);
+                    let godinaRodjenja = jmbg.substring(4, 7);
+                    danRodjenja = parseInt(danRodjenja);
+                    mesecRodjenja = parseInt(mesecRodjenja);
+                    godinaRodjenja = parseInt(godinaRodjenja);
+                    if (danRodjenja <= 0 || danRodjenja > 31 || mesecRodjenja <= 0 || mesecRodjenja > 12 || (godinaRodjenja > 18 && godinaRodjenja < 900)) {
+                        alert("JMBG je neispravan!");
+                    } else {
 
+                        let korisnik = {
+                            Id: trenutniKorisnik.Id,
+                            KorisnickoIme: `${$('#korisnickoime').val()}`,
+                            Lozinka: `${$('#lozinka1').val()}`,
+                            Ime: `${$('#ime1').val()}`,
+                            Prezime: `${$('#prezime1').val()}`,
+                            Pol: trenutniKorisnik.Pol,
+                            JMBG: `${$('#jmbg1').val()}`,
+                            Kontakt: `${$('#kontakt1').val()}`,
+                            Email: `${$('#email1').val()}`,
+                            Voznje: trenutniKorisnik.Voznje,
+                            Uloga: trenutniKorisnik.Uloga,
+                        };
 
-                    let korisnik = {
-                        Id: trenutniKorisnik.Id,
-                        KorisnickoIme: `${$('#korisnickoime').val()}`,
-                        Lozinka: `${$('#lozinka1').val()}`,
-                        Ime: `${$('#ime1').val()}`,
-                        Prezime: `${$('#prezime1').val()}`,
-                        Pol: trenutniKorisnik.Pol,
-                        JMBG: `${$('#jmbg1').val()}`,
-                        Kontakt: `${$('#kontakt1').val()}`,
-                        Email: `${$('#email1').val()}`,
-                        Voznje: trenutniKorisnik.Voznje,
-                        Uloga: trenutniKorisnik.Uloga,
-                    };
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/Dispecer/' + trenutniKorisnik.Id,
+                            data: JSON.stringify(korisnik),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    alert("Uspesna izmena");
+                                    localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                                    $(location).attr('href', 'Korisnik.html');
+                                }
+                                else {
+                                    alert("Proverite da su sva polja dobro popunjena pa pokušajte opet!\nAko su dobro popunjena korisničko ime je zauzeto!");
+                                }
+                            },
+                            error: function (errorData) {
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: '/api/Dispecer/' + trenutniKorisnik.Id,
-                        data: JSON.stringify(korisnik),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data) {
-                                alert("Uspesna izmena");
-                                localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
-                                $(location).attr('href', 'Korisnik.html');
                             }
-                            else {
-                                alert("Korisnicko ime je zauzeto!");
-                            }
-                        },
-                        error: function (errorData) {
-
-                        }
-                    })
+                        })
+                    }
                 }
             });
 
@@ -823,6 +881,16 @@
                 $("#dodajVoznjuDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
                 $("#mapa").css("display", "inline");
+                
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+                $("#dodajVoznjuD").css("display", "none");
+                
 
             });
 
@@ -873,57 +941,71 @@
                         greska += "-Broj taxi vozila\n";
                     }
                     alert(greska);
+                } else if (lokacijaMapa == "") {
+                    alert("Izaberite lokaciju!");
+                    
                 } else {
+                    let jmbg = `${$('#jmbgVD').val()}`;
+                    let danRodjenja = jmbg.substring(0, 2);
+                    let mesecRodjenja = jmbg.substring(2, 4);
+                    let godinaRodjenja = jmbg.substring(4, 7);
+                    danRodjenja = parseInt(danRodjenja);
+                    mesecRodjenja = parseInt(mesecRodjenja);
+                    godinaRodjenja = parseInt(godinaRodjenja);
+                    if (danRodjenja <= 0 || danRodjenja > 31 || mesecRodjenja <= 0 || mesecRodjenja > 12 || (godinaRodjenja > 18 && godinaRodjenja < 900)) {
+                        alert("JMBG je neispravan!");
+                    } else {
+                        let lokacija2 = lokacijaMapa;
+                        lokacijaMapa = "";
+                        let e = document.getElementById('tipAutoVD');
+                        let selValue = e.options[e.selectedIndex].text;
 
-                    let lokacija2 = lokacijaMapa;
-                    let e = document.getElementById('tipAutoVD');
-                    let selValue = e.options[e.selectedIndex].text;
+                        let automobil = {
+                            Godiste: `${$('#godisteVD').val()}`,
+                            Registracija: `${$('#regVD').val()}`,
+                            BrojVozila: `${$('#brVD').val()}`,
+                            TipAutomobila: selValue,
+                        };
 
-                    let automobil = {
-                        Godiste: `${$('#godisteVD').val()}`,
-                        Registracija: `${$('#regVD').val()}`,
-                        BrojVozila: `${$('#brVD').val()}`,
-                        TipAutomobila: selValue,
-                    };
+                        let e1 = document.getElementById('polVD');
+                        let selValue1 = e.options[e.selectedIndex].text;
 
-                    let e1 = document.getElementById('polVD');
-                    let selValue1 = e.options[e.selectedIndex].text;
+                        let vozac = {
+                            KorisnickoIme: `${$('#korisnickoimeVD').val()}`,
+                            Lozinka: `${$('#lozinkaVD').val()}`,
+                            Ime: `${$('#imeVD').val()}`,
+                            Prezime: `${$('#prezimeVD').val()}`,
+                            Pol: selValue1,
+                            JMBG: `${$('#jmbgVD').val()}`,
+                            Kontakt: `${$('#kontaktVD').val()}`,
+                            Email: `${$('#emailVD').val()}`,
+                            Lokacija: lokacija2,
+                            Automobil: automobil,
 
-                    let vozac = {
-                        KorisnickoIme: `${$('#korisnickoimeVD').val()}`,
-                        Lozinka: `${$('#lozinkaVD').val()}`,
-                        Ime: `${$('#imeVD').val()}`,
-                        Prezime: `${$('#prezimeVD').val()}`,
-                        Pol: selValue1,
-                        JMBG: `${$('#jmbgVD').val()}`,
-                        Kontakt: `${$('#kontaktVD').val()}`,
-                        Email: `${$('#emailVD').val()}`,
-                        Lokacija: lokacija2,
-                        Automobil: automobil,
-
-                    };
+                        };
 
 
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '/api/Vozac',
-                        data: JSON.stringify(vozac),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data) {
-                                alert("Registrovali ste vozaca");
-                                $(location).attr('href', 'Korisnik.html');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/Vozac',
+                            data: JSON.stringify(vozac),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    alert("Registrovali ste vozaca");
+                                    $(location).attr('href', 'Korisnik.html');
+                                }
+                                else {
+                                    alert("Korisnicko ime ili broj vozila je zauzeto!");
+                                }
+                            },
+                            error: function (errorData) {
+
                             }
-                            else {
-                                alert("Korisnicko ime ili broj vozila je zauzeto!");
-                            }
-                        },
-                        error: function (errorData) {
-
-                        }
-                    })
+                        })
+                    }
                 }
             });
 
@@ -934,6 +1016,21 @@
                 $("#dodajVozacaDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
                 $("#mapa").css("display", "inline");
+
+                
+                $("#dodajVoznjuDivD").css("display", "none");
+               
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+                $("#dodajVoznjuD").css("display", "none");
+                $("#blokDivD").css("display", "none");
+
+
                 $("#dodajVoznjuD").html("");
 
 
@@ -962,100 +1059,105 @@
                 let listaRastojanja = [];
 
                 let lokacija2 = lokacijaMapa;
+                if (lokacija2 == "") {
+                    alert("Izaberite lokaciju!");
+                } else {
+                    
+                    let e = document.getElementById('autoD');
+                    let selValue = e.options[e.selectedIndex].text;
 
-                let e = document.getElementById('autoD');
-                let selValue = e.options[e.selectedIndex].text;
+                    let voznja = {
+                        Dispecer: trenutniKorisnik.KorisnickoIme,
+                        PocetnaLokacija: lokacija2,
+                        TipAutomobila: selValue,
+                        Status: "Formirana",
 
-                let voznja = {
-                    Dispecer: trenutniKorisnik.KorisnickoIme,
-                    PocetnaLokacija: lokacija2,
-                    TipAutomobila: selValue,
-                    Status: "Formirana",
+                    };
 
-                };
+                    $.ajax({
+                        type: 'GET',
+                        url: '/api/Vozac',
+                        async: false,
+                        success: function (data) {
+                            let e = document.getElementById('autoD');
+                            let selValue = e.options[e.selectedIndex].text;
 
-                $.ajax({
-                    type: 'GET',
-                    url: '/api/Vozac',
-                    async: false,
-                    success: function (data) {
-                        let e = document.getElementById('autoD');
-                        let selValue = e.options[e.selectedIndex].text;
-
-                        let tip = selValue;
-                        let tipBr = "";
-                        if (tip == "Svejedno") {
-                            tipBr = 0;
-                        } else if (tip == "Putnički") {
-                            tipBr = 1;
-                        } else {
-                            tipBr = 2;
-                        }
-
-
-                        let listaPet = [];
-                        let listCount = 0;
-                        // let c = data.count;
-                        if (Object.keys(data).length > 5) {
-                            for (vozac in data) {
-                                if (data[vozac].Automobil.TipAutomobila == tipBr || tipBr == 0) {
-                                    var singleObj = {}
-                                    singleObj['Id'] = data[vozac].Id;
-                                    let rastojanje = Math.sqrt(Math.pow((voznja.PocetnaLokacija.X - data[vozac].Lokacija.X), 2) + Math.pow((voznja.PocetnaLokacija.Y - data[vozac].Lokacija.Y), 2));
-                                    singleObj['D'] = rastojanje;
-                                    listaRastojanja.push(singleObj);
-                                    listCount++;
-                                }
+                            let tip = selValue;
+                            let tipBr = "";
+                            if (tip == "Svejedno") {
+                                tipBr = 0;
+                            } else if (tip == "Putnički") {
+                                tipBr = 1;
+                            } else {
+                                tipBr = 2;
                             }
-                            //listaRastojanja.sort(function (a, b) { return a - b });
-                            listaRastojanja.sort(function (a, b) { return (a.D > b.D) ? 1 : ((b.D > a.D) ? -1 : 0); });
 
 
-                            for (let i = 0; i < listCount; i++) {
-                                listaPet.push(listaRastojanja[i].Id);
-                                if (i == 4) {
-                                    break;
-                                }
-                            }
-                        }
-
-
-
-                        
-                        let tabela = `<table><tr><td>Vozač</td><td><select name="Vozac" id="vozacD">`;
-                        let brojac = 0;
-                        let jes = true;
-                        for (vozac in data) {
+                            let listaPet = [];
+                            let listCount = 0;
+                            // let c = data.count;
                             if (Object.keys(data).length > 5) {
-                                jes = listaPet.includes(data[vozac].Id);
-                            } 
-                            if (data[vozac].Zauzet == false && jes == true) {
-                                if (tipBr == 0) {
-                                    tabela += `<option value="${data[vozac].Id}">` + data[vozac].Ime + " " + data[vozac].Prezime + `</option>`;
-                                    brojac++;
-                                } else if (data[vozac].Automobil.TipAutomobila == tipBr) {
-                                    tabela += `<option value="${data[vozac].Id}">` + data[vozac].Ime + " " + data[vozac].Prezime + `</option>`;
-                                    brojac++;
+                                for (vozac in data) {
+                                    if ((data[vozac].Automobil.TipAutomobila == tipBr || tipBr == 0) && data[vozac].Zauzet == false) {
+                                        var singleObj = {}
+                                        singleObj['Id'] = data[vozac].Id;
+                                        let rastojanje = Math.sqrt(Math.pow((voznja.PocetnaLokacija.X - data[vozac].Lokacija.X), 2) + Math.pow((voznja.PocetnaLokacija.Y - data[vozac].Lokacija.Y), 2));
+                                        singleObj['D'] = rastojanje;
+                                        listaRastojanja.push(singleObj);
+                                        listCount++;
+                                    }
                                 }
+                                //listaRastojanja.sort(function (a, b) { return a - b });
+                                listaRastojanja.sort(function (a, b) { return (a.D > b.D) ? 1 : ((b.D > a.D) ? -1 : 0); });
 
+
+                                for (let i = 0; i < listCount; i++) {
+                                    listaPet.push(listaRastojanja[i].Id);
+                                    if (i == 4) {
+                                        break;
+                                    }
+                                }
                             }
-                        }
 
-                        tabela += `</select></td></tr><tr><td colspan="2"><button id="dodajVoznjuDugme2D" type="button">Dodeli</button></td></tr></table>`;
-                        if (brojac == 0) {
-                            alert("ne postoji slobodan vozač, vožnja neće biti formirana!");
-                            $("#dodajVoznjuD").html("");
-                            $("#dodajVoznjuD").css("display", "none");
-                            $(location).attr('href', 'Korisnik.html');
+
+
+
+                            let tabela = `<table><tr><td>Vozač</td><td><select name="Vozac" id="vozacD">`;
+                            let brojac = 0;
+                            let jes = true;
+                            for (vozac in data) {
+                                if (Object.keys(data).length > 5) {
+                                    jes = listaPet.includes(data[vozac].Id);
+                                }
+                                if (data[vozac].Zauzet == false && jes == true) {
+                                    if (tipBr == 0) {
+                                        tabela += `<option value="${data[vozac].Id}">` + data[vozac].Ime + " " + data[vozac].Prezime + `</option>`;
+                                        brojac++;
+                                    } else if (data[vozac].Automobil.TipAutomobila == tipBr) {
+                                        tabela += `<option value="${data[vozac].Id}">` + data[vozac].Ime + " " + data[vozac].Prezime + `</option>`;
+                                        brojac++;
+                                    }
+
+                                }
+                            }
+
+                            tabela += `</select></td></tr><tr><td colspan="2"><button id="dodajVoznjuDugme2D" type="button">Dodeli</button></td></tr></table>`;
+                            if (brojac == 0) {
+                                alert("ne postoji slobodan vozač, vožnja neće biti formirana!");
+                                $("#dodajVoznjuD").html("");
+                                $("#dodajVoznjuD").css("display", "none");
+                                $(location).attr('href', 'Korisnik.html');
+                            }
+                            $("#dodajVoznjuD").append(tabela);
                         }
-                        $("#dodajVoznjuD").append(tabela);
-                    }
-                });
+                    });
+                }
             });
 
             $(document).on('click', '#dodajVoznjuDugme2D', function () {
                 
                 let lokacija2 = lokacijaMapa;
+                lokacijaMapa = "";
 
                 let e = document.getElementById('autoD');
                 let selValue = e.options[e.selectedIndex].text;
@@ -1209,7 +1311,7 @@
                     async: false,
                     success: function (data) {
                         let ulogovani = localStorage.getItem("ulogovaniId");
-                        let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Dispecer == ulogovani) {
                                 var date = new Date(data[voznja].Datum);
@@ -1405,7 +1507,7 @@
                     async: false,
                     success: function (data) {
                         
-                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
                             var month = date.getMonth() + 1;
@@ -1592,7 +1694,7 @@
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0) {
                                 var date = new Date(data[voznja].Datum);
@@ -1671,6 +1773,18 @@
                 $("#dodajVoznjuDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
                 $("#mapa").css("display", "none");
+                
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+                $("#dodajVoznjuD").css("display", "none");
+                $("#blokDivD").css("display", "none");
+
+
                 $("#blokDivD").html("");
 
                 $.ajax({
@@ -1679,7 +1793,7 @@
                     async: false,
                     success: function (data) {
                         
-                        let tabela = `<table><tr><td colspan = "3">Lista Vozača</td></tr>`;
+                        let tabela = `<table class="w3-card w3-white"><tr><td colspan = "3">Lista Vozača</td></tr>`;
                         
                         for (vozac in data) {
                             if (data[vozac].Blokiran == false) {
@@ -1712,15 +1826,27 @@
                 $("#dodajVoznjuDivD").css("display", "none");
                 $("#tabeleD").css("display", "none");
                 $("#mapa").css("display", "none");
-                $("#blokDivD").html("");
+                
+                $("#dodajKomentarD").css("display", "none");
+                $("#prikaziKomentarD").css("display", "none");
+                $("#pretragaD1").css("display", "none");
+                $("#pretragaD2").css("display", "none");
+                $("#pretragaD3").css("display", "none");
+                
+                $("#obradaVoznjeD").css("display", "none");
+                $("#dodajVoznjuD").css("display", "none");
+                $("#blokDivD").css("display", "none");
 
+
+                $("#blokDivD").html("");
+                $("#blokDivD").css("display", "inline");
                 $.ajax({
                     type: 'GET',
                     url: '/api/Korisnik',
                     async: false,
                     success: function (data) {
 
-                        let tabela = `<table><tr><td colspan = "3">Lista Mušterija</td></tr>`;
+                        let tabela = `<table class="w3-card w3-white "><tr><td colspan = "3">Lista Mušterija</td></tr>`;
 
                         for (vozac in data) {
                             if (data[vozac].Blokiran == false) {
@@ -1742,9 +1868,11 @@
                 });
 
 
-                $("#blokDivD").css("display", "inline");
-
+                
+                
             });
+
+
 
 
 
@@ -1756,7 +1884,7 @@
             });
 
             $("#homeV").click(function () {
-
+               
                 $("#pregledProfilaDivV").css("display", "none");
                 $("#izmenaProfilaDivV").css("display", "none");
                 $("#mapa").css("display", "none");
@@ -1781,7 +1909,7 @@
                 $("#uspesnaVoznjaV").css("display", "none");
                 $("#pretragaV1").css("display", "none");
                 $("#pretragaV2").css("display", "none");
-
+                $("#mapa").css("display", "none");
 
                 $("#korisnickoImeV").text(trenutniKorisnik.KorisnickoIme);
                 $("#lozinkaV").text(trenutniKorisnik.Lozinka);
@@ -1808,7 +1936,7 @@
             });
 
             $("#izmenaProfilaV").click(function () {
-
+                $("#mapa").css("display", "none");
                 $("#izmenaProfilaDivV").css("display", "inline");
                 $("#pregledProfilaDivV").css("display", "none");
                 $("#dodajKomentarV").css("display", "none");
@@ -1822,17 +1950,17 @@
                 let izmena = "<table class=\"w3-large\" border=1>";
                 izmena += " <tr><td>Korisničko ime</td><td><input type=\"text\" name=\"KorisnickoIme\" id=\"korisnickoime\" value=\"" + trenutniKorisnik.KorisnickoIme + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
                 izmena += " <tr><td>Lozinka</td><td><input type=\"text\" name=\"Lozinka\" id=\"lozinka1\" value=\"" + trenutniKorisnik.Lozinka + "\" pattern=\".{4,}\" minlength=\"4\" maxlength=\"13\" required /></td></tr>";
-                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2,13}\" required /></td></tr>";
-                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"[A-Za-z]{2,13}\" required /></td></tr>";
+                izmena += " <tr><td>Ime</td><td><input type=\"text\" name=\"Ime\" id=\"ime1\" value=\"" + trenutniKorisnik.Ime + "\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
+                izmena += " <tr><td>Prezime</td><td><input type=\"text\" name=\"Prezime\" value=\"" + trenutniKorisnik.Prezime + "\" id=\"prezime1\" minlength=\"2\" maxlength=\"13\" pattern=\"^[^0-9]+$\" required /></td></tr>";
 
                 izmena += " <tr><td>JMBG</td><td><input type=\"text\" name=\"JMBG\" id=\"jmbg1\" pattern=\"[0-9]{13}\" minlength=\"13\" maxlength=\"13\" value=\"" + trenutniKorisnik.JMBG + "\" required /></td></tr>";
                 izmena += " <tr><td>Kontakt</td><td><input type=\"text\" name=\"Kontakt\" id=\"kontakt1\" pattern=\"[0-9]{6,14}\" minlength=\"6\" maxlength=\"14\" value=\"" + trenutniKorisnik.Kontakt + "\" required /></td></tr>";
                 izmena += " <tr><td>Email</td><td><input type=\"email\" name=\"Email\" id=\"email1\" value=\"" + trenutniKorisnik.Email + "\" pattern=\"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$\" required /></td></tr>";
                 //izmena += " <tr><td colspan=\"2\">Lokacija</td></tr><tr><td>X</td><td><input type=\"number\" name=\"X\" id=\"xV\" value=\"" + trenutniKorisnik.Lokacija.X + "\" required /></td ></tr > ";
                 //izmena += " <tr><td>Y</td><td><input type=\"number\" name=\"Y\" id=\"yV\" value=\"" + trenutniKorisnik.Lokacija.Y + "\" required /></td ></tr >";
-                izmena += " <tr><td colspan=\"2\">Adresa</td></tr><tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Ulica + "\" required /></td ></tr >";
+                izmena += " <tr><td colspan=\"2\">Adresa</td></tr><tr><td>Ulica</td><td><input type=\"text\" name=\"Ulica\" id=\"ulicaV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Ulica + "\" readonly /></td ></tr >";
                 //izmena += " <tr><td>Broj</td><td><input type=\"text\" name=\"Broj\" id=\"brojV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Broj + "\" required /></td ></tr>";
-                izmena += " <tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Mesto + "\" required /></td ></tr>";
+                izmena += " <tr><td>Mesto</td><td><input type=\"text\" name=\"Mesto\" id=\"mestoV\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Mesto + "\" readonly /></td ></tr>";
                 //izmena += " <tr><td>ZIP</td><td><input type=\"number\" name=\"Zip\" id=\"zipV\" pattern=\"[0-9]{5}\" minlength=\"5\" maxlength=\"5\" value=\"" + trenutniKorisnik.Lokacija.Adresa.Zip + "\" required /></td></tr>";
                 izmena += " <tr><td colspan=\"2\">Automobil</td></tr>";
                 izmena += " <tr><td>Godište</td><td><input type=\"number\" name=\"Godiste\" id=\"godisteV\" value=\"" + trenutniKorisnik.Automobil.Godiste + "\" min=\"2000\" max=\"2018\" required/></td></tr>";
@@ -1897,55 +2025,69 @@
                         greska += "-Broj taxi vozila\n";
                     }
                     alert(greska);
+                } else if (lokacijaMapa=="") {
+                    alert("Unesite lokaciju!");
+
                 } else {
-                    let lokacija2 = lokacijaMapa;
+                    let jmbg = `${$('#jmbgVD').val()}`;
+                    let danRodjenja = jmbg.substring(0, 2);
+                    let mesecRodjenja = jmbg.substring(2, 4);
+                    let godinaRodjenja = jmbg.substring(4, 7);
+                    danRodjenja = parseInt(danRodjenja);
+                    mesecRodjenja = parseInt(mesecRodjenja);
+                    godinaRodjenja = parseInt(godinaRodjenja);
+                    if (danRodjenja <= 0 || danRodjenja > 31 || mesecRodjenja <= 0 || mesecRodjenja > 12 || (godinaRodjenja > 18 && godinaRodjenja < 900)) {
+                        alert("JMBG je neispravan!");
+                    } else {
+                        let lokacija2 = lokacijaMapa;
+                        lokacijaMapa = "";
+                        let e = document.getElementById('tipAutoV');
+                        let selValue = e.options[e.selectedIndex].text;
 
-                    let e = document.getElementById('tipAutoV');
-                    let selValue = e.options[e.selectedIndex].text;
+                        let automobil = {
+                            Godiste: `${$('#godisteV').val()}`,
+                            Registracija: `${$('#regV').val()}`,
+                            BrojVozila: `${$('#brV').val()}`,
+                            TipAutomobila: selValue,
+                        };
 
-                    let automobil = {
-                        Godiste: `${$('#godisteV').val()}`,
-                        Registracija: `${$('#regV').val()}`,
-                        BrojVozila: `${$('#brV').val()}`,
-                        TipAutomobila: selValue,
-                    };
+                        let korisnik = {
+                            Id: trenutniKorisnik.Id,
+                            KorisnickoIme: `${$('#korisnickoime').val()}`,
+                            Lozinka: `${$('#lozinka1').val()}`,
+                            Ime: `${$('#ime1').val()}`,
+                            Prezime: `${$('#prezime1').val()}`,
+                            Pol: trenutniKorisnik.Pol,
+                            JMBG: `${$('#jmbg1').val()}`,
+                            Kontakt: `${$('#kontakt1').val()}`,
+                            Email: `${$('#email1').val()}`,
+                            Voznje: trenutniKorisnik.Voznje,
+                            Uloga: trenutniKorisnik.Uloga,
+                            Lokacija: lokacija2,
+                            Automobil: automobil,
+                        };
 
-                    let korisnik = {
-                        Id: trenutniKorisnik.Id,
-                        KorisnickoIme: `${$('#korisnickoime').val()}`,
-                        Lozinka: `${$('#lozinka1').val()}`,
-                        Ime: `${$('#ime1').val()}`,
-                        Prezime: `${$('#prezime1').val()}`,
-                        Pol: trenutniKorisnik.Pol,
-                        JMBG: `${$('#jmbg1').val()}`,
-                        Kontakt: `${$('#kontakt1').val()}`,
-                        Email: `${$('#email1').val()}`,
-                        Voznje: trenutniKorisnik.Voznje,
-                        Uloga: trenutniKorisnik.Uloga,
-                        Lokacija: lokacija2,
-                        Automobil: automobil,
-                    };
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/Vozac/' + trenutniKorisnik.Id,
+                            data: JSON.stringify(korisnik),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    alert("Uspesna izmena");
+                                    localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                                    $(location).attr('href', 'Korisnik.html');
+                                }
+                                else {
+                                    alert("Korisnicko ime je zauzeto!");
+                                }
+                            },
+                            error: function (errorData) {
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: '/api/Vozac/' + trenutniKorisnik.Id,
-                        data: JSON.stringify(korisnik),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data) {
-                                alert("Uspesna izmena");
-                                localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
-                                $(location).attr('href', 'Korisnik.html');
                             }
-                            else {
-                                alert("Korisnicko ime je zauzeto!");
-                            }
-                        },
-                        error: function (errorData) {
-
-                        }
-                    })
+                        })
+                    }
                 }
             });
 
@@ -2042,7 +2184,7 @@
 
 
                         let ulogovani = localStorage.getItem("ulogovani");
-                        let tableOfProducts = "<table id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td colspan=\"2\">Dispečer</td> <td colspan=\"2\">Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td colspan=\"2\">Dispečer</td> <td colspan=\"2\">Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Vozac == id) {
 
@@ -2207,7 +2349,7 @@
 
                         let tip = localStorage.getItem("ulogovaniTip");
                         let status2 = localStorage.getItem("ulogovaniStatus");
-                        let tableOfProducts = "<table id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td colspan=\"2\">Mušterija</td><td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td colspan=\"2\">Mušterija</td><td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
 
@@ -2369,6 +2511,8 @@
         }
 
         function vidiKomentarClick(id) {
+            $("#dodajKomentarK").css("display", "none");
+
             $.ajax({
                 type: 'GET',
                 url: '/api/Voznja/' + id,
@@ -2448,145 +2592,173 @@
             //    Adresa: adresa,
             //};
             let lokacija2 = lokacijaMapa;
+            if (lokacija2 == "") {
+                alert("Izaberite lokaciju!");
+            } else {
+                lokacijaMapa = "";
+                let e = document.getElementById('autoI');
+                let selValue = e.options[e.selectedIndex].text;
 
-            let e = document.getElementById('autoI');
-            let selValue = e.options[e.selectedIndex].text;
+                let Voznja = {
 
-            let Voznja = {
+                    PocetnaLokacija: lokacija2,
+                    TipAutomobila: selValue,
+                    Status: "Kreirana",
 
-                PocetnaLokacija: lokacija2,
-                TipAutomobila: selValue,
-                Status: "Kreirana",
+                };
 
-            };
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + IdIzmene,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesna izmena");
+                            $("#homeK").click();
 
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + IdIzmene,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesna izmena");
-                        $("#homeK").click();
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
 
                     }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
-                }
-            })
-            $("#izmenaVoznjeK").css("display", "none");
-
+                })
+                $("#izmenaVoznjeK").css("display", "none");
+            }
         }
 
         function otkaziVoznjuClick(id) {
             $("#dodajKomentarOtkaziK").css("display", "inline");
             localStorage.setItem("otkazanaVoznja", id);
-
-
-
-
+            localStorage.setItem("zabrana", "1");
+            
         }
 
         function dodajKomentarOtkaziDugmeK() {
-            let v = localStorage.getItem("otkazanaVoznja");
-
-            let ulogovani = localStorage.getItem("ulogovaniId");
-
-            let komentar = {
-
-                Opis: `${$('#opisKO').val()}`,
-                DatumObjave: `${$('#datumObjaveKO').val()}`,
-                Korisnik: ulogovani,
-                KorisnikUloga: "Mušterija",
-                Voznja: v,
-                Ocena: `${$('#ocenaKO').val()}`,
-
-            };
-
-            let Voznja = {
-                Id: v,
-                Komentar: komentar,
-                Status: "Otkazana",
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + v,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        $("#dodajKomentarOtkaziK").css("display", "none");
-                        $("#homeK").click();
-
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
+            let v = document.getElementById("opisKO");
+            let v1 = document.getElementById("ocenaKO");
+            if (!v.checkValidity() && !v1.checkValidity()) {
+                alert("Popunite polja komentara!");
+            } else if (!v.checkValidity() || !v1.checkValidity()){
+                let greska = "Niste dobro uneli:\n";
+                if (!v.checkValidity()) {
+                    greska += "-Opis\n";
                 }
-            })
+                if (!v1.checkValidity()) {
+                    greska += "-Ocenu\n";
+                }
+                alert(greska);
+            } else {
+                let v = localStorage.getItem("otkazanaVoznja");
+                let ulogovani = localStorage.getItem("ulogovaniId");
 
+                let komentar = {
+
+                    Opis: `${$('#opisKO').val()}`,
+                    Korisnik: ulogovani,
+                    KorisnikUloga: "Mušterija",
+                    Voznja: v,
+                    Ocena: `${$('#ocenaKO').val()}`,
+
+                };
+
+                let Voznja = {
+                    Id: v,
+                    Komentar: komentar,
+                    Status: "Otkazana",
+                };
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + v,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            $("#dodajKomentarOtkaziK").css("display", "none");
+                            localStorage.setItem("zabrana", "0");
+                            $("#homeK").click();
+
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+            }
 
         }
 
         function dodajKomentarClick(id) {
             $("#dodajKomentarK").css("display", "inline");
+            $("#prikaziKomentarK").css("display", "none");
             localStorage.setItem("voznja", id);
         }
 
         function dodajKomentarDugmeK() {
-            let v = localStorage.getItem("voznja");
-
-            let ulogovani = localStorage.getItem("ulogovaniId");
-
-            let komentar = {
-
-                Opis: `${$('#opisK').val()}`,
-                DatumObjave: `${$('#datumObjaveK').val()}`,
-                Korisnik: ulogovani,
-                KorisnikUloga: "Mušterija",
-                Voznja: v,
-                Ocena: `${$('#ocenaK').val()}`,
-
-            };
-
-            let Voznja = {
-                Id: v,
-                Komentar: komentar,
-                Status: "Uspešna",
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + v,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        $("#dodajKomentarK").css("display", "none");
-                        $("#homeK").click();
-
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
+            let v = document.getElementById("opisK");
+            let v1 = document.getElementById("ocenaK");
+            if (!v.checkValidity() && !v1.checkValidity()) {
+                alert("Popunite polja komentara!");
+            } else if (!v.checkValidity() || !v1.checkValidity()) {
+                let greska = "Niste dobro uneli:\n";
+                if (!v.checkValidity()) {
+                    greska += "-Opis\n";
                 }
-            })
+                if (!v1.checkValidity()) {
+                    greska += "-Ocenu\n";
+                }
+                alert(greska);
+            } else {
+                let v = localStorage.getItem("voznja");
 
+                let ulogovani = localStorage.getItem("ulogovaniId");
+
+                let komentar = {
+
+                    Opis: `${$('#opisK').val()}`,
+                    Korisnik: ulogovani,
+                    KorisnikUloga: "Mušterija",
+                    Voznja: v,
+                    Ocena: `${$('#ocenaK').val()}`,
+
+                };
+
+                let Voznja = {
+                    Id: v,
+                    Komentar: komentar,
+                    Status: "Uspešna",
+                };
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + v,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            $("#dodajKomentarK").css("display", "none");
+                            $("#homeK").click();
+
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+            }
 
         }
 
@@ -2599,7 +2771,8 @@
             $("#pretragaD1").css("display", "none");
             $("#pretragaD2").css("display", "none");
             $("#pretragaD3").css("display", "none");
-
+            zatvoriObraduD();
+            zatvoriKomentarD();
 
 
             $.ajax({
@@ -2611,7 +2784,7 @@
                     if (cityName == "London") {
                         $("#pretragaD1").css("display", "inline");
                         let ulogovani = localStorage.getItem("ulogovaniId");
-                        let tableOfProducts = "<table><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Dispecer == ulogovani) {
                                 var date = new Date(data[voznja].Datum);
@@ -2709,7 +2882,7 @@
                     }
                     else if (cityName == "Paris") {
                         $("#pretragaD2").css("display", "inline");
-                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
                             var month = date.getMonth() + 1;
@@ -2818,7 +2991,7 @@
                     }
                     else if (cityName == "Tokyo") {
                         $("#pretragaD3").css("display", "inline");
-                        let tableOfProducts = "<table><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0) {
                                 var date = new Date(data[voznja].Datum);
@@ -2908,7 +3081,7 @@
                    // let c = data.count;
                     if (Object.keys(data).length > 5) {
                         for (vozac in data) {
-                            if (data[vozac].Automobil.TipAutomobila == tipBr || tipBr == 0) {
+                            if ((data[vozac].Automobil.TipAutomobila == tipBr || tipBr == 0)&& data[vozac].Zauzet == false) {
                                 var singleObj = {}
                                 singleObj['Id'] = data[vozac].Id;
                                 let rastojanje = Math.sqrt(Math.pow((voznja.PocetnaLokacija.X - data[vozac].Lokacija.X), 2) + Math.pow((voznja.PocetnaLokacija.Y - data[vozac].Lokacija.Y), 2));
@@ -2950,7 +3123,7 @@
                         }
                     }
 
-                    tabela += `</select></td></tr><tr><td colspan="2"><button id="obradiVoznju2D" onclick="obradiDugmeD(${voznja.Id});" type="button">Dodeli</button></td></tr></table>`;
+                    tabela += `</select></td></tr><tr><td><button id="obradiVoznju2D" onclick="obradiDugmeD(${voznja.Id});" type="button">Dodeli</button></td><td><button onclick="zatvoriObraduD();" type="button">Otkaži</button></td></tr></table>`;
                     if (brojac == 0) {
                         alert("ne postoji slobodan vozač, vožnja ostaje na čekanju!");
                         $("#obradaVoznjeD").html("");
@@ -2962,6 +3135,11 @@
             });
 
             $("#obradaVoznjeD").css("display", "inline");
+        }
+
+        function zatvoriObraduD() {
+
+            $("#obradaVoznjeD").css("display", "none");
         }
 
         function obradiDugmeD(id) {
@@ -3028,6 +3206,9 @@
                 type: 'PUT',
                 url: '/api/Vozac/' + id,
                 data: JSON.stringify(vozac),
+                headers: {
+                    "ulogovani": localStorage.getItem("ulogovani").toString
+                },
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 success: function (data) {
@@ -3136,6 +3317,8 @@
         }
         
         function vidiKomentarClickD(id) {
+            $("#dodajKomentarD").css("display", "none");
+
             $.ajax({
                 type: 'GET',
                 url: '/api/Voznja/' + id,
@@ -3203,52 +3386,66 @@
         
         function dodajKomentarClickD(id) {
             $("#dodajKomentarD").css("display", "inline");
+            $("#prikaziKomentarD").css("display", "none");
             localStorage.setItem("otkazanaVoznja", id);
         }
 
         function dodajKomentarDugmeD() {
-            let otkazanaVoznja = localStorage.getItem("otkazanaVoznja");
-            let ulogovani = localStorage.getItem("ulogovaniId");
-
-            let komentar = {
-
-                Opis: `${$('#opisD').val()}`,
-                DatumObjave: `${$('#datumObjaveD').val()}`,
-                Korisnik: ulogovani,
-                KorisnikUloga: "Dispečer",
-                Voznja: otkazanaVoznja,
-                Ocena: `${$('#ocenaD').val()}`,
-
-            };
-
-            let Voznja = {
-                Id: otkazanaVoznja,
-                Komentar: komentar,
-                Status: "Uspešna",
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + otkazanaVoznja,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesno dodat komentar");
-                        $("#dodajKomentarD").css("display", "none");
-                        $("#homeD").click();
-
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
+            let v = document.getElementById("opisD");
+            let v1 = document.getElementById("ocenaD");
+            if (!v.checkValidity() && !v1.checkValidity()) {
+                alert("Popunite polja komentara!");
+            } else if (!v.checkValidity() || !v1.checkValidity()) {
+                let greska = "Niste dobro uneli:\n";
+                if (!v.checkValidity()) {
+                    greska += "-Opis\n";
                 }
-            })
+                if (!v1.checkValidity()) {
+                    greska += "-Ocenu\n";
+                }
+                alert(greska);
+            } else {
+                let otkazanaVoznja = localStorage.getItem("otkazanaVoznja");
+                let ulogovani = localStorage.getItem("ulogovaniId");
 
+                let komentar = {
+
+                    Opis: `${$('#opisD').val()}`,
+                    Korisnik: ulogovani,
+                    KorisnikUloga: "Dispečer",
+                    Voznja: otkazanaVoznja,
+                    Ocena: `${$('#ocenaD').val()}`,
+
+                };
+
+                let Voznja = {
+                    Id: otkazanaVoznja,
+                    Komentar: komentar,
+                    Status: "Uspešna",
+                };
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + otkazanaVoznja,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesno dodat komentar");
+                            $("#dodajKomentarD").css("display", "none");
+                            $("#homeD").click();
+
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+            }
 
         }
 
@@ -3259,143 +3456,170 @@
         //Vozac
         function uspesnaClickV(id) {
             $("#uspesnaVoznjaV").css("display", "inline");
+            $("#pretragaV1").css("display", "none");
+            $("#pretragaV2").css("display", "none");
+            $("#tabeleV").css("display", "none");
             $("#mapa").css("display", "inline");
             localStorage.setItem("uspesnaVoznja", id);
         }
         
         function uspesnaVoznjaDugmeV() {
-            let voznjaId = localStorage.getItem("uspesnaVoznja");
+            let v = document.getElementById("iznosV");
+            if (!v.checkValidity()) {
+                alert("Niste dobro popunili iznos!");
+            } else {
 
-            //let adresa = {
-            //    Ulica: `${$('#ulicaV').val()}`,
-            //    Broj: `${$('#brojV').val()}`,
-            //    Mesto: `${$('#mestoV').val()}`,
-            //    Zip: `${$('#zipV').val()}`,
-            //};
-            //let lokacija = {
-            //    X: `${$('#xV').val()}`,
-            //    Y: `${$('#yV').val()}`,
-            //    Adresa: adresa,
-            //};
+                let voznjaId = localStorage.getItem("uspesnaVoznja");
 
-            let lokacija2 = lokacijaMapa;
+                //let adresa = {
+                //    Ulica: `${$('#ulicaV').val()}`,
+                //    Broj: `${$('#brojV').val()}`,
+                //    Mesto: `${$('#mestoV').val()}`,
+                //    Zip: `${$('#zipV').val()}`,
+                //};
+                //let lokacija = {
+                //    X: `${$('#xV').val()}`,
+                //    Y: `${$('#yV').val()}`,
+                //    Adresa: adresa,
+                //};
 
-            let Voznja = {
+                let lokacija2 = lokacijaMapa;
+                if (lokacija2 == "") {
+                    alert("Izaberite lokaciju!");
+                } else {
+                    lokacijaMapa = "";
+                    let Voznja = {
 
-                Odrediste: lokacija2,
-                Iznos: `${$('#iznosV').val()}`,
-                Status: "Uspešna",
+                        Odrediste: lokacija2,
+                        Iznos: `${$('#iznosV').val()}`,
+                        Status: "Uspešna",
 
-            };
+                    };
 
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + voznjaId,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesna izmena");
-                        $("#homeV").click();
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/api/Voznja/' + voznjaId,
+                        data: JSON.stringify(Voznja),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data) {
+                                alert("Uspesna izmena");
+                                $("#homeV").click();
 
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
+                            }
+                            else {
+                                alert("neuspesna izmena!");
+                            }
+                        },
+                        error: function (errorData) {
 
+                        }
+                    })
+                    let vozacId = localStorage.getItem("ulogovaniId");
+                    let korisnik = "";
+                    $.ajax({
+                        type: 'GET',
+                        url: '/api/Vozac/' + vozacId,
+                        async: false,
+                        success: function (v) {
+                            korisnik = v;
+                        }
+                    })
+
+                    korisnik.Zauzet = false;
+                    korisnik.Lokacija = lokacija2;
+
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/api/Vozac/' + vozacId,
+                        data: JSON.stringify(korisnik),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data) {
+                                alert("Uspesna izmena");
+                                localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
+                                $(location).attr('href', 'Korisnik.html');
+                            }
+                            else {
+                                alert("Korisnicko ime je zauzeto!");
+                            }
+                        },
+                        error: function (errorData) {
+
+                        }
+                    })
+
+                    $("#uspesnaVoznjaV").css("display", "none");
                 }
-            })
-            let vozacId = localStorage.getItem("ulogovaniId");
-            let korisnik = "";
-            $.ajax({
-                type: 'GET',
-                url: '/api/Vozac/' + vozacId,
-                async: false,
-                success: function (v) {
-                    korisnik = v;
-                }
-            })
-
-            
-            korisnik.Lokacija = lokacijaMapa;
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Vozac/' + vozacId,
-                data: JSON.stringify(korisnik),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesna izmena");
-                        localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
-                        $(location).attr('href', 'Korisnik.html');
-                    }
-                    else {
-                        alert("Korisnicko ime je zauzeto!");
-                    }
-                },
-                error: function (errorData) {
-
-                }
-            })
-
-            $("#uspesnaVoznjaV").css("display", "none");
-
+            }
         }
         
         function neuspesnaClickV(id) {
             $("#dodajKomentarNeuspesnaV").css("display", "inline");
             localStorage.setItem("neuspesnaVoznja", id);
-
+            localStorage.setItem("zabrana", "1");
         }
         
         function dodajKomentarNeuspesnaDugmeV() {
-            let neuspesnaVoznja = localStorage.getItem("neuspesnaVoznja");
-            let ulogovani = localStorage.getItem("ulogovaniId");
-            let komentar = {
-
-                Opis: `${$('#opisVN').val()}`,
-                DatumObjave: `${$('#datumObjaveVN').val()}`,
-                Korisnik: ulogovani,
-                KorisnikUloga: "Vozač",
-                Voznja: neuspesnaVoznja,
-                Ocena: `${$('#ocenaVN').val()}`,
-
-            };
-
-            let Voznja = {
-                Id: neuspesnaVoznja,
-                Komentar: komentar,
-                Status: "Neuspešna",
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + neuspesnaVoznja,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesno dodat komentar");
-                        $("#dodajKomentarNeuspesnaV").css("display", "none");
-                        $("#homeV").click();
-
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
+            let v = document.getElementById("opisVN");
+            let v1 = document.getElementById("ocenaVN");
+            if (!v.checkValidity() && !v1.checkValidity()) {
+                alert("Popunite polja komentara!");
+            } else if (!v.checkValidity() || !v1.checkValidity()) {
+                let greska = "Niste dobro uneli:\n";
+                if (!v.checkValidity()) {
+                    greska += "-Opis\n";
                 }
-            })
+                if (!v1.checkValidity()) {
+                    greska += "-Ocenu\n";
+                }
+                alert(greska);
+            } else {
 
+                let neuspesnaVoznja = localStorage.getItem("neuspesnaVoznja");
+                let ulogovani = localStorage.getItem("ulogovaniId");
+                let komentar = {
 
+                    Opis: `${$('#opisVN').val()}`,
+                    Korisnik: ulogovani,
+                    KorisnikUloga: "Vozač",
+                    Voznja: neuspesnaVoznja,
+                    Ocena: `${$('#ocenaVN').val()}`,
+
+                };
+
+                let Voznja = {
+                    Id: neuspesnaVoznja,
+                    Komentar: komentar,
+                    Status: "Neuspešna",
+                };
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + neuspesnaVoznja,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesno dodat komentar");
+                            $("#dodajKomentarNeuspesnaV").css("display", "none");
+                            localStorage.setItem("zabrana","0");
+                            $("#homeV").click();
+
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+
+            }
         }
         
         function preuzmiVoznjuClick(id) {
@@ -3430,6 +3654,7 @@
         }
        
         function vidiKomentarClickV(id) {
+            $("#dodajKomentarV").css("display", "none");
             $.ajax({
                 type: 'GET',
                 url: '/api/Voznja/' + id,
@@ -3497,52 +3722,66 @@
 
         function dodajKomentarClickV(id) {
             $("#dodajKomentarV").css("display", "inline");
+            $("#prikaziKomentarV").css("display", "none");
             localStorage.setItem("otkazanaVoznja", id);
         }
 
         function dodajKomentarDugmeV() {
-            let otkazanaVoznja = localStorage.getItem("otkazanaVoznja");
-            let ulogovani = localStorage.getItem("ulogovaniId");
-            let komentar = {
-
-                Opis: `${$('#opisV').val()}`,
-                DatumObjave: `${$('#datumObjaveV').val()}`,
-                Korisnik: ulogovani,
-                KorisnikUloga: "Vozač",
-                Voznja: otkazanaVoznja,
-                Ocena: `${$('#ocenaV').val()}`,
-
-            };
-
-            let Voznja = {
-                Id: otkazanaVoznja,
-                Komentar: komentar,
-                Status: "Uspešna",
-            };
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/Voznja/' + otkazanaVoznja,
-                data: JSON.stringify(Voznja),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function (data) {
-                    if (data) {
-                        alert("Uspesno dodat komentar");
-                        $("#dodajKomentarV").css("display", "none");
-                        $("#homeV").click();
-
-                    }
-                    else {
-                        alert("neuspesna izmena!");
-                    }
-                },
-                error: function (errorData) {
-
+            let v = document.getElementById("opisV");
+            let v1 = document.getElementById("ocenaV");
+            if (!v.checkValidity() && !v1.checkValidity()) {
+                alert("Popunite polja komentara!");
+            } else if (!v.checkValidity() || !v1.checkValidity()) {
+                let greska = "Niste dobro uneli:\n";
+                if (!v.checkValidity()) {
+                    greska += "-Opis\n";
                 }
-            })
+                if (!v1.checkValidity()) {
+                    greska += "-Ocenu\n";
+                }
+                alert(greska);
+            } else {
+                let otkazanaVoznja = localStorage.getItem("otkazanaVoznja");
+                let ulogovani = localStorage.getItem("ulogovaniId");
+                let komentar = {
 
+                    Opis: `${$('#opisV').val()}`,
+                    Korisnik: ulogovani,
+                    KorisnikUloga: "Vozač",
+                    Voznja: otkazanaVoznja,
+                    Ocena: `${$('#ocenaV').val()}`,
 
+                };
+
+                let Voznja = {
+                    Id: otkazanaVoznja,
+                    Komentar: komentar,
+                    Status: "Uspešna",
+                };
+
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Voznja/' + otkazanaVoznja,
+                    data: JSON.stringify(Voznja),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            alert("Uspesno dodat komentar");
+                            $("#dodajKomentarV").css("display", "none");
+                            $("#homeV").click();
+
+                        }
+                        else {
+                            alert("neuspesna izmena!");
+                        }
+                    },
+                    error: function (errorData) {
+
+                    }
+                })
+
+            }
         }
 
         function sortTableV1() {
@@ -3762,7 +4001,7 @@
             $("#TokyoV").html("");
             $("#pretragaV1").css("display", "none");
             $("#pretragaV2").css("display", "none");
-
+            zatvoriKomentarV();
             let id = localStorage.getItem("ulogovaniId");
 
 
@@ -3776,7 +4015,7 @@
                     if (cityName == "LondonV") {
                         $("#pretragaV1").css("display", "inline");
                         let ulogovani = localStorage.getItem("ulogovani");
-                        let tableOfProducts = "<table id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td colspan=\"2\">Dispečer</td> <td colspan=\"2\">Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"mojeV\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td> <td colspan=\"2\">Dispečer</td> <td colspan=\"2\">Mušterija</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td><td></td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Vozac == id) {
 
@@ -3886,7 +4125,7 @@
                         $("#pretragaV2").css("display", "inline");
                         let tip = localStorage.getItem("ulogovaniTip");
                         let status = localStorage.getItem("ulogovaniStatus");
-                        let tableOfProducts = "<table id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td colspan=\"2\">Mušterija</td><td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"kreiraneV\"><tr><td>Datum</td><td>Početna lokacija</td><td colspan=\"2\">Mušterija</td><td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0 && (data[voznja].TipAutomobila == tip || data[voznja].TipAutomobila == 0)) {
 
@@ -3934,10 +4173,10 @@
                                 }
 
                                 if (status == "true") {
-                                    tableOfProducts += `<td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});" disabled>Preuzmi Vožnju</button></td>`;
+                                    tableOfProducts += `<td><button class="zauzetVozacDugmici" id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});" disabled>Preuzmi Vožnju</button></td>`;
 
                                 } else {
-                                    tableOfProducts += `<td><button id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});">Preuzmi Vožnju</button></td>`;
+                                    tableOfProducts += `<td><button class="zauzetVozacDugmici" id="preuzmi${data[voznja].Id}" type="button" onclick="preuzmiVoznjuClick(${data[voznja].Id});">Preuzmi Vožnju</button></td>`;
 
                                 }
                                 tableOfProducts += `<td hidden>${data[voznja].Id}</td></tr>`;
@@ -3968,8 +4207,10 @@
     </script>
 </head>
 <body>
-    <div class="w3-container w3-content" style="margin-top:150px" id="mapa">
-        <div  id="map" style="width:700px;height: 400px;margin-top:50px;margin-left:30px"></div>
+    <div class="w3-container w3-content" style="margin-top:200px" id="mapa">
+        <p style="margin-top:50px;margin-left:30px">Kliknite na željenu lokaciju</p>
+        
+        <div  id="map" style="width:700px;height: 400px;margin-top:30px;margin-left:30px"></div>
     </div>
   
     <div class="musterija">
@@ -3978,7 +4219,7 @@
                 <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="60" width="60" />
                 <a href="#" id="homeK" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " style=" background-color:#ee1790"><i class="fa fa-home"></i></a>
                 <div class="w3-dropdown-hover w3-hide-small w3-large w3-left">
-                    <button class="w3-button w3-padding-large" title="Account"><i class="fa fa-user"></i></button>
+                    <button class="w3-button w3-padding-large ac" title="Account"><i class="fa fa-user"></i></button>
                     <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
                         <a href="#" id="pregledProfilaK" class="w3-bar-item w3-button">Pregled profila</a>
                         <a href="#" id="izmenaProfilaK" class="w3-bar-item w3-button">Izmeni profil</a>
@@ -4009,22 +4250,21 @@
                 <div id="tabelaIzmenaK">
 
                 </div>
-                <button id="izmeniK" type="button">Izmeni</button>
+                <button class="w3-left" id="izmeniK" type="button">Izmeni</button>
             </div>
 
-            <!--nije gotovo-->
             <div id="dodajVoznjuDivK">
                 <div id="tabelaDodajVoznju">
-                    
-                    <table border="1">
+
+                    <table border="1" class="w3-card w3-white">
                         <!--<tr><td colspan="2">Vaša lokacija</td></tr>
-                        <tr><td>X</td><td><input type="number" name="X" id="xK" required /></td></tr>
-                        <tr><td>Y</td><td><input type="number" name="Y" id="yK" required /></td></tr>
-                        <tr><td colspan="2">Adresa</td></tr>
-                        <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaK" required /></td></tr>
-                        <tr><td>Broj</td><td><input type="text" name="Broj" id="brojK" required /></td></tr>
-                        <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoK" required /></td></tr>
-                        <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipK" required /></td></tr>-->
+                <tr><td>X</td><td><input type="number" name="X" id="xK" required /></td></tr>
+                <tr><td>Y</td><td><input type="number" name="Y" id="yK" required /></td></tr>
+                <tr><td colspan="2">Adresa</td></tr>
+                <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaK" required /></td></tr>
+                <tr><td>Broj</td><td><input type="text" name="Broj" id="brojK" required /></td></tr>
+                <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoK" required /></td></tr>
+                <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipK" required /></td></tr>-->
                         <tr>
                             <td>Tip Automobila</td>
                             <td>
@@ -4040,9 +4280,11 @@
                 </div>
 
             </div>
+
             <div id="pretragaK">
-                <table id="tableK">
+                <table id="tableK" class="w3-border w3-card" cellpadding="4">
                     <tr>
+                        <td>Filtriranje:</td>
                         <td>
                             <select name="Status" id="statusPretragaK">
                                 <option value="-1">Status</option>
@@ -4057,13 +4299,14 @@
                         </td>
                     </tr>
                     <tr>
-                    <tr>
+                        <td></td>
                         <td>Datum od</td>
                         <td>Datum do</td>
                     </tr>
                     <tr>
-                        <td><input type="date" name="DatumOdK" id="DatumOdK"/></td>
-                        <td><input type="date" name="DatumDoK" id="DatumDoK"/></td>
+                        <td>Pretraga: </td>
+                        <td><input type="date" name="DatumOdK" id="DatumOdK" /></td>
+                        <td><input type="date" name="DatumDoK" id="DatumDoK" /></td>
                         <td>
                             <select name="Ocena" id="ocenaPretragaOdK">
                                 <option value="0">Ocena od</option>
@@ -4090,10 +4333,21 @@
                             <input type="number" name="cenaOdK" id="cenaOdK" placeholder="Cena od" />
                         </td>
                         <td>
-                            <input type="number" name="cenaDoK" id="cenaDoK"  placeholder="Cena do" />
+                            <input type="number" name="cenaDoK" id="cenaDoK" placeholder="Cena do" />
                         </td>
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshK" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td align="right"><button id="pretraziK" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4105,81 +4359,76 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshK" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziK" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
 
-            <div id="tabelaMojeVoznjeK">
+            <div class="w3-col m10" style="margin-top:20px">
+
+                <div id="tabelaMojeVoznjeK">
+
+                </div>
 
             </div>
-
 
             <div id="izmenaVoznjeK">
 
             </div>
 
-
-            <div id="dodajKomentarK" class="w3-right">
-                <table border="1">
-                    <tr>
-                        <td colspan="2">Dodaj Komentar</td>
-                    </tr>
-                    <tr>
-                        <td>Opis</td>
-                        <td><input type="text" name="Opis" id="opisK" required/></td>
-                    </tr>
-                    <tr>
-                        <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaK" min="1" max="5"/></td>
-                    </tr>
-                    <tr>
-                        <td> <button onclick="dodajKomentarDugmeK();" type="button">Dodaj</button></td>
-                        <td> <button onclick="otkaziKomentarDugmeK();" type="button">Otkazi</button></td>
-                    </tr>
-                </table>
-            </div>
-            <div id="dodajKomentarOtkaziK" class="w3-right">
-                <table border="1">
-                    <tr>
-                        <td colspan="2">Dodaj Komentar</td>
-                    </tr>
-                    <tr>
-                        <td>Opis</td>
-                        <td><input type="text" name="Opis" id="opisKO" required /></td>
-                    </tr>
-                    <tr>
-                        <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaKO" min="1" max="5" value="1" disabled/></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"> <button onclick="dodajKomentarOtkaziDugmeK();" type="button">Dodaj</button></td>
-
-                    </tr>
-                </table>
-            </div>
-
-            <div id="prikaziKomentarK" class="w3-right w3-large">
-                <div class="w3-card w3-padding-large">
-
-                    <p id="opisP" class="fa fa-pencil-alt"></p><br />
-                    <p id="datumP" class="fa fa-calendar-alt"></p><br />
-                    <p id="korisnikP" class="fa fa-user-circle"></p><br />
-                    <p id="OcenaP" class="fa fa-star"></p><br />
-                    <button id="gasiKom" onclick="zatvoriKomentarK();" class="fa fa-times"></button>
+            <div class="w3-col m2">
+                <div id="dodajKomentarK" class="w3-right">
+                    <table border="1" class="w3-card w3-white">
+                        <tr>
+                            <td colspan="2">Dodaj Komentar</td>
+                        </tr>
+                        <tr>
+                            <td>Opis</td>
+                            <td><input type="text" name="Opis" id="opisK" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Ocena</td>
+                            <td><input type="range" name="Ocena" id="ocenaK" min="1" max="5" /></td>
+                        </tr>
+                        <tr>
+                            <td> <button onclick="dodajKomentarDugmeK();" type="button">Dodaj</button></td>
+                            <td> <button onclick="otkaziKomentarDugmeK();" type="button">Otkazi</button></td>
+                        </tr>
+                    </table>
                 </div>
+
+                <div id="dodajKomentarOtkaziK" class="w3-right">
+                    <table border="1" class="w3-card w3-white">
+                        <tr>
+                            <td colspan="2">Dodaj Komentar</td>
+                        </tr>
+                        <tr>
+                            <td>Opis</td>
+                            <td><input type="text" name="Opis" id="opisKO" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Ocena</td>
+                            <td><input type="range" name="Ocena" id="ocenaKO" min="1" max="5" value="1" disabled /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <button class="noBtn" onclick="dodajKomentarOtkaziDugmeK();" type="button">Dodaj</button></td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="prikaziKomentarK" class="w3-right w3-large w3-card w3-white">
+                    <div class="w3-card w3-padding-large">
+
+                        <p id="opisP" class="fa fa-pencil-alt"></p><br />
+                        <p id="datumP" class="fa fa-calendar-alt"></p><br />
+                        <p id="korisnikP" class="fa fa-user-circle"></p><br />
+                        <p id="OcenaP" class="fa fa-star"></p><br />
+                        <button id="gasiKom" onclick="zatvoriKomentarK();" class="fa fa-times"></button>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
 
     <div class="vozac">
@@ -4188,7 +4437,7 @@
                 <img class="w3-bar-item w3-left w3-small " src="logo.jpg" height="60" width="60" />
                 <a href="#" id="homeV" class="w3-bar-item w3-button w3-padding-large w3-large w3-left " style=" background-color:#ee1790"><i class="fa fa-home"></i></a>
                 <div class="w3-dropdown-hover w3-hide-small w3-large w3-left">
-                    <button class="w3-button w3-padding-large" title="Account"><i class="fa fa-user"></i></button>
+                    <button class="w3-button w3-padding-large ac" title="Account"><i class="fa fa-user"></i></button>
                     <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
                         <a href="#" id="pregledProfilaV" class="w3-bar-item w3-button">Pregled profila</a>
                         <a href="#" id="izmenaProfilaV" class="w3-bar-item w3-button">Izmeni profil</a>
@@ -4198,6 +4447,7 @@
                 </div>
             </div>
         </div>
+ 
         <div class="w3-container w3-content" style="max-width:1700px;margin-top:80px">
             <div id="pregledProfilaDivV">
                 <div class="w3-card w3-left w3-padding-large">
@@ -4219,11 +4469,28 @@
                 <div id="tabelaIzmenaV">
 
                 </div>
-                <button id="izmeniV" type="button">Izmeni</button>
+                <button class="w3-left" id="izmeniV" type="button">Izmeni</button>
+                <br/>
             </div>
-            <div id="pretragaV1">
-                <table id="tableV1">
+
+            <div id="uspesnaVoznjaV">
+                <table border="1" class="w3-left">
+
                     <tr>
+                        <td>Iznos</td>
+                        <td><input type="number" name="Iznos" id="iznosV" min="50" max="9000" required/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"> <button onclick="uspesnaVoznjaDugmeV();" type="button">Dodaj</button></td>
+
+                    </tr>
+                </table>
+            </div>
+
+            <div id="pretragaV1">
+                <table id="tableV1" class="w3-border w3-card" cellpadding="4">
+                    <tr>
+                        <td>Filtriranje:</td>
                         <td>
                             <select name="Status" id="statusPretragaV1">
                                 <option value="-1">Status</option>
@@ -4239,10 +4506,12 @@
                     </tr>
                     <tr>
                     <tr>
+                        <td></td>
                         <td>Datum od</td>
                         <td>Datum do</td>
                     </tr>
                     <tr>
+                        <td>Pretraga: </td>
                         <td><input type="date" name="DatumOdV1" id="DatumOdV1" /></td>
                         <td><input type="date" name="DatumDoV1" id="DatumDoV1" /></td>
                         <td>
@@ -4268,13 +4537,24 @@
                             </select>
                         </td>
                         <td>
-                            <input type="number" name="cenaOdV1" id="cenaOdV1"  placeholder="Cena od" />
+                            <input type="number" name="cenaOdV1" id="cenaOdV1" placeholder="Cena od" />
                         </td>
                         <td>
-                            <input type="number" name="cenaDoV1" id="cenaDoV1"  placeholder="Cena do" />
+                            <input type="number" name="cenaDoV1" id="cenaDoV1" placeholder="Cena do" />
                         </td>
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshV1" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td align="right"><button id="pretraziV1" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4287,32 +4567,33 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshV1" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziV1" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
+
             <div id="pretragaV2">
-                <table id="tableV2">
+                <table id="tableV2" class="w3-border w3-card" cellpadding="4">
 
                     <tr>
+                        <td></td>
                         <td>Datum od</td>
                         <td>Datum do</td>
                     </tr>
                     <tr>
+                        <td>Pretraga:</td>
                         <td><input type="date" name="DatumOdV2" id="DatumOdV2" /></td>
                         <td><input type="date" name="DatumDoV2" id="DatumDoV2" /></td>
 
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshV2" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+
+                        <td align="right"><button id="pretraziV2" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4325,112 +4606,89 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshV2" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziV2" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
 
-            <div id="tabeleV" class="w3-left">
+            <div class="w3-col m10" style="margin-top:20px">
+                <div id="tabeleV" class="w3-left">
 
-                <div class="tab">
-                    <button class="tablinks" onclick="openCityV(event, 'LondonV')">Moje vožnje</button>
-                    <button class="tablinks" onclick="openCityV(event, 'TokyoV')">Kreirane vožnje</button>
-                </div>
+                    <div class="tab">
+                        <button class="tablinks" onclick="openCityV(event, 'LondonV')">Moje vožnje</button>
+                        <button class="tablinks" onclick="openCityV(event, 'TokyoV')">Kreirane vožnje</button>
+                    </div>
 
-                <div id="LondonV" class="tabcontent">
+                    <div id="LondonV" class="tabcontent">
 
-                </div>
+                    </div>
 
 
-                <div id="TokyoV" class="tabcontent">
+                    <div id="TokyoV" class="tabcontent">
 
-                </div>
+                    </div>
 
-            </div>
-            <div id="dodajKomentarV" class="w3-right">
-                <table border="1">
-                    <tr>
-                        <td colspan="2">Dodaj Komentar</td>
-                    </tr>
-                    <tr>
-                        <td>Opis</td>
-                        <td><input type="text" name="Opis" id="opisV" required /></td>
-                    </tr>
-                    <tr>
-                        <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaV" min="1" max="5" /></td>
-                    </tr>
-                    <tr>
-                        <td> <button onclick="dodajKomentarDugmeV();" type="button">Dodaj</button></td>
-                        <td> <button onclick="otkaziKomentarDugmeV();" type="button">Otkaži</button></td>
-                    </tr>
-                </table>
-            </div>
-            <div id="dodajKomentarNeuspesnaV" class="w3-right">
-                <table border="1">
-                    <tr>
-                        <td colspan="2">Dodaj Komentar</td>
-                    </tr>
-                    <tr>
-                        <td>Opis</td>
-                        <td><input type="text" name="Opis" id="opisVN" required /></td>
-                    </tr>
-                    <tr>
-                        <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaVN" min="1" max="5" value="1" disabled /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"> <button onclick="dodajKomentarNeuspesnaDugmeV();" type="button">Dodaj</button></td>
-
-                    </tr>
-                </table>
-            </div>
-            <div id="prikaziKomentarV" class="w3-right w3-large">
-                <div class="w3-card w3-padding-large">
-
-                    <p id="opisPV" class="fa fa-pencil-alt"></p><br />
-                    <p id="datumPV" class="fa fa-calendar-alt"></p><br />
-                    <p id="korisnikPV" class="fa fa-user-circle"></p><br />
-                    <p id="OcenaPV" class="fa fa-star"></p><br />
-                    <button id="gasiKom" onclick="zatvoriKomentarV();" class="fa fa-times"></button>
                 </div>
             </div>
 
-            <div id="uspesnaVoznjaV">
-                <table border="1">
-                    <!--<tr>
-                        <td colspan="2">Odredište</td>
-                    </tr>
-                    <tr><td colspan="2">Lokacija</td></tr>
-                    <tr><td>X</td><td><input type="number" name="X" id="xV" required /></td></tr>
-                    <tr><td>Y</td><td><input type="number" name="Y" id="yV" required /></td></tr>
-                    <tr><td colspan="2">Adresa</td></tr>
-                    <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaV" required /></td></tr>
-                    <tr><td>Broj</td><td><input type="text" name="Broj" id="brojV" required /></td></tr>
-                    <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoV" required /></td></tr>
-                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipV" required /></td></tr>-->
-                    <tr>
-                        <td>Iznos</td>
-                        <td><input type="number" name="Iznos" id="iznosV" min="50" max="9000" required /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"> <button onclick="uspesnaVoznjaDugmeV();" type="button">Dodaj</button></td>
+            <div class="w3-col m2">
+                <div id="dodajKomentarV" class="w3-right">
+                    <table border="1" class="w3-card w3-white">
+                        <tr>
+                            <td colspan="2">Dodaj Komentar</td>
+                        </tr>
+                        <tr>
+                            <td>Opis</td>
+                            <td><input type="text" name="Opis" id="opisV" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Ocena</td>
+                            <td><input type="range" name="Ocena" id="ocenaV" min="1" max="5" /></td>
+                        </tr>
+                        <tr>
+                            <td> <button onclick="dodajKomentarDugmeV();" type="button">Dodaj</button></td>
+                            <td> <button onclick="otkaziKomentarDugmeV();" type="button">Otkaži</button></td>
+                        </tr>
+                    </table>
+                </div>
 
-                    </tr>
-                </table>
+                <div id="dodajKomentarNeuspesnaV" class="w3-right">
+                    <table border="1" class="w3-card w3-white">
+                        <tr>
+                            <td colspan="2">Dodaj Komentar</td>
+                        </tr>
+                        <tr>
+                            <td>Opis</td>
+                            <td><input type="text" name="Opis" id="opisVN" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Ocena</td>
+                            <td><input type="range" name="Ocena" id="ocenaVN" min="1" max="5" value="1" disabled /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <button class="noBtn" onclick="dodajKomentarNeuspesnaDugmeV();" type="button">Dodaj</button></td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="prikaziKomentarV" class="w3-right w3-large">
+                    <div class="w3-card w3-padding-large w3-card w3-white">
+
+                        <p id="opisPV" class="fa fa-pencil-alt"></p><br />
+                        <p id="datumPV" class="fa fa-calendar-alt"></p><br />
+                        <p id="korisnikPV" class="fa fa-user-circle"></p><br />
+                        <p id="OcenaPV" class="fa fa-star"></p><br />
+                        <button id="gasiKom" onclick="zatvoriKomentarV();" class="fa fa-times"></button>
+                    </div>
+                </div>
+
             </div>
+
+
+
         </div>
 
-    </div>
+        </div>
 
     <div class="dispecer">
         <div class="w3-top">
@@ -4481,7 +4739,7 @@
                 <div id="tabelaIzmenaD">
 
                 </div>
-                <button id="izmeniD" type="button">Izmeni</button>
+                <button class="w3-left" id="izmeniD" type="button">Izmeni</button>
             </div>
 
             <div id="dodajVozacaDivD">
@@ -4489,23 +4747,23 @@
                     <tr><td colspan="2" align="center"> Registracija Vozača</td></tr>
                     <tr><td>Korisničko ime</td><td><input type="text" name="KorisnickoIme" id="korisnickoimeVD" pattern=".{4,}" minlength="4" maxlength="13" required /></td></tr>
                     <tr><td>Lozinka</td><td><input type="password" name="Lozinka" id="lozinkaVD" pattern=".{4,}" minlength="4" maxlength="13" required /></td></tr>
-                    <tr><td>Ime</td><td> <input type="text" name="Ime" id="imeVD" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /> </td> </tr>
-                    <tr> <td>Prezime</td><td> <input type="text" name="Prezime" id="prezimeVD" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /> </td></tr>
+                    <tr><td>Ime</td><td> <input type="text" name="Ime" id="imeVD" minlength="2" maxlength="13" pattern="^[^0-9]+$" required /> </td> </tr>
+                    <tr> <td>Prezime</td><td> <input type="text" name="Prezime" id="prezimeVD" minlength="2" maxlength="13" pattern="^[^0-9]+$" required /> </td></tr>
                     <tr><td> Pol </td><td><select name="Pol" id="polVD"><option>Muški</option><option>Ženski</option></select></td></tr>
                     <tr> <td> JMBG</td> <td><input type="text" name="JMBG" id="jmbgVD" pattern="[0-9]{13}" minlength="13" maxlength="13" required /></td></tr>
                     <tr><td> Kontakt</td> <td><input type="text" name="Kontakt" id="kontaktVD" pattern="[0-9]{6,14}" minlength="6" maxlength="14" required /> </td> </tr>
                     <tr><td> Email </td> <td> <input type="email" name="Email" id="emailVD" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required /></td></tr>
                     <!--<tr><td colspan="2">Lokacija</td></tr>
-                    <tr><td>X</td><td><input type="number" name="X" id="xVD" required /></td></tr>
-                    <tr><td>Y</td><td><input type="number" name="Y" id="yVD" required /></td></tr>
-                    <tr><td colspan="2">Adresa</td></tr>
-                    <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaVD" required /></td></tr>
-                    <tr><td>Broj</td><td><input type="text" name="Broj" id="brojVD" required /></td></tr>
-                    <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoVD" required /></td></tr>
-                    <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipVD" required /></td></tr>-->
+            <tr><td>X</td><td><input type="number" name="X" id="xVD" required /></td></tr>
+            <tr><td>Y</td><td><input type="number" name="Y" id="yVD" required /></td></tr>
+            <tr><td colspan="2">Adresa</td></tr>
+            <tr><td>Ulica</td><td><input type="text" name="Ulica" id="ulicaVD" required /></td></tr>
+            <tr><td>Broj</td><td><input type="text" name="Broj" id="brojVD" required /></td></tr>
+            <tr><td>Mesto</td><td><input type="text" name="Mesto" id="mestoVD" required /></td></tr>
+            <tr><td>ZIP</td><td><input type="number" name="Zip" id="zipVD" required /></td></tr>-->
                     <tr><td colspan="2">Automobil</td></tr>
                     <tr><td>Godište</td><td><input type="number" name="Godiste" id="godisteVD" min="2000" max="2018" required /></td></tr>
-                    <tr><td>Registracija</td><td><input type="text" name="Registracija" id="regVD" pattern="[A-Z]{2}[0-9]{3}[A-Z]{2}"  required /></td></tr>
+                    <tr><td>Registracija</td><td><input type="text" name="Registracija" id="regVD" pattern="[A-Z]{2}[0-9]{3}[A-Z]{2}" required /></td></tr>
                     <tr><td>Broj Vozila</td><td><input type="number" name="BrojVozila" id="brVD" min="0" max="100" required /></td></tr>
                     <tr><td>Tip</td><td><select name="TipAutomobila" id="tipAutoVD"><option selected>Putnički</option><option>Kombi</option></select></td></tr>
 
@@ -4519,9 +4777,12 @@
 
             </div>
 
+
+
             <div id="pretragaD1">
-                <table id="tableD1">
+                <table id="tableD1" class="w3-border w3-card" cellpadding="4">
                     <tr>
+                        <td>Filtriranje: </td>
                         <td>
                             <select name="Status" id="statusPretragaD1">
                                 <option value="-1">Status</option>
@@ -4534,7 +4795,9 @@
                                 <option value="6">Neuspešna</option>
                             </select>
                         </td>
-                        <td> Pretraga </td>
+                    </tr>
+                    <tr>
+                        <td> Pretraga: </td>
                         <td>
                             <select name="Uloga" id="ulogaPretragaD1">
                                 <option value="0">Mušterija</option>
@@ -4547,15 +4810,6 @@
                         <td>
                             <input type="text" name="prezimeD1" id="prezimeD1" placeholder="Prezime" />
                         </td>
-                    </tr>
-                    <tr>
-                    <tr>
-                        <td>Datum od</td>
-                        <td>Datum do</td>
-                    </tr>
-                    <tr>
-                        <td><input type="date" name="DatumOdD1" id="DatumOdD1" /></td>
-                        <td><input type="date" name="DatumDoD1" id="DatumDoD1" /></td>
                         <td>
                             <select name="Ocena" id="ocenaPretragaOdD1">
                                 <option value="0">Ocena od</option>
@@ -4578,6 +4832,15 @@
                                 <option value="5">5</option>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdD1" id="DatumOdD1" /></td>
+                        <td><input type="date" name="DatumDoD1" id="DatumDoD1" /></td>
+
                         <td>
                             <input type="number" name="cenaOdD1" id="cenaOdD1" placeholder="Cena od" />
                         </td>
@@ -4586,6 +4849,17 @@
                         </td>
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshD1" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td align="right"><button id="pretraziD1" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4597,22 +4871,14 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshD1" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziD1" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
+
             <div id="pretragaD2">
-                <table id="tableD2">
+                <table id="tableD2" class="w3-border w3-card" cellpadding="4">
                     <tr>
+                        <td>Filtriranje: </td>
                         <td>
                             <select name="Status" id="statusPretragaD2">
                                 <option value="-1">Status</option>
@@ -4625,7 +4891,10 @@
                                 <option value="6">Neuspešna</option>
                             </select>
                         </td>
-                        <td> Pretraga </td>
+
+                    </tr>
+                    <tr>
+                        <td> Pretraga: </td>
                         <td>
                             <select name="Uloga" id="ulogaPretragaD2">
                                 <option value="0">Mušterija</option>
@@ -4638,15 +4907,6 @@
                         <td>
                             <input type="text" name="prezimeD2" id="prezimeD2" placeholder="Prezime" />
                         </td>
-                    </tr>
-                    <tr>
-                    <tr>
-                        <td>Datum od</td>
-                        <td>Datum do</td>
-                    </tr>
-                    <tr>
-                        <td><input type="date" name="DatumOdD2" id="DatumOdD2" /></td>
-                        <td><input type="date" name="DatumDoD2" id="DatumDoD2" /></td>
                         <td>
                             <select name="Ocena" id="ocenaPretragaOdD2">
                                 <option value="0">Ocena od</option>
@@ -4669,6 +4929,15 @@
                                 <option value="5">5</option>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>Datum od</td>
+                        <td>Datum do</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" name="DatumOdD2" id="DatumOdD2" /></td>
+                        <td><input type="date" name="DatumDoD2" id="DatumDoD2" /></td>
+
                         <td>
                             <input type="number" name="cenaOdD2" id="cenaOdD2" placeholder="Cena od" />
                         </td>
@@ -4677,6 +4946,17 @@
                         </td>
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshD2" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td align="right"><button id="pretraziD2" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4688,31 +4968,23 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshD2" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziD2" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
+
             <div id="pretragaD3">
-                <table id="tableD3">
+                <table id="tableD3" class="w3-border w3-card" cellpadding="4">
 
                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td>Datum od</td>
                         <td>Datum do</td>
                     </tr>
                     <tr>
-
-                        <td><input type="date" name="DatumOdD3" id="DatumOdD3" /></td>
-                        <td><input type="date" name="DatumDoD3" id="DatumDoD3" /></td>
-                        <td> Pretraga </td>
+                        <td> Pretraga: </td>
                         <td>
                             <select name="Uloga" id="ulogaPretragaD3">
                                 <option value="0">Mušterija</option>
@@ -4725,9 +4997,21 @@
                         <td>
                             <input type="text" name="prezimeD3" id="prezimeD3" placeholder="Prezime" />
                         </td>
-
+                        <td><input type="date" name="DatumOdD3" id="DatumOdD3" /></td>
+                        <td><input type="date" name="DatumDoD3" id="DatumDoD3" /></td>
                     </tr>
 
+
+                    <tr>
+                        <td><button id="refreshD3" type="button"><i class="fa fa-undo"></i></button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        <td align="right"><button id="pretraziD3" type="button"><i class="fa fa-check-circle"></i></button></td>
+
+                    </tr>
                     <tr>
                         <td>
                             Sortiraj po:
@@ -4739,80 +5023,86 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><button id="refreshD3" type="button"><i class="fa fa-undo"></i></button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                        <td><button id="pretraziD3" type="button"><i class="fa fa-check-circle"></i></button></td>
-
-                    </tr>
                 </table>
 
             </div>
 
-            <div id="tabeleD" class="w3-left">
 
-                <div class="tab">
-                    <button class="tablinks" onclick="openCity(event, 'London')">Moje vožnje</button>
-                    <button class="tablinks" onclick="openCity(event, 'Paris')">Sve vožnje</button>
-                    <button class="tablinks" onclick="openCity(event, 'Tokyo')">Kreirane vožnje</button>
-                </div>
 
-                <div id="London" class="tabcontent">
+            <div class="w3-col m10" style="margin-top:20px">
+                <div id="tabeleD" class="w3-left">
 
-                </div>
+                    <div class="tab">
+                        <button class="tablinks" onclick="openCity(event, 'London')">Moje vožnje</button>
+                        <button class="tablinks" onclick="openCity(event, 'Paris')">Sve vožnje</button>
+                        <button class="tablinks" onclick="openCity(event, 'Tokyo')">Kreirane vožnje</button>
+                    </div>
 
-                <div id="Paris" class="tabcontent">
+                    <div id="London" class="tabcontent">
 
-                </div>
+                    </div>
 
-                <div id="Tokyo" class="tabcontent">
+                    <div id="Paris" class="tabcontent">
 
-                </div>
+                    </div>
 
-            </div>
-            <div id="dodajKomentarD" class="w3-right">
-                <table border="1">
-                    <tr>
-                        <td colspan="2">Dodaj Komentar</td>
-                    </tr>
-                    <tr>
-                        <td>Opis</td>
-                        <td><input type="text" name="Opis" id="opisD" required /></td>
-                    </tr>
-                    <tr>
-                        <td>Ocena</td>
-                        <td><input type="range" name="Ocena" id="ocenaD" min="1" max="5" /></td>
-                    </tr>
-                    <tr>
-                        <td> <button onclick="dodajKomentarDugmeD();" type="button">Dodaj</button></td>
-                        <td> <button onclick="otkaziKomentarDugmeD();" type="button">Otkaži</button></td>
+                    <div id="Tokyo" class="tabcontent">
 
-                    </tr>
-                </table>
-            </div>
-            <div id="prikaziKomentarD" class="w3-right w3-large">
-                <div class="w3-card w3-padding-large">
+                    </div>
 
-                    <p id="opisPD" class="fa fa-pencil-alt"></p><br />
-                    <p id="datumPD" class="fa fa-calendar-alt"></p><br />
-                    <p id="korisnikPD" class="fa fa-user-circle"></p><br />
-                    <p id="OcenaPD" class="fa fa-star"></p><br />
-                    <button id="gasiKom" onclick="zatvoriKomentarD();" class="fa fa-times"></button>
                 </div>
             </div>
 
-            <div id="obradaVoznjeD">
+            
+
+            <div class="w3-col m2">
+                <div class="w3-right w3-card w3-white" id="obradaVoznjeD">
+
+                </div>
+
+                <div id="dodajKomentarD" class="w3-right">
+                    <table border="1" class="w3-card w3-white">
+                        <tr>
+                            <td colspan="2">Dodaj Komentar</td>
+                        </tr>
+                        <tr>
+                            <td>Opis</td>
+                            <td><input type="text" name="Opis" id="opisD" required /></td>
+                        </tr>
+                        <tr>
+                            <td>Ocena</td>
+                            <td><input type="range" name="Ocena" id="ocenaD" min="1" max="5" /></td>
+                        </tr>
+                        <tr>
+                            <td> <button onclick="dodajKomentarDugmeD();" type="button">Dodaj</button></td>
+                            <td> <button onclick="otkaziKomentarDugmeD();" type="button">Otkaži</button></td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="prikaziKomentarD" class="w3-right w3-large">
+                    <div class="w3-card w3-padding-large w3-card w3-white">
+
+                        <p id="opisPD" class="fa fa-pencil-alt"></p><br />
+                        <p id="datumPD" class="fa fa-calendar-alt"></p><br />
+                        <p id="korisnikPD" class="fa fa-user-circle"></p><br />
+                        <p id="OcenaPD" class="fa fa-star"></p><br />
+                        <button id="gasiKom" onclick="zatvoriKomentarD();" class="fa fa-times"></button>
+                    </div>
+                </div>
+
 
             </div>
 
 
-            <div id="blokDivD">
-                
+
+            <div class="w3-left">
+                <div id="blokDivD">
+
+                </div>
             </div>
+
 
         </div>
     </div>
@@ -4864,7 +5154,7 @@
                     country = value[count - 1];
                     state = value[count - 2];
                     city = value[count - 3];
-                    alert(city + "- " + state + "- ");
+                    
                     // document.write(address.formatted_address);
                     adresaM = {
                         Ulica: city,

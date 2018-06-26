@@ -50,6 +50,7 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data) {
+
                                 localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
                                 $(location).attr('href', 'Korisnik.html');
                             }
@@ -77,10 +78,10 @@
                 let v7 = document.getElementById("email1");
                 if (!v.checkValidity() && !v1.checkValidity() && !v2.checkValidity() && !v3.checkValidity() && !v5.checkValidity() && !v6.checkValidity() && !v7.checkValidity()) {
                     alert("Popunite polja za registraciju!");
-                } else if (!v.checkValidity() || !v1.checkValidity() || !v2.checkValidity() || !v3.checkValidity() || !v5.checkValidity() || !v6.checkValidity() || !v7.checkValidity()){
+                } else if (!v.checkValidity() || !v1.checkValidity() || !v2.checkValidity() || !v3.checkValidity() || !v5.checkValidity() || !v6.checkValidity() || !v7.checkValidity()) {
                     let greska = "Niste dobro uneli:\n";
-                    if (!v.checkValidity()){
-                        greska +="-Korisničko ime\n";
+                    if (!v.checkValidity()) {
+                        greska += "-Korisničko ime\n";
                     }
                     if (!v1.checkValidity()) {
                         greska += "-Lozinku\n";
@@ -91,7 +92,7 @@
                     if (!v3.checkValidity()) {
                         greska += "-Prezime\n";
                     }
-                    
+
                     if (!v5.checkValidity()) {
                         greska += "-JMBG\n";
                     }
@@ -103,46 +104,58 @@
                     }
                     alert(greska);
                 }
-                else { 
-                let korisnik = {
-                    KorisnickoIme: `${$('#korisnickoime').val()}`,
-                    Lozinka: `${$('#lozinka').val()}`,
-                    Ime: `${$('#ime1').val()}`,
-                    Prezime: `${$('#prezime1').val()}`,
-                    Pol: `${$('#pol').val()}`,
-                    JMBG: `${$('#jmbg1').val()}`,
-                    Kontakt: `${$('#kontakt1').val()}`,
-                    Email: `${$('#email1').val()}`,
+                else {
+                    let jmbg = `${$('#jmbg1').val()}`;
+                    let danRodjenja = jmbg.substring(0, 2);
+                    let mesecRodjenja = jmbg.substring(2, 4);
+                    let godinaRodjenja = jmbg.substring(4, 7);
+                    danRodjenja = parseInt(danRodjenja);
+                    mesecRodjenja = parseInt(mesecRodjenja);
+                    godinaRodjenja = parseInt(godinaRodjenja);
+                    if (danRodjenja <= 0 || danRodjenja > 31 || mesecRodjenja <= 0 || mesecRodjenja > 12 || (godinaRodjenja > 18 && godinaRodjenja < 900)) {
+                        alert("JMBG je neispravan!");
+                    } else {
 
-                };
+                        let korisnik = {
+                            KorisnickoIme: `${$('#korisnickoime').val()}`,
+                            Lozinka: `${$('#lozinka').val()}`,
+                            Ime: `${$('#ime1').val()}`,
+                            Prezime: `${$('#prezime1').val()}`,
+                            Pol: `${$('#pol').val()}`,
+                            JMBG: `${$('#jmbg1').val()}`,
+                            Kontakt: `${$('#kontakt1').val()}`,
+                            Email: `${$('#email1').val()}`,
+
+                        };
 
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/Korisnik',
-                    data: JSON.stringify(korisnik),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data) {
-                            alert("Registrovani ste");
-                            $(location).attr('href', 'Index.html');
-                        }
-                        else {
-                            alert("Korisnicko ime je zauzeto!");
-                        }
-                    },
-                    error: function (errorData) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/Korisnik',
+                            data: JSON.stringify(korisnik),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data) {
+                                    alert("Registrovani ste");
+                                    $(location).attr('href', 'Index.html');
+                                }
+                                else {
+                                    alert("Korisnicko ime je zauzeto!");
+                                }
+                            },
+                            error: function (errorData) {
 
+                            }
+                        })
                     }
-                })
-            }
-
+                }
 
             });
             
         
         });
+        
     </script>
 </head>
 <body>
@@ -204,10 +217,10 @@
                     </tr>
                     <tr>
                         <td><label>Ime</label></td>
-                        <td><input type="text" name="Ime" id="ime1" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /></td>
+                        <td><input type="text" name="Ime" id="ime1" minlength="2" maxlength="13" pattern="^[^0-9]+$" required /></td>
                     </tr>
                     <tr> <td><label >Prezime</label> </td>
-                        <td><input type="text" name="Prezime" id="prezime1" minlength="2" maxlength="13" pattern="[A-Za-z]{2,13}" required /></td>
+                        <td><input type="text" name="Prezime" id="prezime1" minlength="2" maxlength="13" pattern="^[^0-9]+$" required /></td>
                     </tr>
                     <tr>
                         <td><label for="pol">Pol</label></td>
