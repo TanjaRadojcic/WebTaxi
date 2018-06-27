@@ -1,5 +1,5 @@
 0;mali;0211;Jovica;Čubrić;Muški;0211995800123;0631231212;jc@gmail.com;Mušterija;False
-1;coa92;minja;Aleksandar;Tanasković;Muški;2802992800345;0658937289;alextasko@gmail.com;Mušterija;False
+1;coa92;minja;Aleksandar;Tanasković;Muški;2802992800345;0658937289;alextasko@gmail.com;Mušterija;True
 2;niki;2910;Nikolija;Arbutina;Ženski;2910996805046;0659461749;nikolija.arbutina@gmail.com;Mušterija;False
 3;ancika;macka;Anika;Vuković;Ženski;2812998805003;06584729518;vukovicjunior@gmail.com;Mušterija;False
 4;maya01;simsa;Maja;Đorđević;Ženski;0404996827727;06183658936;maya.simsa1@gmail.com;Mušterija;False

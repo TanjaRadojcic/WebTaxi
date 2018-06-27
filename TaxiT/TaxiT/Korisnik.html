@@ -185,7 +185,7 @@
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table  class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\"  align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
+                        let tableOfProducts = "<table  class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\"  align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Tip Automobila</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Musterija == localStorage.getItem("ulogovaniId")) {
                                 var date = new Date(data[voznja].Datum);
@@ -237,6 +237,13 @@
 
                                 tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/> ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
                                 tableOfProducts += `<td>${data[voznja].Komentar.Ocena}</td>`;
+                                if (data[voznja].TipAutomobila == 0) {
+                                    tableOfProducts += `<td>Svejedno</td>`;
+                                } else if (data[voznja].TipAutomobila == 1) {
+                                    tableOfProducts += `<td>Putnički</td>`;
+                                } else if (data[voznja].TipAutomobila == 2) {
+                                    tableOfProducts += `<td>Kombi</td>`;
+                                }
 
                                 switch (data[voznja].Status) {
                                     case 0:
@@ -378,7 +385,7 @@
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\" align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
+                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\" id=\"musterijaVoznje\"><tr><td colspan=\"13\" align=\"center\"><b>Moje voznje</b></td></tr><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Dispečer</td><td>Iznos</td><td>Ocena</td><td>Tip Automobila</td><td>Status</td><td>Komentar</td><td></td><td></td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Musterija == trenutniKorisnik.Id) {
                                 var date = new Date(data[voznja].Datum);
@@ -431,6 +438,15 @@
                                     tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
 
                                     tableOfProducts += `<td>${data[voznja].Komentar.Ocena}</td>`;
+
+                                    if (data[voznja].TipAutomobila == 0) {
+                                        tableOfProducts += `<td>Svejedno</td>`;
+                                    } else if (data[voznja].TipAutomobila == 1) {
+                                        tableOfProducts += `<td>Putnički</td>`;
+                                    } else if (data[voznja].TipAutomobila == 2) {
+                                        tableOfProducts += `<td>Kombi</td>`;
+                                    }
+
                                     switch (data[voznja].Status) {
                                         case 0:
                                             tableOfProducts += `<td>Kreirana-Na čekanju</td>`;
@@ -1311,7 +1327,7 @@
                     async: false,
                     success: function (data) {
                         let ulogovani = localStorage.getItem("ulogovaniId");
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table id=\"dispVoznje1\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Dispecer == ulogovani) {
                                 var date = new Date(data[voznja].Datum);
@@ -1507,7 +1523,7 @@
                     async: false,
                     success: function (data) {
                         
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table id=\"dispVoznje2\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
                             var month = date.getMonth() + 1;
@@ -1694,7 +1710,7 @@
                     async: false,
                     success: function (data) {
 
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table id=\"dispVoznje3\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0) {
                                 var date = new Date(data[voznja].Datum);
@@ -2785,7 +2801,7 @@
                     if (cityName == "London") {
                         $("#pretragaD1").css("display", "inline");
                         let ulogovani = localStorage.getItem("ulogovaniId");
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table  id=\"dispVoznje1\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td><td>Početna lokacija</td><td>Odredište</td><td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td><td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Dispecer == ulogovani) {
                                 var date = new Date(data[voznja].Datum);
@@ -2883,7 +2899,7 @@
                     }
                     else if (cityName == "Paris") {
                         $("#pretragaD2").css("display", "inline");
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
+                        let tableOfProducts = "<table id=\"dispVoznje2\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td>Odredište</td> <td colspan=\"2\">Vozač</td><td colspan=\"2\">Mušterija</td> <td colspan=\"2\">Dispečer</td> <td>Iznos</td><td>Ocena</td> <td>Status</td> <td>Komentar</td></tr>";
                         for (voznja in data) {
                             var date = new Date(data[voznja].Datum);
                             var month = date.getMonth() + 1;
@@ -2992,7 +3008,7 @@
                     }
                     else if (cityName == "Tokyo") {
                         $("#pretragaD3").css("display", "inline");
-                        let tableOfProducts = "<table class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
+                        let tableOfProducts = "<table id=\"dispVoznje3\" class=\"w3-border w3-centered w3-card w3-white\" cellpadding=\"7\"><tr><td>Datum</td> <td>Početna lokacija</td> <td colspan=\"2\">Mušterija</td> <td>Tip Automobila</td></tr>";
                         for (voznja in data) {
                             if (data[voznja].Status == 0) {
                                 var date = new Date(data[voznja].Datum);
@@ -3461,9 +3477,129 @@
 
         }
 
+        function SortD1() {
+            var n = document.getElementById("SortD1").value;
+            if (n == 1) {
+                n = 8;
+            }
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("dispVoznje1");
+            switching = true;
 
+            while (switching) {
 
+                switching = false;
+                rows = table.getElementsByTagName("TR");
 
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if (n == 10) {
+                        if (Number(x.innerHTML) < Number(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function SortD2() {
+            var n = document.getElementById("SortD2").value;
+            if (n == 1) {
+                n = 10;
+            }
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("dispVoznje2");
+            switching = true;
+
+            while (switching) {
+
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if (n == 10) {
+                        if (Number(x.innerHTML) < Number(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function SortD3() {
+            var n = document.getElementById("SortD3").value;
+            
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("kreiraneV");
+            switching = true;
+
+            while (switching) {
+
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                    shouldSwitch = false;
+
+                    x = rows[i].getElementsByTagName("TD")[0];
+                    y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                    if (n == 1) {
+                        if (new Date(x.innerHTML) > new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
 
         //Vozac
         function uspesnaClickV(id) {
@@ -4877,7 +5013,7 @@
                             Sortiraj po:
                         </td>
                         <td>
-                            <select name="SortD1" id="SortD1" onchange="sortTableD1()">
+                            <select name="SortD1" id="SortD1" onchange="SortD1()">
                                 <option value="0">Datumu(Najnoviji)</option>
                                 <option value="1">Oceni(najveća-najmanja) </option>
                             </select>
@@ -4974,7 +5110,7 @@
                             Sortiraj po:
                         </td>
                         <td>
-                            <select name="SortD2" id="SortD2" onchange="sortTableD2()">
+                            <select name="SortD2" id="SortD2" onchange="SortD2()">
                                 <option value="0">Datumu(Najnoviji)</option>
                                 <option value="1">Oceni(najveća-najmanja) </option>
                             </select>
@@ -5029,7 +5165,7 @@
                             Sortiraj po:
                         </td>
                         <td>
-                            <select name="SortD3" id="SortD3" onchange="sortTableD3()">
+                            <select name="SortD3" id="SortD3" onchange="SortD3()">
                                 <option value="0">Datumu(Najnoviji)</option>
                                 <option value="1">Datumu(Najstariji)</option>
                             </select>
