@@ -613,12 +613,12 @@
                             dataType: 'json',
                             success: function (data) {
                                 if (data) {
-                                    alert("Uspesna izmena");
+                                    alert("Uspešno ste izmenili podatke.");
                                     localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
                                     $(location).attr('href', 'Korisnik.html');
                                 }
                                 else {
-                                    alert("Korisnicko ime je zauzeto!");
+                                    alert("Polja nisu pravilno popunjena ili je korisničko ime zauzeto!");
                                 }
                             },
                             error: function (errorData) {
@@ -672,7 +672,7 @@
                                 $(location).attr('href', 'Korisnik.html');
                             }
                             else {
-                                alert("Voznja nije dodata!");
+                                alert("Vožnja nije dodata!");
                             }
                         },
                         error: function (errorData) {
@@ -857,7 +857,7 @@
                             dataType: 'json',
                             success: function (data) {
                                 if (data) {
-                                    alert("Uspesna izmena");
+                                    alert("Uspešno ste izmenili podatke.");
                                     localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
                                     $(location).attr('href', 'Korisnik.html');
                                 }
@@ -994,11 +994,11 @@
                             dataType: 'json',
                             success: function (data) {
                                 if (data) {
-                                    alert("Registrovali ste vozaca");
+                                    alert("Registrovali ste vozača sa korisničkim imenom " + vozac.KorisnickoIme);
                                     $(location).attr('href', 'Korisnik.html');
                                 }
                                 else {
-                                    alert("Korisnicko ime ili broj vozila je zauzeto!");
+                                    alert("Korisničko ime ili broj vozila je zauzeto!");
                                 }
                             },
                             error: function (errorData) {
@@ -1180,11 +1180,11 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                            alert("Dodata voznja");
+                            alert("Dodata vožnja.");
                             $(location).attr('href', 'Korisnik.html');
                         }
                         else {
-                            alert("Voznja nije dodata!");
+                            alert("Vožnja nije dodata!");
                         }
                     },
                     error: function (errorData) {
@@ -2075,12 +2075,12 @@
                             dataType: 'json',
                             success: function (data) {
                                 if (data) {
-                                    alert("Uspesna izmena");
+                                    alert("Uspešno ste izmenili podatke.");
                                     localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
                                     $(location).attr('href', 'Korisnik.html');
                                 }
                                 else {
-                                    alert("Korisnicko ime je zauzeto!");
+                                    alert("Polja nisu dobro popunjena ili je korisničko ime zauzeto!");
                                 }
                             },
                             error: function (errorData) {
@@ -2615,12 +2615,12 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                            alert("Uspesna izmena");
+                            alert("Uspešno ste izmenili vožnju.");
                             $("#homeK").click();
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešna izmena!");
                         }
                     },
                     error: function (errorData) {
@@ -2686,7 +2686,7 @@
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešna izmena vožnje!");
                         }
                     },
                     error: function (errorData) {
@@ -2746,12 +2746,13 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
+                            
                             $("#dodajKomentarK").css("display", "none");
                             $("#homeK").click();
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešno dodavanje komentara!");
                         }
                     },
                     error: function (errorData) {
@@ -3174,12 +3175,12 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("Uspesna izmena");
+                        
                         $("#homeD").click();
 
                     }
                     else {
-                        alert("neuspesna izmena!");
+                        alert("neuspešna obrada vožnje!");
                     }
                 },
                 error: function (errorData) {
@@ -3213,8 +3214,10 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("blokiran vozac!");
+                        alert("blokiran vozač " + vozac.Ime + " " + vozac.Prezime + "!");
                         $(location).attr('href', 'Korisnik.html');
+                    } else {
+                        alert("Vozač nije blokiran!");
                     }
                 },
                 error: function (errorData) {
@@ -3244,8 +3247,11 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("odblokiran vozac!");
+                        alert("odblokiran vozač " + vozac.Ime + " " + vozac.Prezime + "!");
                         $(location).attr('href', 'Korisnik.html');
+                    }
+                    else {
+                        alert("Vozač nije odblokiran!");
                     }
                 },
                 error: function (errorData) {
@@ -3275,8 +3281,11 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("blokiran korisnik!");
+                        alert("blokirana mušterija " + kor.Ime + " " + kor.Prezime + "!");
                         $(location).attr('href', 'Korisnik.html');
+                    }
+                    else {
+                        alert("Mušterija nije blokirana!");
                     }
                 },
                 error: function (errorData) {
@@ -3306,8 +3315,11 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("odblokiran korisnik!");
+                        alert("odblokirana mušterija " + kor.Ime + " " + kor.Prezime + "!");
                         $(location).attr('href', 'Korisnik.html');
+                    }
+                    else {
+                        alert("Mušterija nije odblokirana!");
                     }
                 },
                 error: function (errorData) {
@@ -3432,13 +3444,13 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                            alert("Uspesno dodat komentar");
+                           
                             $("#dodajKomentarD").css("display", "none");
                             $("#homeD").click();
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešno dodavanje komentara!");
                         }
                     },
                     error: function (errorData) {
@@ -3504,12 +3516,12 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data) {
-                                alert("Uspesna izmena");
+                               
                                 $("#homeV").click();
 
                             }
                             else {
-                                alert("neuspesna izmena!");
+                                alert("neuspešna izmena vožnje!");
                             }
                         },
                         error: function (errorData) {
@@ -3538,12 +3550,12 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data) {
-                                alert("Uspesna izmena");
+                               
                                 localStorage.setItem("ulogovani", korisnik.KorisnickoIme);
                                 $(location).attr('href', 'Korisnik.html');
                             }
                             else {
-                                alert("Korisnicko ime je zauzeto!");
+                                alert("Vozaču nije dodeljena lokacija automatski!");
                             }
                         },
                         error: function (errorData) {
@@ -3604,14 +3616,14 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                            alert("Uspesno dodat komentar");
+                            
                             $("#dodajKomentarNeuspesnaV").css("display", "none");
                             localStorage.setItem("zabrana","0");
                             $("#homeV").click();
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešna izmena vožnje!");
                         }
                     },
                     error: function (errorData) {
@@ -3638,12 +3650,12 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data) {
-                        alert("Uspesna izmena");
+                        alert("Vožnja preuzeta!");
                         $("#homeV").click();
 
                     }
                     else {
-                        alert("neuspesna izmena!");
+                        alert("neuspešno preuzimanje vožnje!");
                     }
                 },
                 error: function (errorData) {
@@ -3767,13 +3779,13 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data) {
-                            alert("Uspesno dodat komentar");
+                            
                             $("#dodajKomentarV").css("display", "none");
                             $("#homeV").click();
 
                         }
                         else {
-                            alert("neuspesna izmena!");
+                            alert("neuspešno dodavanje komentara!");
                         }
                     },
                     error: function (errorData) {
