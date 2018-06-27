@@ -235,7 +235,7 @@
 
                                 }
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/> ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
                                 tableOfProducts += `<td>${data[voznja].Komentar.Ocena}</td>`;
 
                                 switch (data[voznja].Status) {
@@ -428,7 +428,7 @@
 
                                 if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
 
-                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td>`;
 
                                     tableOfProducts += `<td>${data[voznja].Komentar.Ocena}</td>`;
                                     switch (data[voznja].Status) {
@@ -1373,7 +1373,7 @@
 
 
                                 if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (kIme.includes(ime) || ime == "") && (kPrezime.includes(prezime) || prezime == "") && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
-                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td>`;
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td>`;
 
 
                                     switch (data[voznja].Status) {
@@ -1582,7 +1582,7 @@
 
                             if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (kIme.includes(ime) || ime == "") && (kPrezime.includes(prezime) || prezime == "") && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
                                 switch (data[voznja].Status) {
                                     case 0:
@@ -1733,7 +1733,7 @@
                                 let kPrezime = korPrezime.toLowerCase();
                                 //&& (kIme.includes(ime) || ime == "") && (kPrezime.includes(prezime) || prezime == "")
                                 if ((date2 >= datumOd && date2 <= datumDo) && (kIme.includes(ime) || ime == "") && (kPrezime.includes(prezime) || prezime == "") ) {
-                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td>`;
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${korIme}</td><td>${korPrezime}</td>`;
                                     if (data[voznja].TipAutomobila == 0) {
                                         tableOfProducts += `<td>Svejedno</td>`;
                                     } else if (data[voznja].TipAutomobila == 1) {
@@ -2223,7 +2223,7 @@
 
 
                                 if ((data[voznja].Status == statusPretrage || statusPretrage == -1) && (date2 >= datumOd && date2 <= datumDo) && (data[voznja].Iznos >= cenaOd && data[voznja].Iznos <= cenaDo) && (data[voznja].Komentar.Ocena >= ocenaOd && data[voznja].Komentar.Ocena <= ocenaDo)) {
-                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
 
                                     switch (data[voznja].Status) {
@@ -2379,7 +2379,7 @@
                                         });
                                     }
 
-                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td>`;
+                                    tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${korIme}</td><td>${korPrezime}</td>`;
                                     if (data[voznja].TipAutomobila == 0) {
                                         tableOfProducts += `<td>Svejedno</td>`;
                                     } else if (data[voznja].TipAutomobila == 1) {
@@ -2833,7 +2833,7 @@
                                 }
 
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
 
                                 switch (data[voznja].Status) {
@@ -2944,7 +2944,7 @@
                             }
 
 
-                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+                            tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${vozacIme}</td><td>${vozacPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
                             switch (data[voznja].Status) {
                                 case 0:
@@ -3024,7 +3024,7 @@
                                     })
                                 }
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${korIme}</td><td>${korPrezime}</td>`;
                                 if (data[voznja].TipAutomobila == 0) {
                                     tableOfProducts += `<td>Svejedno</td>`;
                                 } else if (data[voznja].TipAutomobila == 1) {
@@ -4077,7 +4077,7 @@
                                     })
                                 }
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${data[voznja].Odrediste.Adresa.Ulica} ${data[voznja].Odrediste.Adresa.Broj}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${data[voznja].Odrediste.Adresa.Ulica} <br/>  ${data[voznja].Odrediste.Adresa.Mesto}</td><td>${dispIme}</td><td>${dispPrezime}</td><td>${korIme}</td><td>${korPrezime}</td><td>${data[voznja].Iznos}</td><td>${data[voznja].Komentar.Ocena}</td>`;
 
 
                                 switch (data[voznja].Status) {
@@ -4175,7 +4175,7 @@
 
                                 }
 
-                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} ${data[voznja].PocetnaLokacija.Adresa.Broj}</td><td>${korIme}</td><td>${korPrezime}</td>`;
+                                tableOfProducts += `<tr><td>${formatedDate}</td><td>${data[voznja].PocetnaLokacija.Adresa.Ulica} <br/>  ${data[voznja].PocetnaLokacija.Adresa.Mesto}</td><td>${korIme}</td><td>${korPrezime}</td>`;
                                 if (data[voznja].TipAutomobila == 0) {
                                     tableOfProducts += `<td>Svejedno</td>`;
                                 } else if (data[voznja].TipAutomobila == 1) {
